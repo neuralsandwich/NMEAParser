@@ -1,7 +1,7 @@
 CC=clang
 CXX=clang++
 CFLAGS=-Wall -c
-CXXFLAGS=-std=c++11 -stdlib=libc++
+CXXFLAGS=-g -std=c++11 -stdlib=libc++
 LDFLAGS=
 SOURCES=test.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
