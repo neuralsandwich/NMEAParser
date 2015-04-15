@@ -12,13 +12,18 @@ namespace nmea_parser {
 
 class NMEAData {
 public:
-  NMEAData(){};
-  NMEAData(const std::string TalkerID, const std::string MessageType) {
-    ID = TalkerID;
-    Type = MessageType;
+  NMEAData() {};
+  NMEAData(const std::string TalkerID, const std::string MessageType)
+      : ID(TalkerID), Type(MessageType) {};
+  NMEAData(const std::string TalkerID, const std::string MessageType,
+           const std::string DataSentence)
+      : ID(TalkerID), Type(MessageType), Data(DataSentence) {}
+  std::string GetType() {
+    return Type;
   };
-  std::string GetType() { return Type; };
-  std::string GetTalkerID() { return ID; };
+  std::string GetTalkerID() {
+    return ID;
+  };
   std::string Print() {
     std::string Result;
 
@@ -31,9 +36,9 @@ public:
     return Result;
   };
 
-private:
   std::string ID;
   std::string Type;
+  std::string Data;
 };
 
 class GPRMC : NMEAData {
@@ -49,7 +54,7 @@ public:
         Speed(Speed), Angle(Angle), Date(Date),
         MagneticVariation(MagneticVariation),
         MagneticVariationDirection(MagneticVariationDirection),
-        Checksum(Checksum){};
+        Checksum(Checksum) {};
 
 private:
   // Timestamp when fix was taken
@@ -93,7 +98,7 @@ public:
       CalculatedChecksum ^= Message->at(i);
     }
 
-    Check = std::stoul(*Checksum, nullptr, 16);
+    Check = std::stoi(*Checksum, nullptr, 16);
 
     if (Check == CalculatedChecksum)
       return true;
@@ -120,11 +125,11 @@ public:
     TimeInfo->tm_min = Minute;
     TimeInfo->tm_sec = Second;
     Result = mktime(TimeInfo);
-    
+
     char buffer[80];
     strftime(buffer, 80, "Time: %F %T", TimeInfo);
-    puts(buffer);
-    
+    std::cout << buffer << "\n";
+
     return Result;
   };
 
