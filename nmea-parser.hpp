@@ -101,6 +101,33 @@ public:
     return false;
   }
 
+  int GPRMCParseTimestamp(std::string *DataSentence) {
+    time_t Result;
+    struct tm *TimeInfo;
+
+    const std::string StringHour = DataSentence->substr(0, 2);
+    const std::string StringMinute = DataSentence->substr(2, 2);
+    const std::string StringSecond = DataSentence->substr(4, 2);
+
+    int Hour = std::stoi(StringHour, nullptr, 10);
+    int Minute = std::stoi(StringMinute, nullptr, 10);
+    int Second = std::stoi(StringSecond, nullptr, 10);
+
+    time(&Result);
+    // TODO: Do we want local time?
+    TimeInfo = localtime(&Result);
+    TimeInfo->tm_hour = Hour;
+    TimeInfo->tm_min = Minute;
+    TimeInfo->tm_sec = Second;
+    Result = mktime(TimeInfo);
+    
+    char buffer[80];
+    strftime(buffer, 80, "Time: %F %T", TimeInfo);
+    puts(buffer);
+    
+    return Result;
+  };
+
   NMEAData parse(const std::string *str) {
     NMEAData Result;
 
@@ -128,6 +155,7 @@ public:
       if (!ValidateChecksum(str, &Checksum))
         return NMEAData("NONE", "INVALID");
 
+      GPRMCParseTimestamp(&DataSentence);
     }
 
     // Result = NMEAData(TalkerID, MessageType);
