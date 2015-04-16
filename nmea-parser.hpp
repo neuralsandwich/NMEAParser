@@ -20,7 +20,7 @@ namespace NMEA {
 
 #define NMEA_GPS_MESSAGE_NAME /**/                                             \
   (char const *const[NMEA_GPS_MESSAGE_NUM]) {                                  \
-    [UNKNOWN_GPS_MESSAGE] = "Unknown",                                         \
+    [UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC",                              \
   }
 
 enum NMEA_TALKER_ID {
@@ -30,8 +30,8 @@ enum NMEA_TALKER_ID {
   NMEA_TALKER_ID_NUM,
 };
 
-enum NMEA_GPS_MESSAGE {
-  UNKNOWN_GPS_MESSAGE,
+enum NMEA_MESSAGE_TYPE {
+  UNKNOWN_MESSAGE,
   AAM, // Waypoint Arrival Alarm
   ALM, // Almanac data
   APA, // Auto Pilot A sentence
@@ -66,13 +66,19 @@ enum NMEA_GPS_MESSAGE {
 
 class NMEAData {
 public:
-  NMEAData(NMEA_TALKER_ID TalkerID, NMEA_GPS_MESSAGE MessageType)
-      : ID_(TalkerID), Type_(MessageType){};
-  NMEAData(NMEA_TALKER_ID TalkerID, NMEA_GPS_MESSAGE MessageType,
+  NMEAData(NMEA_TALKER_ID TalkerID, NMEA_MESSAGE_TYPE MessageType,
+           bool ValidChecksum)
+      : ID_(TalkerID), Type_(MessageType), Valid_(ValidChecksum){};
+  NMEAData(NMEA_TALKER_ID TalkerID, NMEA_MESSAGE_TYPE MessageType,
            const std::string DataSentence)
-      : ID_(TalkerID), Type_(MessageType), Data_(DataSentence){};
+      : ID_(TalkerID), Type_(MessageType), Data_(DataSentence), Valid_(true){};
+
+  ~NMEAData(){};
+
   enum NMEA_TALKER_ID GetTalkerID() { return ID_; };
-  enum NMEA_GPS_MESSAGE GetType() { return Type_; };
+  enum NMEA_MESSAGE_TYPE GetType() { return Type_; };
+
+  bool IsValid() { return Valid_; };
 
   const std::string Print() const {
     std::string Result("Talker ID: ");
@@ -80,13 +86,20 @@ public:
     Result.append("\nMessage Type: ");
     Result.append(NMEA_GPS_MESSAGE_NAME[Type_]);
 
+    if (Valid_) {
+      Result.append("\nChecksum: Valid");
+    } else {
+      Result.append("\nChecksum: Invalid");
+    }
+
     return Result;
   };
 
 private:
-  const NMEA_TALKER_ID ID_;
-  const NMEA_GPS_MESSAGE Type_;
-  const std::string Data_;
+  NMEA_TALKER_ID ID_;
+  NMEA_MESSAGE_TYPE Type_;
+  std::string Data_;
+  bool Valid_;
 };
 
 class NMEAParser {
@@ -94,46 +107,39 @@ public:
   NMEAParser() {}
 
   NMEAData const parse(const std::string *str) {
-    NMEAData Result = NMEAData(UNKNOWN_TALKER_ID, UNKNOWN_GPS_MESSAGE);
+    NMEAData Result = NMEAData(NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                               NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, false);
+    std::vector<std::string> Elements(1);
 
-    // Strings starting without $ are invalid
-    if (COMMANDSTART != str->at(0))
+    if (*(str->begin()) != '$')
       return Result;
 
-    // TODO: Handle message from GLONASS
-    if (('G' != str->at(1)) || ('P' != str->at(2)))
-      return Result;
-
-    // TODO: Check if a command is longer or shorter than 3 characters
-    if (str->at(6) != SENTENCESEPARATOR)
-      return Result;
-
-    std::string TalkerID = str->substr(1, 2);
-    std::string MessageType = str->substr(3, 3);
-
-    std::string DataSentence = str->substr(7, str->length() - 4);
-    const std::string Checksum =
-        str->substr(str->length() - 2, (str->length() - 1));
-
-    // Validate Checksum
-    if (!ValidateChecksum(str, &Checksum))
-      return Result;
-
-    if ("GP" == TalkerID)
-      return NMEAData(NMEA_TALKER_ID::GPS, UNKNOWN_GPS_MESSAGE);
-
-    if ("RMC" == MessageType) {
-      // GPRMCParseTimestamp(&DataSentence);
+    for (auto it = str->begin() + 1; it != str->end(); ++it) {
+      if (*it == ',' || *it == '*') {
+        Elements.push_back(std::string());
+        continue;
+      } else {
+        Elements.back() += *it;
+      }
     }
 
-    // Result = NMEAData(TalkerID, MessageType);
+    NMEA_TALKER_ID TalkerID = ParseTalkerID(&Elements.at(0));
+    NMEA_MESSAGE_TYPE MessageType = ParseMessageType(&Elements.at(0));
+    if (!ValidChecksum(str, &Elements.back()))
+      return NMEAData(TalkerID, MessageType, false);
+
+    switch (MessageType) {
+
+      // TODO: Implement Message factory
+      
+    default: { Result = NMEAData(TalkerID, MessageType, true); } break;
+    }
 
     return Result;
   }
 
 private:
-  bool ValidateChecksum(const std::string *Message,
-                        const std::string *Checksum) {
+  bool ValidChecksum(const std::string *Message, const std::string *Checksum) {
     unsigned int CalculatedChecksum = 0;
     unsigned int Check = 0;
 
@@ -147,6 +153,33 @@ private:
       return true;
 
     return false;
+  }
+
+  NMEA_TALKER_ID ParseTalkerID(const std::string *ID) {
+    if (ID->at(0) != 'G')
+      return NMEA_TALKER_ID::UNKNOWN_TALKER_ID;
+
+    if (ID->at(1) == 'P')
+      return NMEA_TALKER_ID::GPS;
+
+    if (ID->at(1) == 'L')
+      return NMEA_TALKER_ID::GLONASS;
+
+    // Shouldn't reach here unless something weird happened
+    return NMEA_TALKER_ID::UNKNOWN_TALKER_ID;
+  }
+
+  NMEA_MESSAGE_TYPE ParseMessageType(const std::string *Message) {
+    if (Message->at(2) != 'R')
+      return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
+
+    if (Message->at(3) != 'M')
+      return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
+
+    if (Message->at(4) != 'C')
+      return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
+
+    return NMEA_MESSAGE_TYPE::RMC;
   }
 };
 };
