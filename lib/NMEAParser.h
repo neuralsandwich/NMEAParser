@@ -62,11 +62,15 @@ enum NMEA_MESSAGE_TYPE {
   NMEA_GPS_MESSAGE_NUM,
 };
 
-char const *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] = { 
-  [UNKNOWN_TALKER_ID] = "Unknown", [GPS] = "GPS", [GLONASS] = "GLONASS", };
+// Printable strings for Talker IDs
+char const *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] = {
+        [UNKNOWN_TALKER_ID] = "Unknown", [GPS] = "GPS", [GLONASS] = "GLONASS",
+};
 
-                                             
-char const *const NMEAGPSMessageName[NMEA_GPS_MESSAGE_NUM] = { [UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC",};
+// Printable strings for Message types
+char const *const NMEAGPSMessageName[NMEA_GPS_MESSAGE_NUM] = {
+        [UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC",
+};
 
 /* NMEAData - Generic class for NMEA Protocol
  *
@@ -102,13 +106,13 @@ public:
   NMEAData(const NMEA_TALKER_ID TalkerID, const NMEA_MESSAGE_TYPE MessageType,
            const bool ValidChecksum)
       : ID_(TalkerID), Type_(MessageType), Valid_(ValidChecksum){};
-  
+
   // Constructor for returning valid but unknown messages
   NMEAData(const NMEA_TALKER_ID TalkerID, const NMEA_MESSAGE_TYPE MessageType,
            const std::string DataSentence)
       : ID_(TalkerID), Type_(MessageType), Data_(DataSentence), Valid_(true){};
 
-  ~NMEAData(){};
+  virtual ~NMEAData(){};
 
   enum NMEA_TALKER_ID GetTalkerID() const;
   enum NMEA_MESSAGE_TYPE GetMessageType() const;
@@ -116,25 +120,73 @@ public:
   bool IsValid() const;
 
   // TODO: Remove this once done debugging
-  const std::string Print() const;
+  virtual std::string Print() const;
 
-private:
+protected:
   NMEA_TALKER_ID ID_;
   NMEA_MESSAGE_TYPE Type_;
   std::string Data_;
   bool Valid_;
 };
 
+class GPRMC : public NMEAData {
+public:
+  GPRMC(time_t TimeStamp, bool Status, float Latitude, float Longitude,
+        float Speed, float Angle, float MagneticVariation, bool ValidChecksum)
+      : NMEAData(NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::RMC, ValidChecksum),
+        TimeStamp(TimeStamp), Status(Status), Latitude(Latitude),
+        Longitude(Longitude), Speed(Speed), Angle(Angle),
+        MagneticVariation(MagneticVariation){};
+
+  GPRMC(NMEAData const &Data) : NMEAData(Data){};
+  ~GPRMC(){};
+
+  std::string Print() const;
+
+  // Timestamp when fix was taken
+  time_t TimeStamp;
+  // Status A = active, V = void
+  bool Status;
+  // Latitude of position:
+  // e.g. 4807.038,N = 48 deg 07.038' N
+  // N = positive, S = negative
+  float Latitude;
+  // Longitude of position:
+  // e.g. 01131.000,E = 11 deg 31.000' E
+  // E = positive, W = negative
+  float Longitude;
+  // Speed over the ground in knots
+  float Speed;
+  // Track angle in degrees True
+  float Angle;
+  // Magnetic Variation
+  // e.g. 003.1,W
+  // E = positive, W = negative
+  float MagneticVariation;
+};
+
 /* NMEAParser - Factory for NMEA message objects
  */
 class NMEAParser {
 public:
-  NMEAData Parse(const std::string *str);
+  NMEAData *Parse(const std::string *str);
 
 private:
-  bool ValidateChecksum(const std::string *Message, const std::string *Checksum);
+  bool ValidateChecksum(const std::string *Message,
+                        const std::string *Checksum);
   enum NMEA_TALKER_ID ParseTalkerID(const std::string *ID);
   enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string *Message);
+  time_t ParseTimeStamp(const std::string *TimeStamp,
+                        const std::string *DataStamp);
+  bool ParseStatus(const std::string *Status);
+  float ParseLatitude(const std::string *Latitude,
+                      const std::string *Direction);
+  float ParseLongitude(const std::string *Longitude,
+                       const std::string *Direction);
+  float ParseSpeed(const std::string *Speed);
+  float ParseAngle(const std::string *Angle);
+  float ParseMagneticVariation(const std::string *MagneticVariation,
+                               const std::string *MagneticVariatioDirection);
 };
 }
 #endif
