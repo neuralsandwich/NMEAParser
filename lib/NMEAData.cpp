@@ -9,7 +9,7 @@ enum NMEA_MESSAGE_TYPE NMEAData::GetMessageType() const {
 
 bool NMEAData::IsValid() const { return Valid_; } // IsValid
 
-const std::string NMEAData::Print() const {
+std::string NMEAData::Print() const {
   std::string Result("Talker ID: ");
   Result.append(NMEATalkerIDName[ID_]);
   Result.append("\nMessage Type: ");
