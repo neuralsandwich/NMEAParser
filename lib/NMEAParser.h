@@ -4,7 +4,7 @@
  *
  * In theory is should be able to parse NMEA 0183 Version 2.3, so it is out of
  * date.
- * 
+ *
  * TODO: Convert messages to structs
  */
 #ifndef NMEA_PARSER_HPP
@@ -39,7 +39,7 @@ enum NMEA_MESSAGE_TYPE {
   BOD, // Bearing Origin to Destination
   BWC, // Bearing using Great Circle route
   DTM, // Datum being used.
-  GAA, // Fix information
+  GGA, // Fix information
   GLL, // Lat/Lon data
   GRS, // GPS Range Residuals
   GSA, // Overall Satellite data
@@ -71,7 +71,7 @@ char const *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] = {
 
 // Printable strings for Message types
 char const *const NMEAGPSMessageName[NMEA_GPS_MESSAGE_NUM] = {
-        [UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC",
+        [UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC", [GGA] = "GGA",
 }; // NMEAGPSMessageName
 
 /* NMEAData - Generic class for NMEA Protocol
@@ -136,7 +136,8 @@ protected:
  * The Recommended Minimum sentence defined by NMEA for GPS/Transit system data.
  *
  * Message Structure:
- * $GPRMC,hhmmss,status,latitude,N,longitude,E,spd,cog,ddmmyy,mv,mvE,mode*cs<CR><LF>
+ * $GPRMC, hhmmss, status, latitude, N, longitude, E, spd, cog, ddmmyy, mv, mvE,
+ * mode *cs <CR><LF>
  *
  * 01. Message ID, RMC protocol header
  * 02. UTC Time, Time of fix. HHMMSS format
@@ -168,7 +169,7 @@ public:
 
   std::string Print() const;
 
-  // Timestamp when fix was taken
+  // UTC time stamp of data fix
   time_t TimeStamp;
   // Status A = active, V = void
   bool Status;
@@ -190,6 +191,83 @@ public:
   float MagneticVariation;
 }; // GPRMC
 
+/* GPGGA - GPS Fix Data
+ *
+ * Time and position, together with GPS fixing related data (number of
+ * satellites in use, and the resulting HDOP, age of differential data
+ * if in use, etc.
+ *
+ * Message Structure:
+ * $GPGGA, hhmmss.ss, Latitude, N, Longitude, E, FS, NoSV, HDOP, msl, m, Altref,
+ * m, DiffAge, DiffStation *cs <CR><LF>
+ *
+ * 01. Message ID, GGA protocol header
+ * 02. UTC Time, Current time
+ * 03. Latitude, Degrees + minutes
+ * 04. North/South hemisphere indicator
+ * 05. Longitude, Degrees + minutes
+ * 06. East/West indicator
+ * 07. Position Fix Status Indicator
+ * 08. Satellites Used, Range 0 to 12
+ * 09. HDOP, Horizontal Dilution of Precision
+ * 10. MSL Altitude
+ * 11. Units, Meters (fixed field)
+ * 12. Geoid Separation
+ * 13. Units, Meters (fixed field)
+ * 14. Age of Differential Corrections, Blank (Null) fields when DGPS
+ *     is not used
+ * 15. Diff. Reference Station ID
+ * 16. Checksum in hex
+ * 17. Carriage Return and Line Feed
+ */
+class GPGGA : public NMEAData {
+public:
+  GPGGA(const time_t TimeStamp, const float Latitude, const float Longitude,
+        const bool Status, const int SatiliteFixes, const float HDOP,
+        const float MSL, const char uMSL, const float GeoidSeparation,
+        const char uSep, const float DifferentialCorrectionAge,
+        const float DifferentialStationID, const bool ValidChecksum)
+      : NMEAData(NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::GGA, ValidChecksum),
+        TimeStamp(TimeStamp), Latitude(Latitude), Longitude(Longitude),
+        Status(Status), SatiliteFixes(SatiliteFixes), HDOP(HDOP), MSL(MSL),
+        uMSL(uMSL), GeoidSeparation(GeoidSeparation), uSep(uSep),
+        DifferentialCorrectionAge(DifferentialCorrectionAge),
+        DifferentialStationID(DifferentialStationID){};
+  GPGGA(NMEAData const &Data) : NMEAData(Data){};
+  ~GPGGA(){};
+
+  std::string Print() const;
+
+  // UTC time stamp of data fix
+  time_t TimeStamp;
+  // Latitude of position:
+  // e.g. 4807.038,N = 48 deg 07.038' N
+  // N = positive, S = negative
+  float Latitude;
+  // Longitude of position:
+  // e.g. 01131.000,E = 11 deg 31.000' E
+  // E = positive, W = negative
+  float Longitude;
+  // Speed over the ground in knots
+  bool Status;
+  // Satellites Used, Range 0 to 12
+  int SatiliteFixes;
+  // Horizontal Dilution of Precision
+  float HDOP;
+  // MSL Altitude
+  float MSL;
+  // MSL Units
+  char uMSL;
+  // Geoid Separation
+  float GeoidSeparation;
+  // Geoid Separation Units
+  char uSep;
+  // Age of Differential Corrections
+  float DifferentialCorrectionAge;
+  // Diff. Reference Station ID
+  float DifferentialStationID;
+};
+
 /* NMEAParser - Factory for NMEA message objects
  *
  * TODO: Document this once we have initial work on messages done.
@@ -205,6 +283,7 @@ private:
   enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string *Message);
   time_t ParseTimeStamp(const std::string *TimeStamp,
                         const std::string *DataStamp);
+  time_t ParseTimeStamp(const std::string *TimeStamp);
   bool ParseStatus(const std::string *Status);
   float ParseLatitude(const std::string *Latitude,
                       const std::string *Direction);
@@ -214,6 +293,12 @@ private:
   float ParseAngle(const std::string *Angle);
   float ParseMagneticVariation(const std::string *MagneticVariation,
                                const std::string *MagneticVariatioDirection);
+  int ParseSatiliteFixes(const std::string *SatiliteFixes);
+  float ParseHDOP(const std::string *HDOP);
+  float ParseMSL(const std::string *MDL);
+  float ParseGeoidSeparation(const std::string *GeoidSeparation);
+  float ParseDifferentialCorrectionAge(const std::string *CorrectionAge);
+  float ParseDifferentialStationID(const std::string *StationID);
 }; // NMEAParser
 } // NMEA
 #endif

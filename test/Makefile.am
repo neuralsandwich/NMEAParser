@@ -2,5 +2,5 @@ AM_CPPFLAGS = -std=c++11
 
 LDADD = ../lib/libNMEAParser.la
 
-check_PROGRAMS = gprmc-print
+check_PROGRAMS = print-gprmc print-gpgga
 AM_DEFAULT_SOURCE_EXT = .cpp

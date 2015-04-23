@@ -1,4 +1,4 @@
-test/gprmc-print
+test/print-*
 
 *.o
 *.lo
