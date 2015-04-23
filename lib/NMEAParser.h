@@ -129,6 +129,29 @@ protected:
   bool Valid_;
 };
 
+/* GPRMC - GPS Recommended Minimum Data
+ *
+ * The Recommended Minimum sentence defined by NMEA for GPS/Transit system data.
+ *
+ * Message Structure:
+ * $GPRMC,hhmmss,status,latitude,N,longitude,E,spd,cog,ddmmyy,mv,mvE,mode*cs<CR><LF>
+ *
+ * 01. Message ID, RMC protocol header
+ * 02. UTC Time, Time of fix. HHMMSS format
+ * 03. Status, V = Navigation receiver warning, A = Data valid.
+ * 04. Latitude, Degrees + minutes
+ * 05. North/South hemisphere indicator
+ * 06. Longitude, Degrees + minutes
+ * 07. East/West indicator
+ * 08. Speed over ground (knots)
+ * 09. Course over ground (degrees)
+ * 10. Date in DDMMYY format
+ * 11. Magnetic variation in degrees
+ * 12. Magnetic variation, east/west indicator
+ * 13. Mode indicator
+ * 14. CheckSum in Hex
+ * 15. <CR><LF>
+ */
 class GPRMC : public NMEAData {
 public:
   GPRMC(time_t TimeStamp, bool Status, float Latitude, float Longitude,
