@@ -33,7 +33,8 @@ NMEAData *NMEAParser::Parse(const std::string *Message) {
     float Longitude = ParseLongitude(&Elements.at(5), &Elements.at(6));
     float Speed = ParseSpeed(&Elements.at(7));
     float Angle = ParseAngle(&Elements.at(8));
-    float MagneticVariation = ParseMagneticVariation(&Elements.at(10), &Elements.at(11));
+    float MagneticVariation =
+        ParseMagneticVariation(&Elements.at(10), &Elements.at(11));
     Result = new GPRMC(TimeStamp, Status, Latitude, Longitude, Speed, Angle,
                        MagneticVariation, true);
   } break;
@@ -117,7 +118,7 @@ bool NMEAParser::ParseStatus(const std::string *Status) {
     Result = true;
 
   return Result;
-}
+} // ParseStatus
 
 float NMEAParser::ParseLatitude(const std::string *Latitude,
                                 const std::string *Direction) {
@@ -129,7 +130,7 @@ float NMEAParser::ParseLatitude(const std::string *Latitude,
     Result = 0 - Result;
 
   return Result;
-}
+} // ParseLatitude
 
 float NMEAParser::ParseLongitude(const std::string *Longitude,
                                  const std::string *Direction) {
@@ -141,7 +142,7 @@ float NMEAParser::ParseLongitude(const std::string *Longitude,
     Result = 0 - Result;
 
   return Result;
-}
+} // ParseLongitude
 
 float NMEAParser::ParseSpeed(const std::string *Speed) {
   float Result = 0;
@@ -149,7 +150,7 @@ float NMEAParser::ParseSpeed(const std::string *Speed) {
   Result = std::stof(*Speed);
 
   return Result;
-}
+} // ParseSpeed
 
 float NMEAParser::ParseAngle(const std::string *Angle) {
   float Result = 0;
@@ -157,7 +158,7 @@ float NMEAParser::ParseAngle(const std::string *Angle) {
   Result = std::stof(*Angle);
 
   return Result;
-}
+} // ParseAngle
 
 float NMEAParser::ParseMagneticVariation(
     const std::string *MagneticVariation,
@@ -170,5 +171,5 @@ float NMEAParser::ParseMagneticVariation(
     Result = 0 - Result;
 
   return Result;
-}
-};
+} // ParseMagneticVariation
+} // NMEA

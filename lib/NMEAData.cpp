@@ -23,4 +23,4 @@ std::string NMEAData::Print() const {
 
   return Result;
 } // Print
-}
+} // NMEA
