@@ -4,6 +4,8 @@
  *
  * In theory is should be able to parse NMEA 0183 Version 2.3, so it is out of
  * date.
+ * 
+ * TODO: Convert messages to structs
  */
 #ifndef NMEA_PARSER_HPP
 #define NMEA_PARSER_HPP
@@ -26,7 +28,7 @@ enum NMEA_TALKER_ID {
   GPS,
   GLONASS,
   NMEA_TALKER_ID_NUM,
-};
+}; // NMEA_TALKER_ID
 
 enum NMEA_MESSAGE_TYPE {
   UNKNOWN_MESSAGE,
@@ -60,17 +62,17 @@ enum NMEA_MESSAGE_TYPE {
   ZTG, // Zulu (UTC) time and time to go (to destination)
   ZDA, // Date and Time
   NMEA_GPS_MESSAGE_NUM,
-};
+}; // NMEA_MESSAGE_TYPE
 
 // Printable strings for Talker IDs
 char const *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] = {
         [UNKNOWN_TALKER_ID] = "Unknown", [GPS] = "GPS", [GLONASS] = "GLONASS",
-};
+}; // NMEATalkerIDName
 
 // Printable strings for Message types
 char const *const NMEAGPSMessageName[NMEA_GPS_MESSAGE_NUM] = {
         [UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC",
-};
+}; // NMEAGPSMessageName
 
 /* NMEAData - Generic class for NMEA Protocol
  *
@@ -127,7 +129,7 @@ protected:
   NMEA_MESSAGE_TYPE Type_;
   std::string Data_;
   bool Valid_;
-};
+}; // NMEAData
 
 /* GPRMC - GPS Recommended Minimum Data
  *
@@ -186,9 +188,11 @@ public:
   // e.g. 003.1,W
   // E = positive, W = negative
   float MagneticVariation;
-};
+}; // GPRMC
 
 /* NMEAParser - Factory for NMEA message objects
+ *
+ * TODO: Document this once we have initial work on messages done.
  */
 class NMEAParser {
 public:
@@ -210,6 +214,6 @@ private:
   float ParseAngle(const std::string *Angle);
   float ParseMagneticVariation(const std::string *MagneticVariation,
                                const std::string *MagneticVariatioDirection);
-};
-}
+}; // NMEAParser
+} // NMEA
 #endif

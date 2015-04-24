@@ -4,6 +4,8 @@
 
 namespace NMEA {
 std::string GPRMC::Print() const {
+
+  // TODO: Tidy this up
   std::string Result("Talker ID: ");
   Result.append(NMEATalkerIDName[ID_]);
   Result.append("\nMessage Type: ");
@@ -33,4 +35,4 @@ std::string GPRMC::Print() const {
 
   return Result;
 } // Print
-}
+} // NMEA
