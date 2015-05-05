@@ -65,14 +65,14 @@ enum NMEA_MESSAGE_TYPE {
 }; // NMEA_MESSAGE_TYPE
 
 // Printable strings for Talker IDs
-char const *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] = {
-        [UNKNOWN_TALKER_ID] = "Unknown", [GPS] = "GPS", [GLONASS] = "GLONASS",
-}; // NMEATalkerIDName
+const char *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] =
+    {[UNKNOWN_TALKER_ID] = "Unknown", [GPS] = "GPS",
+     [GLONASS] = "GLONASS" }; // NMEATalkerIDName
 
 // Printable strings for Message types
-char const *const NMEAGPSMessageName[NMEA_GPS_MESSAGE_NUM] = {
-        [UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC", [GGA] = "GGA",
-}; // NMEAGPSMessageName
+const char *const NMEAGPSMessageName[NMEA_GPS_MESSAGE_NUM] =
+    {[UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC",
+     [GGA] = "GGA" }; // NMEAGPSMessageName
 
 /* NMEAData - Generic class for NMEA Protocol
  *
@@ -107,14 +107,14 @@ public:
   // Constructor for returning invalid message
   NMEAData(const NMEA_TALKER_ID TalkerID, const NMEA_MESSAGE_TYPE MessageType,
            const bool ValidChecksum)
-      : ID_(TalkerID), Type_(MessageType), Valid_(ValidChecksum){};
+      : ID_(TalkerID), Type_(MessageType), Valid_(ValidChecksum) {};
 
   // Constructor for returning valid but unknown messages
   NMEAData(const NMEA_TALKER_ID TalkerID, const NMEA_MESSAGE_TYPE MessageType,
-           const std::string DataSentence)
-      : ID_(TalkerID), Type_(MessageType), Data_(DataSentence), Valid_(true){};
+           const std::string &DataSentence)
+      : ID_(TalkerID), Type_(MessageType), Data_(DataSentence), Valid_(true) {};
 
-  virtual ~NMEAData(){};
+  virtual ~NMEAData() {};
 
   enum NMEA_TALKER_ID GetTalkerID() const;
   enum NMEA_MESSAGE_TYPE GetMessageType() const;
@@ -162,10 +162,9 @@ public:
       : NMEAData(NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::RMC, ValidChecksum),
         TimeStamp(TimeStamp), Status(Status), Latitude(Latitude),
         Longitude(Longitude), Speed(Speed), Angle(Angle),
-        MagneticVariation(MagneticVariation){};
+        MagneticVariation(MagneticVariation) {};
 
-  GPRMC(NMEAData const &Data) : NMEAData(Data){};
-  ~GPRMC(){};
+  ~GPRMC() {};
 
   std::string Print() const;
 
@@ -232,9 +231,8 @@ public:
         Status(Status), SatiliteFixes(SatiliteFixes), HDOP(HDOP), MSL(MSL),
         uMSL(uMSL), GeoidSeparation(GeoidSeparation), uSep(uSep),
         DifferentialCorrectionAge(DifferentialCorrectionAge),
-        DifferentialStationID(DifferentialStationID){};
-  GPGGA(NMEAData const &Data) : NMEAData(Data){};
-  ~GPGGA(){};
+        DifferentialStationID(DifferentialStationID) {};
+  ~GPGGA() {};
 
   std::string Print() const;
 
