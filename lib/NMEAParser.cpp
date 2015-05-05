@@ -246,7 +246,7 @@ float NMEAParser::ParseGeoidSeparation(const std::string *GeoidSeparation) {
 
 float
 NMEAParser::ParseDifferentialCorrectionAge(const std::string *CorrectionAge) {
-  float Result;
+  float Result = 0;
 
   if (CorrectionAge->empty())
     return Result;
