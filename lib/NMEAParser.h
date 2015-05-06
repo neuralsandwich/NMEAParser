@@ -67,12 +67,12 @@ enum NMEA_MESSAGE_TYPE {
 // Printable strings for Talker IDs
 const char *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] =
     {[UNKNOWN_TALKER_ID] = "Unknown", [GPS] = "GPS",
-     [GLONASS] = "GLONASS" }; // NMEATalkerIDName
+     [GLONASS] = "GLONASS"}; // NMEATalkerIDName
 
 // Printable strings for Message types
 const char *const NMEAGPSMessageName[NMEA_GPS_MESSAGE_NUM] =
-    {[UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC",
-     [GGA] = "GGA" }; // NMEAGPSMessageName
+    {[UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC", [GGA] = "GGA",
+     [GLL] = "GLL"}; // NMEAGPSMessageName
 
 /* NMEAData - Generic class for NMEA Protocol
  *
@@ -107,14 +107,14 @@ public:
   // Constructor for returning invalid message
   NMEAData(const NMEA_TALKER_ID TalkerID, const NMEA_MESSAGE_TYPE MessageType,
            const bool ValidChecksum)
-      : ID_(TalkerID), Type_(MessageType), Valid_(ValidChecksum) {};
+      : ID_(TalkerID), Type_(MessageType), Valid_(ValidChecksum){};
 
   // Constructor for returning valid but unknown messages
   NMEAData(const NMEA_TALKER_ID TalkerID, const NMEA_MESSAGE_TYPE MessageType,
            const std::string &DataSentence)
-      : ID_(TalkerID), Type_(MessageType), Data_(DataSentence), Valid_(true) {};
+      : ID_(TalkerID), Type_(MessageType), Data_(DataSentence), Valid_(true){};
 
-  virtual ~NMEAData() {};
+  virtual ~NMEAData(){};
 
   enum NMEA_TALKER_ID GetTalkerID() const;
   enum NMEA_MESSAGE_TYPE GetMessageType() const;
@@ -162,9 +162,9 @@ public:
       : NMEAData(NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::RMC, ValidChecksum),
         TimeStamp(TimeStamp), Status(Status), Latitude(Latitude),
         Longitude(Longitude), Speed(Speed), Angle(Angle),
-        MagneticVariation(MagneticVariation) {};
+        MagneticVariation(MagneticVariation){};
 
-  ~GPRMC() {};
+  ~GPRMC(){};
 
   std::string Print() const;
 
@@ -231,8 +231,8 @@ public:
         Status(Status), SatiliteFixes(SatiliteFixes), HDOP(HDOP), MSL(MSL),
         uMSL(uMSL), GeoidSeparation(GeoidSeparation), uSep(uSep),
         DifferentialCorrectionAge(DifferentialCorrectionAge),
-        DifferentialStationID(DifferentialStationID) {};
-  ~GPGGA() {};
+        DifferentialStationID(DifferentialStationID){};
+  ~GPGGA(){};
 
   std::string Print() const;
 
@@ -264,7 +264,50 @@ public:
   float DifferentialCorrectionAge;
   // Diff. Reference Station ID
   float DifferentialStationID;
-};
+}; // GPGGA
+
+/* GPGLL - Latitude and longitude, with time of position fix and status
+ *
+ * Message Structure:
+ * $GPGLL,Latitude,N,Longitude,E,hhmmss.ss,Valid,Mode*cs<CR><LF>
+ *
+ * 01. Message ID, GLL protocol header
+ * 02. Latitude, Degrees + minutes
+ * 03. North/South hemisphere indicator
+ * 04. Longitude, Degrees + minutes
+ * 05. East/West indicator
+ * 06. UTC Time, Current time
+ * 07. V = Data invalid, A = Data valid
+ * 07. [Optional] Positioning mode
+ * 08. Checksum in hex
+ * 09. <CR><LF>
+ */
+class GPGLL : public NMEAData {
+public:
+  GPGLL(const float Latitude, const float Longitude, const time_t TimeStamp,
+        const bool Status, const char PositioningMode)
+      : NMEAData(NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::GLL, true),
+        Latitude(Latitude), Longitude(Longitude), TimeStamp(TimeStamp),
+        Status(Status), PositioningMode(PositioningMode){};
+  ~GPGLL(){};
+
+  std::string Print() const;
+
+  // Latitude of position:
+  // e.g. 4807.038,N = 48 deg 07.038' N
+  // N = positive, S = negative
+  float Latitude;
+  // Longitude of position:
+  // e.g. 01131.000,E = 11 deg 31.000' E
+  // E = positive, W = negative
+  float Longitude;
+  // UTC time stamp of data fix
+  time_t TimeStamp;
+  // Validity of the data
+  bool Status;
+  // combined GPS/SFDR position fix (ADR with external sensors)
+  char PositioningMode;
+}; // GPGLL
 
 /* NMEAParser - Factory for NMEA message objects
  *
