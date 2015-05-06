@@ -60,6 +60,15 @@ NMEAData *NMEAParser::Parse(const std::string *Message) {
                        DifferentialCorrectionAge, DifferentialStationID, true);
   } break;
 
+  case NMEA_MESSAGE_TYPE::GLL: {
+    float Latitude = ParseLatitude(&Elements.at(1), &Elements.at(2));
+    float Longitude = ParseLongitude(&Elements.at(3), &Elements.at(4));
+    time_t TimeStamp = ParseTimeStamp(&Elements.at(5));
+    bool Status = ParseStatus(&Elements.at(6));
+    char PositioningMode = Elements.at(7).at(0);
+    Result = new GPGLL(Latitude, Longitude, TimeStamp, Status, PositioningMode);
+  } break;
+
   default: { Result = new NMEAData(TalkerID, MessageType, true); } break;
   }
 
@@ -102,7 +111,7 @@ NMEAParser::ParseMessageType(const std::string *Message) {
   if (Message->at(2) != 'R' && Message->at(2) != 'G')
     return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
 
-  if (Message->at(3) != 'M' && Message->at(3) != 'G')
+  if (Message->at(3) != 'M' && Message->at(3) != 'G' && Message->at(3) != 'L')
     return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
 
   if (Message->at(4) == 'C')
@@ -110,6 +119,9 @@ NMEAParser::ParseMessageType(const std::string *Message) {
 
   if (Message->at(4) == 'A')
     return NMEA_MESSAGE_TYPE::GGA;
+
+  if (Message->at(4) == 'L')
+    return NMEA_MESSAGE_TYPE::GLL;
 } // ParseMessageType
 
 time_t NMEAParser::ParseTimeStamp(const std::string *TimeStamp,
