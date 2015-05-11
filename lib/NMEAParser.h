@@ -18,11 +18,6 @@
 
 namespace NMEA {
 
-// TODO: Turn these into static const int or remove them?
-#define COMMANDSTART 0x24
-#define SENTENCESEPARATOR 0x2C
-#define CHECKSUMSTART 0x2A
-
 enum NMEA_TALKER_ID {
   UNKNOWN_TALKER_ID,
   GPS,
