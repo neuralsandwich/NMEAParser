@@ -21,16 +21,43 @@ extern "C" {
 #include <ctime>
 
 namespace NMEA {
-
 // Printable strings for Talker IDs
-const char *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] =
-    {[UNKNOWN_TALKER_ID] = "Unknown", [GPS] = "GPS",
-     [GLONASS] = "GLONASS"}; // NMEATalkerIDName
+const char *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] = {
+    "Unknown", "GPS", "GLONASS"}; // NMEATalkerIDName
 
 // Printable strings for Message types
-const char *const NMEAGPSMessageName[NMEA_GPS_MESSAGE_NUM] =
-    {[UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC", [GGA] = "GGA",
-     [GLL] = "GLL"}; // NMEAGPSMessageName
+const char *const NMEAGPSMessageName[NMEA_GPS_MESSAGE_NUM] = {
+    "Unknown", // Unknown Message Type
+    "AAM",     // Waypoint Arrival Alarm
+    "ALM",     // Almanac data
+    "APA",     // Auto Pilot A sentence
+    "APB",     // Auto Pilot B sentence
+    "BOD",     // Bearing Origin to Destination
+    "BWC",     // Bearing using Great Circle route
+    "DTM",     // Datum being used.
+    "GGA",     // Fix information
+    "GLL",     // Lat/Lon data
+    "GRS",     // GPS Range Residuals
+    "GSA",     // Overall Satellite data
+    "GST",     // GPS Pseudorange Noise Statistics
+    "GSV",     // Detailed Satellite data
+    "MSK",     // send control for a beacon receiver
+    "MSS",     // Beacon receiver status information.
+    "RMA",     // recommended Loran data
+    "RMB",     // recommended navigation data for gps
+    "RMC",     // recommended minimum data for gps
+    "RTE",     // route message
+    "TRF",     // Transit Fix Data
+    "STN",     // Multiple Data ID
+    "VBW",     // dual Ground / Water Spped
+    "VTG",     // Vector track an Speed over the Ground
+    "WCV",     // Waypoint closure velocity (Velocity Made Good)
+    "WPL",     // Waypoint Location information
+    "XTC",     // cross track error
+    "XTE",     // measured cross track error
+    "ZTG",     // Zulu (UTC) time and time to go (to destination)
+    "ZDA",     // Date and Time
+}; // NMEAGPSMessageName
 
 /* NMEAParser - Factory for NMEA message objects
  *
@@ -63,6 +90,10 @@ private:
   float ParseGeoidSeparation(const std::string *GeoidSeparation);
   float ParseDifferentialCorrectionAge(const std::string *CorrectionAge);
   float ParseDifferentialStationID(const std::string *StationID);
+  float ParseCOGT(const std::string *CourseOverGroundTrue);
+  float ParseCOGM(const std::string *CourseOverGroundMagnetic);
+  float ParseSOG(const std::string *SpeedOverGround);
+  char ParseModeIndicator(const std::string *ModeIndicator);
 }; // NMEAParser
 } // NMEA
 #endif

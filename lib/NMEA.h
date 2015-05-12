@@ -224,12 +224,52 @@ typedef struct GPGLL {
   char PositioningMode;
 } GPGLL;
 
+/* GPVTG - Course over groud and Ground speed
+ * 
+ * Message Structure:
+ * $GPVTG,cogt,T,cogm,M,sog,N,kph,K,mode*cs<CR><LF>
+ *
+ * 01. Message ID, VTG protocol header
+ * 02. Course over ground (true)
+ * 03. Fixed field: true
+ * 04. Course over ground (magenetic)
+ * 05. Fixed field: magnetic
+ * 06. Speed over ground
+ * 07. Fixed field: knots
+ * 08. Speed over ground km/h
+ * 09. Fixed Field: kilometers per hour
+ * 10. Mode Indicator
+ * 11. Checksum
+ * 12. <CR><LF>
+ */
+typedef struct GPVTG {
+  // Course over ground (true)
+  float cogt;
+  // Fixed field: true
+  char T;
+  // Course over ground (magnetic)
+  float cogm;
+  // Fixed field: magnetic
+  char M;
+  // Speed over ground (knots)
+  float sog;
+  // Fixed field: knots
+  char N;
+  // Speed over ground (km/h)
+  float kph;
+  // Fixed field: kilometers per hour
+  char K;
+  // Mode Indicator
+  char mode;
+} GPVTG;
+
 typedef struct NMEAMessage {
   NMEAHeader *Header;
   union {
     GPRMC *RMC;
     GPGGA *GGA;
     GPGLL *GLL;
+    GPVTG *VTG;
   };
 } NMEAMessage;
 
@@ -238,18 +278,10 @@ typedef struct HNMEAParser HNMEAParser;
 
 // HNMEAParser
 HNMEAParser *HNMEAParser_Create();
-void HNMEAParser_Destory();
+void HNMEAParser_Destroy(HNMEAParser *Parser);
 NMEAMessage *HNMEAParser_Parse(HNMEAParser *const Parser, const char *String);
 
-// NMEAHeader
-void NMEAHeader_Print(NMEAMessage *Message, char *Buffer, int Size);
-
-// GPRMC
-void GPRMC_Print(NMEAMessage *Message, char *Buffer, int Size);
-
-// GPGLL
-void GPGLL_Print(NMEAMessage *Message, char *Buffer, int Size);
-
-// GPGGA
-void GPGGA_Print(NMEAMessage *Message, char *Buffer, int Size);
+// NMEAMessage
+void NMEAMessage_Print(NMEAMessage *Message, char *Buffer, int Size);
+void NMEAMessage_Destroy(NMEAMessage *Message);
 #endif
