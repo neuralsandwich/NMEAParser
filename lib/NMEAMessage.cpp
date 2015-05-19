@@ -13,7 +13,7 @@ void NMEAMessage_Print(NMEAMessage *Message, char *Buffer, int Size) {
   std::string Result("Talker ID: ");
   Result.append(NMEA::NMEATalkerIDName[Message->Header->ID]);
   Result.append("\nMessage Type: ");
-  Result.append(NMEA::NMEAGPSMessageName[Message->Header->Type]);
+  Result.append(NMEA::NMEAGPSMessageNames[Message->Header->Type].String);
 
   switch (Message->Header->Type) {
   case RMC: {
