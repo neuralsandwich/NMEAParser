@@ -47,6 +47,7 @@ enum NMEA_MESSAGE_TYPE {
   NMEA_GPS_MESSAGE_NUM,
 }; // NMEA_MESSAGE_TYPE
 typedef enum NMEA_MESSAGE_TYPE NMEA_MESSAGE_TYPE;
+
 // Data Types
 
 /* NMEAHeader - Generic class for NMEA Protocol
@@ -298,17 +299,78 @@ typedef struct GPGSA {
   float hdop;
   // Vertical dilution of percision
   float vdop;
-
 } GPGSA;
+
+/* GPGSV - GNSS Satellites in View
+ *
+ * Message structure:
+ * $GPGSV,NoMsg,MsgNo,NoSv,{,sv,elv,az,cno}*cs<CR><LF>
+ *
+ * 01. Message ID, GSV protocol header
+ * 02. Number of messages
+ * 03. Number of this message
+ * 04. Satellites in View
+ * - Start of repeating block 1..4
+ * 05. Satellite ID
+ * 06. Elevation
+ * 07. Azimuth
+ * 08. Signal/Noise ratio
+ * - End of repeating block
+ * 15. Checksum
+ * 16. <CR><LF>
+ */
+typedef struct GPGSV {
+  // Number of messages - total number of GPGSV message being output
+  int NoMSG;
+  // Number of this message
+  int MSGNo;
+  // Satellites in view
+  int NoSV;
+  // Satellite ID
+  int *sv;
+  // Elevation - range 0..90
+  int *elv;
+  // Azimuth - range 0..359
+  int *az;
+  // Signal/Noise ratio - range 0..99, NULL when not tracked
+  int *cno;
+
+  // Helper value
+  int DataFieldsInMessage;
+} GPGSV;
 
 typedef struct NMEAMessage {
   NMEAHeader *Header;
   union {
-    GPRMC *RMC;
+    // GPAAM *AAM,
+    // GPALM *ALM,
+    // GPAPA *APA,
+    // GPAPB *APB,
+    // GPBOD *BOD,
+    // GPBWC *BWC,
+    // GPDTM *DTM,
     GPGGA *GGA;
     GPGLL *GLL;
-    GPVTG *VTG;
+    // GPGRS *GRS,
     GPGSA *GSA;
+    // GPGST *GST,
+    GPGSV *GSV;
+    // GPMSK *MSK,
+    // GPMSS *MSS,
+    // GPRMA *RMA,
+    // GPRMB *RMB,
+    GPRMC *RMC;
+    // GPRTE *RTE,
+    // GPTRF *TRF,
+    // GPSTN *STN,
+    // GPVBW *VBW,
+    GPVTG *VTG;
+    // GPWCV *WCV,
+    // GPWPL *WPL,
+    // GPXTC *XTC,
+    // GPXTE *XTE,
+    // GPZTG *ZTG,
+    // GPZDA *ZDA,
   };
 } NMEAMessage;
 

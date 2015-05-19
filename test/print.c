@@ -39,7 +39,7 @@ int main() {
 
     printf("NMEA Message: %s\n", NMEAString[i]);
 
-    char Buffer[500] = {};
+    char Buffer[500] = { 0 };
     NMEAMessage_Print(Message, Buffer, 1000);
     printf("%s\n\n", Buffer);
     NMEAMessage_Destroy(Message);
