@@ -112,36 +112,10 @@ enum NMEA_TALKER_ID NMEAParser::ParseTalkerID(const std::string *ID) {
 
 enum NMEA_MESSAGE_TYPE
 NMEAParser::ParseMessageType(const std::string *Message) {
-  // RMC
-  if (Message->at(2) == 'R') {
-    if (Message->at(3) == 'M') {
-      if (Message->at(4) == 'C') {
-        return NMEA_MESSAGE_TYPE::RMC;
-      }
-    }
-  }
 
-  // VTG
-  if (Message->at(2) == 'V') {
-    if (Message->at(3) == 'T') {
-      return NMEA_MESSAGE_TYPE::VTG;
-    }
-  }
-
-  // GGA, GLL, GSA
-  if (Message->at(2) == 'G') {
-    if (Message->at(3) == 'G') {
-      if (Message->at(4)) {
-        return NMEA_MESSAGE_TYPE::GGA;
-      }
-    } else if (Message->at(3) == 'L') {
-      if (Message->at(4) == 'L') {
-        return NMEA_MESSAGE_TYPE::GLL;
-      }
-    } else if (Message->at(3) == 'S') {
-      if (Message->at(4) == 'A') {
-        return NMEA_MESSAGE_TYPE::GSA;
-      }
+  for (int i = 0; i < NMEA_GPS_MESSAGE_NUM; ++i) {
+    if (Message->substr(2,3) == NMEAGPSMessageNames[i].String) {
+      return NMEAGPSMessageNames[i].Type;
     }
   }
 
