@@ -225,7 +225,7 @@ typedef struct GPGLL {
 } GPGLL;
 
 /* GPVTG - Course over groud and Ground speed
- * 
+ *
  * Message Structure:
  * $GPVTG,cogt,T,cogm,M,sog,N,kph,K,mode*cs<CR><LF>
  *
@@ -263,6 +263,44 @@ typedef struct GPVTG {
   char mode;
 } GPVTG;
 
+/* GPGSA - GNSS DOP and Active Satellites
+ *
+ * Message structure:
+ * $GPGSA,Smode,FS{,sv},PDOP,HDOP,VDOP*cs<CR><LF>
+ *
+ * 01. Message ID, GSA protocol header
+ * 02. Smode
+ * 03. Fix status
+ * 04. Satellite number - Repeated up to 12 times
+ * 16. Position dilution of precision
+ * 17. Horizontal dilution of precision
+ * 18. Vertical dilution of precision
+ * 19. Vertical dilution of precision
+ * 20. Carriage Return and Line Feed
+ */
+typedef struct GPGSA {
+  // Smode
+  // M - Manual, forced to operate in 2D/3D mode
+  // A - Allowed to automatically switch 2D/3D mode
+  char Smode;
+  // FS (Fix Status)
+  // 1 - Fix not available
+  // 2 - 2D Fix
+  // 3 - 3D fix
+  int FixStatus;
+  // SV (Satilite)
+  // 01-32 GPS satellites
+  // 33-64 SBAS satellites (33 = SBAS PRN 120, 34 = SBAS PRN 121, etc)
+  int *sv;
+  // Position dilution of percision
+  float pdop;
+  // Horizontal dilution of percision
+  float hdop;
+  // Vertical dilution of percision
+  float vdop;
+
+} GPGSA;
+
 typedef struct NMEAMessage {
   NMEAHeader *Header;
   union {
@@ -270,6 +308,7 @@ typedef struct NMEAMessage {
     GPGGA *GGA;
     GPGLL *GLL;
     GPVTG *VTG;
+    GPGSA *GSA;
   };
 } NMEAMessage;
 

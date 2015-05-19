@@ -2,7 +2,7 @@
 
 namespace NMEA {
 NMEAMessage *NMEAParser::Parse(const std::string &Message) {
-  NMEAMessage *Result = new NMEAMessage{ 0 };
+  NMEAMessage *Result = new NMEAMessage{0};
   Result->Header = new NMEAHeader{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
                                   NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0};
   std::vector<std::string> Elements(1);
@@ -59,10 +59,18 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) {
   } break;
 
   case NMEA_MESSAGE_TYPE::VTG: {
-    Result->VTG = new GPVTG{
-        ParseCOGT(&Elements.at(1)), 'T', ParseCOGM(&Elements.at(3)), 'M',
-        ParseSOG(&Elements.at(5)), 'N', ParseSpeed(&Elements.at(7)), 'K',
-        Elements.at(9).at(0)};
+    Result->VTG =
+        new GPVTG{ParseCOGT(&Elements.at(1)), 'T', ParseCOGM(&Elements.at(3)),
+                  'M', ParseSOG(&Elements.at(5)), 'N',
+                  ParseSpeed(&Elements.at(7)), 'K', Elements.at(9).at(0)};
+  } break;
+
+  case NMEA_MESSAGE_TYPE::GSA: {
+    Result->GSA =
+        new GPGSA{ParseSmode(&Elements.at(1)), ParseFixStatus(&Elements.at(2)),
+                  ParseSV(Elements.begin() + 3, Elements.begin() + 14),
+                  ParsePDOP(&Elements.at(15)), ParseHDOP(&Elements.at(16)),
+                  ParseVDOP(&Elements.at(17))};
   } break;
 
   default: { Result->Header->Valid = 1; } break;
@@ -104,30 +112,44 @@ enum NMEA_TALKER_ID NMEAParser::ParseTalkerID(const std::string *ID) {
 
 enum NMEA_MESSAGE_TYPE
 NMEAParser::ParseMessageType(const std::string *Message) {
-  if (Message->at(2) != 'R' && Message->at(2) != 'G' && Message->at(2) != 'V')
-    return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
+  // RMC
+  if (Message->at(2) == 'R') {
+    if (Message->at(3) == 'M') {
+      if (Message->at(4) == 'C') {
+        return NMEA_MESSAGE_TYPE::RMC;
+      }
+    }
+  }
 
-  if (Message->at(3) != 'M' && Message->at(3) != 'G' && Message->at(3) != 'L' &&
-      Message->at(3) != 'T')
-    return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
+  // VTG
+  if (Message->at(2) == 'V') {
+    if (Message->at(3) == 'T') {
+      return NMEA_MESSAGE_TYPE::VTG;
+    }
+  }
 
-  if (Message->at(4) == 'C')
-    return NMEA_MESSAGE_TYPE::RMC;
-
-  if (Message->at(4) == 'A')
-    return NMEA_MESSAGE_TYPE::GGA;
-
-  if (Message->at(4) == 'L')
-    return NMEA_MESSAGE_TYPE::GLL;
-
-  if (Message->at(4) == 'G')
-    return NMEA_MESSAGE_TYPE::VTG;
+  // GGA, GLL, GSA
+  if (Message->at(2) == 'G') {
+    if (Message->at(3) == 'G') {
+      if (Message->at(4)) {
+        return NMEA_MESSAGE_TYPE::GGA;
+      }
+    } else if (Message->at(3) == 'L') {
+      if (Message->at(4) == 'L') {
+        return NMEA_MESSAGE_TYPE::GLL;
+      }
+    } else if (Message->at(3) == 'S') {
+      if (Message->at(4) == 'A') {
+        return NMEA_MESSAGE_TYPE::GSA;
+      }
+    }
+  }
 
   return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
 } // ParseMessageType
 
 float ParseFloat(const std::string *String) {
-    float Result = 0;
+  float Result = 0;
   try {
     Result = std::stof(*String);
   } catch (const std::invalid_argument &ia) {
@@ -139,6 +161,20 @@ float ParseFloat(const std::string *String) {
 
   return Result;
 } // ParseFloat
+
+float ParseInteger(const std::string &String) {
+  float Result = 0;
+  try {
+    Result = std::stoi(String);
+  } catch (const std::invalid_argument &ia) {
+    return 0;
+  } catch (...) {
+    std::cerr << "NMEAParser: ParseInteger: Unexpected exception";
+    return 0;
+  }
+
+  return Result;
+} // ParseInteger
 
 time_t NMEAParser::ParseTimeStamp(const std::string *TimeStamp,
                                   const std::string *DateStamp) {
@@ -272,8 +308,8 @@ float NMEAParser::ParseGeoidSeparation(const std::string *GeoidSeparation) {
   return Result;
 } // ParseGeoidSeparation
 
-float
-NMEAParser::ParseDifferentialCorrectionAge(const std::string *CorrectionAge) {
+float NMEAParser::ParseDifferentialCorrectionAge(
+    const std::string *CorrectionAge) {
   float Result = 0;
 
   if (CorrectionAge->empty())
@@ -329,6 +365,55 @@ char NMEAParser::ParseModeIndicator(const std::string *ModeIndicator) {
 
   return Result;
 } // ParseModeIndicator
+
+char NMEAParser::ParseSmode(const std::string *String) {
+  char Result = '1';
+
+  if ('M' == String->at(0) || 'A' == String->at(0)) {
+    Result = String->at(0);
+  }
+
+  return Result;
+} // ParseSmode
+
+int NMEAParser::ParseFixStatus(const std::string *String) {
+  int Result = 1;
+
+  Result = ParseInteger(*String);
+
+  if ((Result > 0) && (Result < 4)) {
+    return Result;
+  }
+
+  return 1;
+} // ParseFixStatus
+
+int *NMEAParser::ParseSV(std::vector<std::string>::iterator Start,
+                         std::vector<std::string>::iterator End) {
+  std::vector<int> *Result = new std::vector<int>();
+
+  for_each(Start, End,
+           [&Result](std::string &s) { Result->push_back(ParseInteger(s)); });
+
+  return &Result->at(0);
+} // ParseSV
+
+float NMEAParser::ParseVDOP(const std::string *VDOP) {
+  float Result = 0;
+
+  Result = NMEA::ParseFloat(VDOP);
+
+  return Result;
+} // ParseVDOP
+
+float NMEAParser::ParsePDOP(const std::string *PDOP) {
+  float Result = 0;
+
+  Result = NMEA::ParseFloat(PDOP);
+
+  return Result;
+} // ParsePDOP
+
 } // NMEA
 
 // C API Functions
