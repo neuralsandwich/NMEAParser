@@ -95,6 +95,24 @@ void NMEAMessage_Print(NMEAMessage *Message, char *Buffer, int Size) {
     Result.append("\nMode Indicator: ");
     Result.append(&Message->VTG->mode);
   } break;
+
+  case GSA: {
+    Result.append("\nS mode: ");
+    Result.append(&Message->GSA->Smode);
+    Result.append("\nFix Status: ");
+    Result.append(std::to_string(Message->GSA->FixStatus));
+    Result.append("\nSatellite Number [1-12]:");
+    for (int i = 0; i < 12; ++i) {
+      Result.append("\n");
+      Result.append(std::to_string(Message->GSA->sv[i]));
+    }
+    Result.append("\nPosition dilution of percision: ");
+    Result.append(std::to_string(Message->GSA->pdop));
+    Result.append("\nHorizontal dilution of percision: ");
+    Result.append(std::to_string(Message->GSA->hdop));
+    Result.append("\nVertical dilution of percision: ");
+    Result.append(std::to_string(Message->GSA->vdop));
+  } break;
   }
 
   Result.append("\nValid Checksum: ");

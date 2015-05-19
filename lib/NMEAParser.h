@@ -57,7 +57,7 @@ const char *const NMEAGPSMessageName[NMEA_GPS_MESSAGE_NUM] = {
     "XTE",     // measured cross track error
     "ZTG",     // Zulu (UTC) time and time to go (to destination)
     "ZDA",     // Date and Time
-}; // NMEAGPSMessageName
+};             // NMEAGPSMessageName
 
 /* NMEAParser - Factory for NMEA message objects
  *
@@ -94,6 +94,12 @@ private:
   float ParseCOGM(const std::string *CourseOverGroundMagnetic);
   float ParseSOG(const std::string *SpeedOverGround);
   char ParseModeIndicator(const std::string *ModeIndicator);
+  char ParseSmode(const std::string *String);
+  int ParseFixStatus(const std::string *String);
+  int *ParseSV(std::vector<std::string>::iterator Start,
+               std::vector<std::string>::iterator End);
+  float ParsePDOP(const std::string *String);
+  float ParseVDOP(const std::string *String);
 }; // NMEAParser
 } // NMEA
 #endif
