@@ -1,83 +1,6 @@
 #include "NMEAParser.h"
 
 namespace NMEA {
-NMEAMessage *NMEAParser::Parse(const std::string &Message) {
-  NMEAMessage *Result = new NMEAMessage{0};
-  Result->Header = new NMEAHeader{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
-                                  NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0};
-  std::vector<std::string> Elements(1);
-
-  if (*(Message.begin()) != '$')
-    return Result;
-
-  for (auto it = Message.begin() + 1; it != Message.end(); ++it) {
-    if (*it == ',' || *it == '*') {
-      Elements.push_back(std::string());
-      continue;
-    } else {
-      Elements.back() += *it;
-    }
-  }
-
-  if (!ValidateChecksum(&Message, &Elements.back())) {
-    return Result;
-  }
-
-  Result->Header->Valid = 1;
-  Result->Header->ID = ParseTalkerID(&Elements.at(0));
-  Result->Header->Type = ParseMessageType(&Elements.at(0));
-
-  switch (Result->Header->Type) {
-
-  case NMEA_MESSAGE_TYPE::RMC: {
-    Result->RMC =
-        new GPRMC{ParseTimeStamp(&Elements.at(1), &Elements.at(9)),
-                  ParseStatus(&Elements.at(2)),
-                  ParseLatitude(&Elements.at(3), &Elements.at(4)),
-                  ParseLongitude(&Elements.at(5), &Elements.at(6)),
-                  ParseSpeed(&Elements.at(7)), ParseAngle(&Elements.at(8)),
-                  ParseMagneticVariation(&Elements.at(10), &Elements.at(11))};
-  } break;
-
-  case NMEA_MESSAGE_TYPE::GGA: {
-    Result->GGA = new GPGGA{
-        ParseTimeStamp(&Elements.at(1)),
-        ParseLatitude(&Elements.at(2), &Elements.at(3)),
-        ParseLongitude(&Elements.at(4), &Elements.at(5)),
-        ParseStatus(&Elements.at(6)), ParseSatiliteFixes(&Elements.at(7)),
-        ParseHDOP(&Elements.at(8)), ParseMSL(&Elements.at(9)), 'M',
-        ParseGeoidSeparation(&Elements.at(11)), 'M',
-        ParseDifferentialCorrectionAge(&Elements.at(13)),
-        ParseDifferentialStationID(&Elements.at(14))};
-  } break;
-
-  case NMEA_MESSAGE_TYPE::GLL: {
-    Result->GLL = new GPGLL{ParseLatitude(&Elements.at(1), &Elements.at(2)),
-                            ParseLongitude(&Elements.at(3), &Elements.at(4)),
-                            ParseTimeStamp(&Elements.at(5)),
-                            ParseStatus(&Elements.at(6)), Elements.at(7).at(0)};
-  } break;
-
-  case NMEA_MESSAGE_TYPE::VTG: {
-    Result->VTG =
-        new GPVTG{ParseCOGT(&Elements.at(1)), 'T', ParseCOGM(&Elements.at(3)),
-                  'M', ParseSOG(&Elements.at(5)), 'N',
-                  ParseSpeed(&Elements.at(7)), 'K', Elements.at(9).at(0)};
-  } break;
-
-  case NMEA_MESSAGE_TYPE::GSA: {
-    Result->GSA =
-        new GPGSA{ParseSmode(&Elements.at(1)), ParseFixStatus(&Elements.at(2)),
-                  ParseSV(Elements.begin() + 3, Elements.begin() + 14),
-                  ParsePDOP(&Elements.at(15)), ParseHDOP(&Elements.at(16)),
-                  ParseVDOP(&Elements.at(17))};
-  } break;
-
-  default: { Result->Header->Valid = 1; } break;
-  }
-
-  return Result;
-} // Parse
 
 bool NMEAParser::ValidateChecksum(const std::string *Message,
                                   const std::string *Checksum) {
@@ -114,7 +37,7 @@ enum NMEA_MESSAGE_TYPE
 NMEAParser::ParseMessageType(const std::string *Message) {
 
   for (int i = 0; i < NMEA_GPS_MESSAGE_NUM; ++i) {
-    if (Message->substr(2,3) == NMEAGPSMessageNames[i].String) {
+    if (Message->substr(2, 3) == NMEAGPSMessageNames[i].String) {
       return NMEAGPSMessageNames[i].Type;
     }
   }
@@ -388,6 +311,125 @@ float NMEAParser::ParsePDOP(const std::string *PDOP) {
   return Result;
 } // ParsePDOP
 
+GPGSV *ParseGPGSV(std::vector<std::string> *Elements) {
+  GPGSV *Result = new GPGSV{};
+
+  Result->NoMSG = ParseInteger(Elements->at(1));
+  Result->MSGNo = ParseInteger(Elements->at(2));
+  Result->NoSV = ParseInteger(Elements->at(3));
+
+  std::vector<int> *SVs = new std::vector<int>();
+  std::vector<int> *Elvs = new std::vector<int>();
+  std::vector<int> *Azs = new std::vector<int>();
+  std::vector<int> *Cnos = new std::vector<int>();
+
+  // This took a while to get
+  //
+  int Iterations = 0;
+  if (Result->MSGNo <= (Result->NoSV / 4)) {
+    Iterations = 4;
+  } else {
+    Iterations = Result->NoSV % 4;
+  }
+
+  Result->DataFieldsInMessage = Iterations;
+
+  for (int i = 0; i < Iterations; i++) {
+    SVs->push_back(ParseInteger(Elements->at(4 + i)));
+    Elvs->push_back(ParseInteger(Elements->at(5 + i)));
+    Azs->push_back(ParseInteger(Elements->at(6 + i)));
+    Cnos->push_back(ParseInteger(Elements->at(7 + i)));
+  }
+
+  Result->sv = &SVs->at(0);
+  Result->elv = &Elvs->at(0);
+  Result->az = &Azs->at(0);
+  Result->cno = &Cnos->at(0);
+
+  return Result;
+} // Parse GPGSV
+
+NMEAMessage *NMEAParser::Parse(const std::string &Message) {
+  NMEAMessage *Result = new NMEAMessage{0};
+  Result->Header = new NMEAHeader{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                                  NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0};
+  std::vector<std::string> Elements(1);
+
+  if (*(Message.begin()) != '$')
+    return Result;
+
+  for (auto it = Message.begin() + 1; it != Message.end(); ++it) {
+    if (*it == ',' || *it == '*') {
+      Elements.push_back(std::string());
+      continue;
+    } else {
+      Elements.back() += *it;
+    }
+  }
+
+  if (!ValidateChecksum(&Message, &Elements.back())) {
+    return Result;
+  }
+
+  Result->Header->Valid = 1;
+  Result->Header->ID = ParseTalkerID(&Elements.at(0));
+  Result->Header->Type = ParseMessageType(&Elements.at(0));
+
+  switch (Result->Header->Type) {
+
+  case NMEA_MESSAGE_TYPE::RMC: {
+    Result->RMC =
+        new GPRMC{ParseTimeStamp(&Elements.at(1), &Elements.at(9)),
+                  ParseStatus(&Elements.at(2)),
+                  ParseLatitude(&Elements.at(3), &Elements.at(4)),
+                  ParseLongitude(&Elements.at(5), &Elements.at(6)),
+                  ParseSpeed(&Elements.at(7)), ParseAngle(&Elements.at(8)),
+                  ParseMagneticVariation(&Elements.at(10), &Elements.at(11))};
+  } break;
+
+  case NMEA_MESSAGE_TYPE::GGA: {
+    Result->GGA = new GPGGA{
+        ParseTimeStamp(&Elements.at(1)),
+        ParseLatitude(&Elements.at(2), &Elements.at(3)),
+        ParseLongitude(&Elements.at(4), &Elements.at(5)),
+        ParseStatus(&Elements.at(6)), ParseSatiliteFixes(&Elements.at(7)),
+        ParseHDOP(&Elements.at(8)), ParseMSL(&Elements.at(9)), 'M',
+        ParseGeoidSeparation(&Elements.at(11)), 'M',
+        ParseDifferentialCorrectionAge(&Elements.at(13)),
+        ParseDifferentialStationID(&Elements.at(14))};
+  } break;
+
+  case NMEA_MESSAGE_TYPE::GLL: {
+    Result->GLL = new GPGLL{ParseLatitude(&Elements.at(1), &Elements.at(2)),
+                            ParseLongitude(&Elements.at(3), &Elements.at(4)),
+                            ParseTimeStamp(&Elements.at(5)),
+                            ParseStatus(&Elements.at(6)), Elements.at(7).at(0)};
+  } break;
+
+  case NMEA_MESSAGE_TYPE::VTG: {
+    Result->VTG =
+        new GPVTG{ParseCOGT(&Elements.at(1)), 'T', ParseCOGM(&Elements.at(3)),
+                  'M', ParseSOG(&Elements.at(5)), 'N',
+                  ParseSpeed(&Elements.at(7)), 'K', Elements.at(9).at(0)};
+  } break;
+
+  case NMEA_MESSAGE_TYPE::GSA: {
+    Result->GSA =
+        new GPGSA{ParseSmode(&Elements.at(1)), ParseFixStatus(&Elements.at(2)),
+                  ParseSV(Elements.begin() + 3, Elements.begin() + 14),
+                  ParsePDOP(&Elements.at(15)), ParseHDOP(&Elements.at(16)),
+                  ParseVDOP(&Elements.at(17))};
+  } break;
+
+  case NMEA_MESSAGE_TYPE::GSV: {
+    Result->GSV = ParseGPGSV(&Elements);
+  } break;
+
+  default: { Result->Header->Valid = 1; } break;
+  }
+
+  return Result;
+} // Parse
 } // NMEA
 
 // C API Functions

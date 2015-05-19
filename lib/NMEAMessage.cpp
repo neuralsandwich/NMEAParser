@@ -113,6 +113,27 @@ void NMEAMessage_Print(NMEAMessage *Message, char *Buffer, int Size) {
     Result.append("\nVertical dilution of percision: ");
     Result.append(std::to_string(Message->GSA->vdop));
   } break;
+
+  case GSV: {
+    Result.append("\nNumber of Messages: ");
+    Result.append(std::to_string(Message->GSV->NoMSG));
+    Result.append("\nMessage Number: ");
+    Result.append(std::to_string(Message->GSV->MSGNo));
+    Result.append("\nSatillites in View: ");
+    Result.append(std::to_string(Message->GSV->NoSV));
+
+    for (int i = 0; i < Message->GSV->DataFieldsInMessage; ++i) {
+      Result.append("\nSatellite ID: ");
+      Result.append(std::to_string(*Message->GSV->sv + i));
+      Result.append("\nSatellite Elevation: ");
+      Result.append(std::to_string(*Message->GSV->elv + i));
+      Result.append("\nSatellite Azimuth: ");
+      Result.append(std::to_string(*Message->GSV->az + i));
+      Result.append("\nSatellite Signal/Noise Ratio: ");
+      Result.append(std::to_string(*Message->GSV->cno + i));
+    }
+
+  } break;
   }
 
   Result.append("\nValid Checksum: ");
