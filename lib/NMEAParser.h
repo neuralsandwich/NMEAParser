@@ -4,9 +4,15 @@
  *
  * In theory is should be able to parse NMEA 0183 Version 2.3, so it is out of
  * date.
+ *
+ * TODO: Convert messages to structs
  */
 #ifndef NMEA_PARSER_HPP
 #define NMEA_PARSER_HPP
+
+extern "C" {
+#include "NMEA.h"
+}
 
 #include <string>
 #include <vector>
@@ -15,184 +21,59 @@
 #include <ctime>
 
 namespace NMEA {
-
-// TODO: Turn these into static const int or remove them?
-#define COMMANDSTART 0x24
-#define SENTENCESEPARATOR 0x2C
-#define CHECKSUMSTART 0x2A
-
-enum NMEA_TALKER_ID {
-  UNKNOWN_TALKER_ID,
-  GPS,
-  GLONASS,
-  NMEA_TALKER_ID_NUM,
-};
-
-enum NMEA_MESSAGE_TYPE {
-  UNKNOWN_MESSAGE,
-  AAM, // Waypoint Arrival Alarm
-  ALM, // Almanac data
-  APA, // Auto Pilot A sentence
-  APB, // Auto Pilot B sentence
-  BOD, // Bearing Origin to Destination
-  BWC, // Bearing using Great Circle route
-  DTM, // Datum being used.
-  GAA, // Fix information
-  GLL, // Lat/Lon data
-  GRS, // GPS Range Residuals
-  GSA, // Overall Satellite data
-  GST, // GPS Pseudorange Noise Statistics
-  GSV, // Detailed Satellite data
-  MSK, // send control for a beacon receiver
-  MSS, // Beacon receiver status information.
-  RMA, // recommended Loran data
-  RMB, // recommended navigation data for gps
-  RMC, // recommended minimum data for gps
-  RTE, // route message
-  TRF, // Transit Fix Data
-  STN, // Multiple Data ID
-  VBW, // dual Ground / Water Spped
-  VTG, // Vector track an Speed over the Ground
-  WCV, // Waypoint closure velocity (Velocity Made Good)
-  WPL, // Waypoint Location information
-  XTC, // cross track error
-  XTE, // measured cross track error
-  ZTG, // Zulu (UTC) time and time to go (to destination)
-  ZDA, // Date and Time
-  NMEA_GPS_MESSAGE_NUM,
-};
-
 // Printable strings for Talker IDs
-char const *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] = {
-        [UNKNOWN_TALKER_ID] = "Unknown", [GPS] = "GPS", [GLONASS] = "GLONASS",
-};
+const char *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] = {
+  "Unknown", "GPS", "GLONASS"
+}; // NMEATalkerIDName
+
+typedef struct NMEAMessageTypeString {
+  enum NMEA_MESSAGE_TYPE Type;
+  std::string String;
+} NMEAGPSMessageName;
 
 // Printable strings for Message types
-char const *const NMEAGPSMessageName[NMEA_GPS_MESSAGE_NUM] = {
-        [UNKNOWN_MESSAGE] = "Unknown", [RMC] = "RMC",
-};
-
-/* NMEAData - Generic class for NMEA Protocol
- *
- * NMEA Protocol Frame
- *
- *  _____________________________________________________
- * | $ | <Address> | {,<value>} | *<checksum> | <CR><LF> |
- *  -----------------------------------------------------
- *
- * * Starting character - Always starts with $
- * * Address field      - Only digits and uppercase letters, cannot be null.
- *                        This field is subdivided into 2 fields:
- *                         ______________
- *                        | <XX> | <XXX> | * Talker ID, always GP for GPS.
- *                         --------------    P for propiertary messages.
- *                                         * Sentence Formatter. Defines the
- *                                           message content.
- * * Data field(s)      - Delimited by a ','. Length can vary, even for a
- *                        certain field.
- * * Checksum field     - Starts with a '*' and consists of two characters
- *                        representing a hax number. The checksum is the
- *                        exclusive OR (XOR) of all characters between '$' and
- *                        '*'.
- * * End sequence       - Always <CR><LF>
- *
- * For further information on the NMEA Standard please refer to NMEA 0183
- * Standard For Interfacing Marine Electronic Devices, Version 2.30, March 1,
- * 1998. See http://www.nmea.org/ for ordering instructions.
- */
-class NMEAData {
-public:
-  // Constructor for returning invalid message
-  NMEAData(const NMEA_TALKER_ID TalkerID, const NMEA_MESSAGE_TYPE MessageType,
-           const bool ValidChecksum)
-      : ID_(TalkerID), Type_(MessageType), Valid_(ValidChecksum){};
-
-  // Constructor for returning valid but unknown messages
-  NMEAData(const NMEA_TALKER_ID TalkerID, const NMEA_MESSAGE_TYPE MessageType,
-           const std::string DataSentence)
-      : ID_(TalkerID), Type_(MessageType), Data_(DataSentence), Valid_(true){};
-
-  virtual ~NMEAData(){};
-
-  enum NMEA_TALKER_ID GetTalkerID() const;
-  enum NMEA_MESSAGE_TYPE GetMessageType() const;
-
-  bool IsValid() const;
-
-  // TODO: Remove this once done debugging
-  virtual std::string Print() const;
-
-protected:
-  NMEA_TALKER_ID ID_;
-  NMEA_MESSAGE_TYPE Type_;
-  std::string Data_;
-  bool Valid_;
-};
-
-/* GPRMC - GPS Recommended Minimum Data
- *
- * The Recommended Minimum sentence defined by NMEA for GPS/Transit system data.
- *
- * Message Structure:
- * $GPRMC,hhmmss,status,latitude,N,longitude,E,spd,cog,ddmmyy,mv,mvE,mode*cs<CR><LF>
- *
- * 01. Message ID, RMC protocol header
- * 02. UTC Time, Time of fix. HHMMSS format
- * 03. Status, V = Navigation receiver warning, A = Data valid.
- * 04. Latitude, Degrees + minutes
- * 05. North/South hemisphere indicator
- * 06. Longitude, Degrees + minutes
- * 07. East/West indicator
- * 08. Speed over ground (knots)
- * 09. Course over ground (degrees)
- * 10. Date in DDMMYY format
- * 11. Magnetic variation in degrees
- * 12. Magnetic variation, east/west indicator
- * 13. Mode indicator
- * 14. CheckSum in Hex
- * 15. <CR><LF>
- */
-class GPRMC : public NMEAData {
-public:
-  GPRMC(time_t TimeStamp, bool Status, float Latitude, float Longitude,
-        float Speed, float Angle, float MagneticVariation, bool ValidChecksum)
-      : NMEAData(NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::RMC, ValidChecksum),
-        TimeStamp(TimeStamp), Status(Status), Latitude(Latitude),
-        Longitude(Longitude), Speed(Speed), Angle(Angle),
-        MagneticVariation(MagneticVariation){};
-
-  GPRMC(NMEAData const &Data) : NMEAData(Data){};
-  ~GPRMC(){};
-
-  std::string Print() const;
-
-  // Timestamp when fix was taken
-  time_t TimeStamp;
-  // Status A = active, V = void
-  bool Status;
-  // Latitude of position:
-  // e.g. 4807.038,N = 48 deg 07.038' N
-  // N = positive, S = negative
-  float Latitude;
-  // Longitude of position:
-  // e.g. 01131.000,E = 11 deg 31.000' E
-  // E = positive, W = negative
-  float Longitude;
-  // Speed over the ground in knots
-  float Speed;
-  // Track angle in degrees True
-  float Angle;
-  // Magnetic Variation
-  // e.g. 003.1,W
-  // E = positive, W = negative
-  float MagneticVariation;
-};
+const NMEAGPSMessageName NMEAGPSMessageNames[NMEA_GPS_MESSAGE_NUM] = {
+  { NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, "Unknown" }, // Unknown Message Type
+  { NMEA_MESSAGE_TYPE::AAM, "AAM" },                 // Waypoint Arrival Alarm
+  { NMEA_MESSAGE_TYPE::ALM, "ALM" },                 // Almanac data
+  { NMEA_MESSAGE_TYPE::APA, "APA" },                 // Auto Pilot A sentence
+  { NMEA_MESSAGE_TYPE::APB, "APB" },                 // Auto Pilot B sentence
+  { NMEA_MESSAGE_TYPE::BOD, "BOD" }, // Bearing Origin to Destination
+  { NMEA_MESSAGE_TYPE::BWC, "BWC" }, // Bearing using Great Circle route
+  { NMEA_MESSAGE_TYPE::DTM, "DTM" }, // Datum being used.
+  { NMEA_MESSAGE_TYPE::GGA, "GGA" }, // Fix information
+  { NMEA_MESSAGE_TYPE::GLL, "GLL" }, // Lat/Lon data
+  { NMEA_MESSAGE_TYPE::GRS, "GRS" }, // GPS Range Residuals
+  { NMEA_MESSAGE_TYPE::GSA, "GSA" }, // Overall Satellite data
+  { NMEA_MESSAGE_TYPE::GST, "GST" }, // GPS Pseudorange Noise Statistics
+  { NMEA_MESSAGE_TYPE::GSV, "GSV" }, // Detailed Satellite data
+  { NMEA_MESSAGE_TYPE::MSK, "MSK" }, // send control for a beacon receiver
+  { NMEA_MESSAGE_TYPE::MSS, "MSS" }, // Beacon receiver status information.
+  { NMEA_MESSAGE_TYPE::RMA, "RMA" }, // recommended Loran data
+  { NMEA_MESSAGE_TYPE::RMB, "RMB" }, // recommended navigation data for gps
+  { NMEA_MESSAGE_TYPE::RMC, "RMC" }, // recommended minimum data for gps
+  { NMEA_MESSAGE_TYPE::RTE, "RTE" }, // route message
+  { NMEA_MESSAGE_TYPE::TRF, "TRF" }, // Transit Fix Data
+  { NMEA_MESSAGE_TYPE::STN, "STN" }, // Multiple Data ID
+  { NMEA_MESSAGE_TYPE::VBW, "VBW" }, // dual Ground / Water Spped
+  { NMEA_MESSAGE_TYPE::VTG, "VTG" }, // Vector track an Speed over the Ground
+  { NMEA_MESSAGE_TYPE::WCV,
+    "WCV" }, // Waypoint closure velocity (Velocity Made Good)
+  { NMEA_MESSAGE_TYPE::WPL, "WPL" }, // Waypoint Location information
+  { NMEA_MESSAGE_TYPE::XTC, "XTC" }, // cross track error
+  { NMEA_MESSAGE_TYPE::XTE, "XTE" }, // measured cross track error
+  { NMEA_MESSAGE_TYPE::ZTG,
+    "ZTG" }, // Zulu (UTC) time and time to go (to destination)
+  { NMEA_MESSAGE_TYPE::ZDA, "ZDA" }, // Date and Time
+};                                   // NMEAGPSMessageName
 
 /* NMEAParser - Factory for NMEA message objects
+ *
+ * TODO: Document this once we have initial work on messages done.
  */
 class NMEAParser {
 public:
-  NMEAData *Parse(const std::string *str);
+  NMEAMessage *Parse(const std::string &String);
 
 private:
   bool ValidateChecksum(const std::string *Message,
@@ -201,6 +82,7 @@ private:
   enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string *Message);
   time_t ParseTimeStamp(const std::string *TimeStamp,
                         const std::string *DataStamp);
+  time_t ParseTimeStamp(const std::string *TimeStamp);
   bool ParseStatus(const std::string *Status);
   float ParseLatitude(const std::string *Latitude,
                       const std::string *Direction);
@@ -210,6 +92,22 @@ private:
   float ParseAngle(const std::string *Angle);
   float ParseMagneticVariation(const std::string *MagneticVariation,
                                const std::string *MagneticVariatioDirection);
-};
-}
+  int ParseSatiliteFixes(const std::string *SatiliteFixes);
+  float ParseHDOP(const std::string *HDOP);
+  float ParseMSL(const std::string *MDL);
+  float ParseGeoidSeparation(const std::string *GeoidSeparation);
+  float ParseDifferentialCorrectionAge(const std::string *CorrectionAge);
+  float ParseDifferentialStationID(const std::string *StationID);
+  float ParseCOGT(const std::string *CourseOverGroundTrue);
+  float ParseCOGM(const std::string *CourseOverGroundMagnetic);
+  float ParseSOG(const std::string *SpeedOverGround);
+  char ParseModeIndicator(const std::string *ModeIndicator);
+  char ParseSmode(const std::string *String);
+  int ParseFixStatus(const std::string *String);
+  int *ParseSV(std::vector<std::string>::iterator Start,
+               std::vector<std::string>::iterator End);
+  float ParsePDOP(const std::string *String);
+  float ParseVDOP(const std::string *String);
+}; // NMEAParser
+} // NMEA
 #endif
