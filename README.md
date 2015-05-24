@@ -6,8 +6,8 @@ Library for parsing NMEA data strings
 To build the project run the following
 
 ```
-./bootstrap
-./configure
+mkdir _build && cd _build
+cmake ..
 make
 ```
 
@@ -19,6 +19,5 @@ stored in lib/
 Test can be compiled and run by
 
 ```
-make check
-./test/gprmc-print
+make test
 ```

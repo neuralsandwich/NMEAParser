@@ -380,7 +380,7 @@ typedef struct HNMEAParser HNMEAParser;
 // HNMEAParser
 HNMEAParser *HNMEAParser_Create();
 void HNMEAParser_Destroy(HNMEAParser *Parser);
-NMEAMessage *HNMEAParser_Parse(HNMEAParser *const Parser, const char *String);
+NMEAMessage *HNMEAParser_Parse(HNMEAParser *Parser, char *String);
 
 // NMEAMessage
 void NMEAMessage_Print(NMEAMessage *Message, char *Buffer, int Size);

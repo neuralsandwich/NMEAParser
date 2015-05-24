@@ -450,7 +450,7 @@ void HNMEAParser_Destroy(HNMEAParser *Parser) {
   }
 } // HNMEAParser_Destory
 
-NMEAMessage *HNMEAParser_Parse(HNMEAParser *const Parser, const char *String) {
+NMEAMessage *HNMEAParser_Parse(HNMEAParser *Parser, char *String) {
   try {
     NMEAMessage *Result =
         reinterpret_cast<NMEA::NMEAParser *>(Parser)->Parse(String);
