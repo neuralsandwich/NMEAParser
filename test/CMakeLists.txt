@@ -1,5 +1,6 @@
 enable_testing()
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/")
 find_package(Check REQUIRED)
 include_directories(${CHECK_INCLUDE_DIRS})
 include_directories("${PROJECT_SOURCE_DIR}/lib")
