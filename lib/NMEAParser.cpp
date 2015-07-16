@@ -114,6 +114,7 @@ time_t NMEAParser::ParseTimeStamp(const std::string *TimeStamp) {
 bool NMEAParser::ParseStatus(const std::string *Status) {
   bool Result = false;
 
+  // TODO: This is wrong
   if ("A" == *Status)
     Result = true;
 

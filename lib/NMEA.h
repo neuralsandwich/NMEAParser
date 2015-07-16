@@ -172,10 +172,10 @@ typedef struct GPGGA {
   // e.g. 01131.000,E = 11 deg 31.000' E
   // E = positive, W = negative
   float Longitude;
-  // Speed over the ground in knots
+  // Position Fix Status
   int Status;
   // Satellites Used, Range 0 to 12
-  int SatiliteFixes;
+  int SatelliteFixes;
   // Horizontal Dilution of Precision
   float HDOP;
   // MSL Altitude

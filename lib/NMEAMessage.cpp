@@ -67,8 +67,8 @@ void NMEAMessage_Print(NMEAMessage *Message, char *Buffer, int Size) {
     Result.append(std::to_string(Message->GGA->Latitude));
     Result.append("\nLongitude: ");
     Result.append(std::to_string(Message->GGA->Longitude));
-    Result.append("\nSatilite Fixes: ");
-    Result.append(std::to_string(Message->GGA->SatiliteFixes));
+    Result.append("\nSatelite Fixes: ");
+    Result.append(std::to_string(Message->GGA->SatelliteFixes));
     Result.append("\nHDOP: ");
     Result.append(std::to_string(Message->GGA->HDOP));
     Result.append("\nMSL: ");
@@ -134,6 +134,9 @@ void NMEAMessage_Print(NMEAMessage *Message, char *Buffer, int Size) {
     }
 
   } break;
+          
+      default: {
+      } break;
   }
 
   Result.append("\nValid Checksum: ");
