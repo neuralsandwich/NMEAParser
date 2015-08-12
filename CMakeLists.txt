@@ -18,5 +18,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 
 enable_testing()
+add_subdirectory(gtest)
 add_subdirectory(lib)
 add_subdirectory(test)
