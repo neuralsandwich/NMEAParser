@@ -1,4 +1,6 @@
 # NMEAParser
+[![Build Status](https://travis-ci.org/NeuralSandwich/NMEAParser.svg?branch=master)](https://travis-ci.org/NeuralSandwich/NMEAParser)
+
 Library for parsing NMEA data strings
 
 ## Building
