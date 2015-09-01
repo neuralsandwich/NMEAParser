@@ -80,21 +80,31 @@ float ParseInteger(const std::string &String) {
 
 time_t NMEAParser::ParseTimeStamp(const std::string *TimeStamp,
                                   const std::string *DateStamp) const {
-  time_t Result;
+  time_t Result = 0;
   struct tm *TimeInfo;
 
   // TimeStamp is in format HHMMSS in int
 
   time(&Result);
-  // TODO: Do we want local time? No we don't
   TimeInfo = gmtime(&Result);
-  TimeInfo->tm_mday = std::stoi(DateStamp->substr(0, 2), nullptr, 10);
-  TimeInfo->tm_mon = std::stoi(DateStamp->substr(2, 2), nullptr, 10);
-  TimeInfo->tm_year = std::stoi(DateStamp->substr(4, 2), nullptr, 10);
-  TimeInfo->tm_hour = std::stoi(TimeStamp->substr(0, 2), nullptr, 10);
-  TimeInfo->tm_min = std::stoi(TimeStamp->substr(2, 2), nullptr, 10);
-  TimeInfo->tm_sec = std::stoi(TimeStamp->substr(4, 2), nullptr, 10);
-  Result = mktime(TimeInfo);
+  if ((TimeStamp->length() >= 6) && (TimeStamp->length() <= 9)) {
+    try {
+      TimeInfo->tm_mday = std::stoi(DateStamp->substr(0, 2), nullptr, 10);
+      TimeInfo->tm_mon = std::stoi(DateStamp->substr(2, 2), nullptr, 10) - 1;
+      TimeInfo->tm_year =
+          std::stoi(DateStamp->substr(4, 4), nullptr, 10) - 1900;
+      TimeInfo->tm_hour = std::stoi(TimeStamp->substr(0, 2), nullptr, 10);
+      TimeInfo->tm_min = std::stoi(TimeStamp->substr(2, 2), nullptr, 10);
+      TimeInfo->tm_sec = std::stoi(TimeStamp->substr(4, 2), nullptr, 10);
+      Result = mktime(TimeInfo);
+    } catch (std::invalid_argument &) {
+      Result = 0;
+    } catch (std::out_of_range &) {
+      Result = 0;
+    }
+  } else {
+    Result = 0;
+  }
 
   return Result;
 } // ParseTimeStamp(TimeStamp DateStamp)
@@ -109,25 +119,12 @@ time_t NMEAParser::ParseTimeStamp(const std::string *TimeStamp) const {
   time_t Result = 0;
   struct tm *TimeInfo;
 
-  // TimeStamp is in format HHMMSS in int
-
   time(&Result);
-  // TODO: Do we want local time?
-  TimeInfo = localtime(&Result);
-  if ((TimeStamp->length() >= 6) && (TimeStamp->length() <= 9)) {
-    try {
-      TimeInfo->tm_hour = std::stoi(TimeStamp->substr(0, 2), nullptr, 10);
-      TimeInfo->tm_min = std::stoi(TimeStamp->substr(2, 2), nullptr, 10);
-      TimeInfo->tm_sec = std::stoi(TimeStamp->substr(4, 2), nullptr, 10);
-      Result = mktime(TimeInfo);
-    } catch (std::invalid_argument &) {
-      Result = 0;
-    } catch (std::out_of_range &) {
-      Result = 0;
-    }
-  } else {
-    Result = 0;
-  }
+  TimeInfo = gmtime(&Result);
+  char buffer[80];
+  std::strftime(buffer, 80, "%d%m%Y", TimeInfo);
+  const std::string DateStamp(buffer);
+  Result = ParseTimeStamp(TimeStamp, &DateStamp);
 
   return Result;
 } // ParseTimeStamp(TimeStamp)
@@ -435,10 +432,10 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   } break;
 
   case NMEA_MESSAGE_TYPE::VTG: {
-    Result->VTG = new GPVTG{
-        ParseCOGT(&Elements[1]), 'T', ParseCOGM(&Elements[3]),  'M',
-        ParseSOG(&Elements[5]),  'N', ParseSpeed(&Elements[7]), 'K',
-        Elements[9][0]};
+    Result->VTG =
+        new GPVTG{ParseCOGT(&Elements[1]), 'T', ParseCOGM(&Elements[3]),  'M',
+                  ParseSOG(&Elements[5]),  'N', ParseSpeed(&Elements[7]), 'K',
+                  Elements[9][0]};
   } break;
 
   case NMEA_MESSAGE_TYPE::GSA: {

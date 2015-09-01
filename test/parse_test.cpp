@@ -2,11 +2,21 @@
 #include "gtest/gtest.h"
 
 #include <iostream>
+#include <ctime>
 
 namespace NMEA {
 TEST(FieldParseTests, Valid_ParseTimeStamp_String) {
   const std::string TimeStamp = "092725.00";
-  const time_t Expected = 1441096045;
+
+  time_t Expected = 0;
+  struct tm *TimeInfo;
+  
+  std::time(&Expected);
+  TimeInfo = gmtime(&Expected);
+  TimeInfo->tm_hour = 9;
+  TimeInfo->tm_min = 27;
+  TimeInfo->tm_sec = 25;
+  Expected = mktime(TimeInfo);
 
   auto Parser = NMEA::NMEAParser();
 
