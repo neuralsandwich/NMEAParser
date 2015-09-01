@@ -87,7 +87,7 @@ time_t NMEAParser::ParseTimeStamp(const std::string *TimeStamp,
 
   time(&Result);
   // TODO: Do we want local time? No we don't
-  TimeInfo = localtime(&Result);
+  TimeInfo = gmtime(&Result);
   TimeInfo->tm_mday = std::stoi(DateStamp->substr(0, 2), nullptr, 10);
   TimeInfo->tm_mon = std::stoi(DateStamp->substr(2, 2), nullptr, 10);
   TimeInfo->tm_year = std::stoi(DateStamp->substr(4, 2), nullptr, 10);

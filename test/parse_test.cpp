@@ -6,7 +6,7 @@
 namespace NMEA {
 TEST(FieldParseTests, Valid_ParseTimeStamp_String) {
   const std::string TimeStamp = "092725.00";
-  const time_t Expected = 1439454445;
+  const time_t Expected = 1441096045;
 
   auto Parser = NMEA::NMEAParser();
 
