@@ -1,18 +1,16 @@
 enable_testing()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/")
-find_package(Check REQUIRED)
-include_directories(${CHECK_INCLUDE_DIRS})
+
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories("${PROJECT_SOURCE_DIR}/lib")
 
-set(LIBS ${LIBS} ${CHECK_LIBRARIES} NMEAParser)
+set(GOOGLIBS ${LIBS} gtest gtest_main)
 
-set(test_sources
- test.c
- create_delete_parser.c
-)
+add_executable(ParseTestDynamic parse_test.cpp)
+target_link_libraries(ParseTestDynamic ${GOOGLIBS} NMEAParser)
 
-add_executable(ParseTest parse_test.c)
-target_link_libraries(ParseTest ${LIBS})
+add_executable(ParseTestStatic parse_test.cpp)
+target_link_libraries(ParseTestStatic ${GOOGLIBS} NMEAParserStatic)
 
-add_test(ParseTests ParseTest)
+add_test(NAME ParseTests COMMAND ParseTest)
