@@ -396,59 +396,59 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   }
 
   Result->Header->Valid = 1;
-  Result->Header->ID = ParseTalkerID(&Elements.at(0));
-  Result->Header->Type = ParseMessageType(&Elements.at(0));
+  Result->Header->ID = ParseTalkerID(&Elements[0]);
+  Result->Header->Type = ParseMessageType(&Elements[0]);
 
   switch (Result->Header->Type) {
 
   case NMEA_MESSAGE_TYPE::RMC: {
     Result->RMC =
-        new GPRMC{ParseTimeStamp(&Elements.at(1), &Elements.at(9)),
-                  ParseStatus(&Elements.at(2)),
-                  ParseLatitude(&Elements.at(3), &Elements.at(4)),
-                  ParseLongitude(&Elements.at(5), &Elements.at(6)),
-                  ParseSpeed(&Elements.at(7)),
-                  ParseAngle(&Elements.at(8)),
-                  ParseMagneticVariation(&Elements.at(10), &Elements.at(11))};
+        new GPRMC{ParseTimeStamp(&Elements[1], &Elements[9]),
+                  ParseStatus(&Elements[2]),
+                  ParseLatitude(&Elements[3], &Elements[4]),
+                  ParseLongitude(&Elements[5], &Elements[6]),
+                  ParseSpeed(&Elements[7]),
+                  ParseAngle(&Elements[8]),
+                  ParseMagneticVariation(&Elements[10], &Elements[11])};
   } break;
 
   case NMEA_MESSAGE_TYPE::GGA: {
-    Result->GGA = new GPGGA{ParseTimeStamp(&Elements.at(1)),
-                            ParseLatitude(&Elements.at(2), &Elements.at(3)),
-                            ParseLongitude(&Elements.at(4), &Elements.at(5)),
-                            ParseStatus(&Elements.at(6)),
-                            ParseSatiliteFixes(&Elements.at(7)),
-                            ParseHDOP(&Elements.at(8)),
-                            ParseMSL(&Elements.at(9)),
+    Result->GGA = new GPGGA{ParseTimeStamp(&Elements[1]),
+                            ParseLatitude(&Elements[2], &Elements[3]),
+                            ParseLongitude(&Elements[4], &Elements[5]),
+                            ParseStatus(&Elements[6]),
+                            ParseSatiliteFixes(&Elements[7]),
+                            ParseHDOP(&Elements[8]),
+                            ParseMSL(&Elements[9]),
                             'M',
-                            ParseGeoidSeparation(&Elements.at(11)),
+                            ParseGeoidSeparation(&Elements[11]),
                             'M',
-                            ParseDifferentialCorrectionAge(&Elements.at(13)),
-                            ParseDifferentialStationID(&Elements.at(14))};
+                            ParseDifferentialCorrectionAge(&Elements[13]),
+                            ParseDifferentialStationID(&Elements[14])};
   } break;
 
   case NMEA_MESSAGE_TYPE::GLL: {
-    Result->GLL = new GPGLL{ParseLatitude(&Elements.at(1), &Elements.at(2)),
-                            ParseLongitude(&Elements.at(3), &Elements.at(4)),
-                            ParseTimeStamp(&Elements.at(5)),
-                            ParseStatus(&Elements.at(6)), Elements.at(7).at(0)};
+    Result->GLL = new GPGLL{ParseLatitude(&Elements[1], &Elements[2]),
+                            ParseLongitude(&Elements[3], &Elements[4]),
+                            ParseTimeStamp(&Elements[5]),
+                            ParseStatus(&Elements[6]), Elements[7][0]};
   } break;
 
   case NMEA_MESSAGE_TYPE::VTG: {
     Result->VTG = new GPVTG{
-        ParseCOGT(&Elements.at(1)), 'T', ParseCOGM(&Elements.at(3)),  'M',
-        ParseSOG(&Elements.at(5)),  'N', ParseSpeed(&Elements.at(7)), 'K',
-        Elements.at(9).at(0)};
+        ParseCOGT(&Elements[1]), 'T', ParseCOGM(&Elements[3]),  'M',
+        ParseSOG(&Elements[5]),  'N', ParseSpeed(&Elements[7]), 'K',
+        Elements[9][0]};
   } break;
 
   case NMEA_MESSAGE_TYPE::GSA: {
     Result->GSA =
-        new GPGSA{ParseSmode(&Elements.at(1)),
-                  ParseFixStatus(&Elements.at(2)),
+        new GPGSA{ParseSmode(&Elements[1]),
+                  ParseFixStatus(&Elements[2]),
                   ParseSV(Elements.begin() + 3, Elements.begin() + 14),
-                  ParsePDOP(&Elements.at(15)),
-                  ParseHDOP(&Elements.at(16)),
-                  ParseVDOP(&Elements.at(17))};
+                  ParsePDOP(&Elements[15]),
+                  ParseHDOP(&Elements[16]),
+                  ParseVDOP(&Elements[17])};
   } break;
 
   case NMEA_MESSAGE_TYPE::GSV: {
