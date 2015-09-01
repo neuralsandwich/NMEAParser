@@ -8,4 +8,5 @@ script:
   - mkdir _b
   - cd _b
   - cmake ..
-  - make -j$(nproc) -l$(nproc)	
+  - make -j$(nproc) -l$(nproc)
+  - make test

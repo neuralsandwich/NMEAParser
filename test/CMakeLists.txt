@@ -13,4 +13,5 @@ target_link_libraries(ParseTestDynamic ${GOOGLIBS} NMEAParser)
 add_executable(ParseTestStatic parse_test.cpp)
 target_link_libraries(ParseTestStatic ${GOOGLIBS} NMEAParserStatic)
 
-add_test(NAME ParseTests COMMAND ParseTest)
+add_test(NAME ParseTestsDynamic COMMAND ParseTestDynamic)
+add_test(NAME ParseTestsStatic COMMAND ParseTestStatic)
