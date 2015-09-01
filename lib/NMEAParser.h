@@ -19,6 +19,7 @@ extern "C" {
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <stdexcept>
 #include <ctime>
 
 namespace NMEA {
