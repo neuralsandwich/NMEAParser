@@ -12,6 +12,15 @@ bool NMEAParser::ValidateChecksum(const std::string *Message,
   unsigned int CalculatedChecksum = 0;
   unsigned int Check = 0;
 
+  // Don't check the message length just make sure it is something there
+  if (Message->empty()) {
+    return false;
+  }
+
+  if (Checksum->empty() || Checksum->length() != 2) {
+    return false;
+  }
+
   for (unsigned int i = 1; i < (Message->length() - 3); ++i) {
     CalculatedChecksum ^= Message->at(i);
   }
