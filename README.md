@@ -8,13 +8,10 @@ Library for parsing NMEA data strings
 To build the project run the following
 
 ```
-mkdir _build && cd _build
+mkdir build && cd build
 cmake ..
 make
 ```
-
-The compiled libraries will be stored in libs/.libs/ and the headers are also
-stored in lib/
 
 ## Testing
 
@@ -23,3 +20,14 @@ Test can be compiled and run by
 ```
 make test
 ```
+
+# Testing
+
+All methods of NMEAParser are tested. All parser functions have their
+own test suite. The test suite name is based on the function name and
+parameter signature.
+
+## Implemented Tests
+
+* ParseTimeStamp_String_Test
+* ParseTimeStamp_String_String_Test

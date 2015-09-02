@@ -7,11 +7,11 @@ include_directories("${PROJECT_SOURCE_DIR}/lib")
 
 set(GOOGLIBS ${LIBS} gtest gtest_main)
 
-add_executable(ParseTestDynamic parse_test.cpp)
-target_link_libraries(ParseTestDynamic ${GOOGLIBS} NMEAParser)
+add_executable(ParseTimeStamp_String_Test ParseTimeStamp_String_Test.cpp)
+target_link_libraries(ParseTimeStamp_String_Test ${GOOGLIBS} NMEAParser)
 
-add_executable(ParseTestStatic parse_test.cpp)
-target_link_libraries(ParseTestStatic ${GOOGLIBS} NMEAParserStatic)
+add_executable(ParseTimeStamp_String_String_Test ParseTimeStamp_String_String_Test.cpp)
+target_link_libraries(ParseTimeStamp_String_String_Test ${GOOGLIBS} NMEAParser)
 
-add_test(NAME ParseTestsDynamic COMMAND ParseTestDynamic)
-add_test(NAME ParseTestsStatic COMMAND ParseTestStatic)
+add_test(NAME ParseTimeStamp_String_Test COMMAND ParseTimeStamp_String_Test)
+add_test(NAME ParseTimeStamp_String_String_Test COMMAND ParseTimeStamp_String_String_Test)
