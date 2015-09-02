@@ -83,10 +83,10 @@ private:
   FRIEND_TEST(ValidateChecksum, Invalid_Empty_Message);
   FRIEND_TEST(ValidateChecksum, Invalid_Short_Range_Checksum);
   FRIEND_TEST(ValidateChecksum, Invalid_Long_Range_Checksum);
-  bool ValidateChecksum(const std::string *Message,
-                        const std::string *Checksum) const;
-  enum NMEA_TALKER_ID ParseTalkerID(const std::string *ID) const;
-  enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string *Message) const;
+  bool ValidateChecksum(const std::string &Message,
+                        const std::string &Checksum) const;
+  enum NMEA_TALKER_ID ParseTalkerID(const std::string &ID) const;
+  enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string &Message) const;
   FRIEND_TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Valid_DateStamp);
   FRIEND_TEST(ParseTimeStamp_String_String, Invalid_TimeStamp_Valid_DateStamp);
   FRIEND_TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Invalid_DateStamp);
@@ -105,39 +105,39 @@ private:
   FRIEND_TEST(ParseTimeStamp_String_String,
               Invalid_Long_Range_TimeStamp_Invalid_Long_Range_DateStamp);
   FRIEND_TEST(ParseTimeStamp_String_String, Invalid_Before_Epoch);
-  time_t ParseTimeStamp(const std::string *TimeStamp,
-                        const std::string *DataStamp) const;
+  time_t ParseTimeStamp(const std::string &TimeStamp,
+                        const std::string &DataStamp) const;
   FRIEND_TEST(FieldParseTests, Valid_ParseTimeStamp_String);
   FRIEND_TEST(FieldParseTests, Invalid_ParseTimeStamp_String);
   FRIEND_TEST(FieldParseTests, Invalid_Range_ParseTimeStamp_String);
   FRIEND_TEST(FieldParseTests, Invalid_Empty_String_ParseTimeStamp_String);
-  time_t ParseTimeStamp(const std::string *TimeStamp) const;
-  bool ParseStatus(const std::string *Status) const;
-  float ParseLatitude(const std::string *Latitude,
-                      const std::string *Direction) const;
-  float ParseLongitude(const std::string *Longitude,
-                       const std::string *Direction) const;
-  float ParseSpeed(const std::string *Speed) const;
-  float ParseAngle(const std::string *Angle) const;
+  time_t ParseTimeStamp(const std::string &TimeStamp) const;
+  bool ParseStatus(const std::string &Status) const;
+  float ParseLatitude(const std::string &Latitude,
+                      const std::string &Direction) const;
+  float ParseLongitude(const std::string &Longitude,
+                       const std::string &Direction) const;
+  float ParseSpeed(const std::string &Speed) const;
+  float ParseAngle(const std::string &Angle) const;
   float
-  ParseMagneticVariation(const std::string *MagneticVariation,
-                         const std::string *MagneticVariatioDirection) const;
-  int ParseSatiliteFixes(const std::string *SatiliteFixes) const;
-  float ParseHDOP(const std::string *HDOP) const;
-  float ParseMSL(const std::string *MDL) const;
-  float ParseGeoidSeparation(const std::string *GeoidSeparation) const;
-  float ParseDifferentialCorrectionAge(const std::string *CorrectionAge) const;
-  float ParseDifferentialStationID(const std::string *StationID) const;
-  float ParseCOGT(const std::string *CourseOverGroundTrue) const;
-  float ParseCOGM(const std::string *CourseOverGroundMagnetic) const;
-  float ParseSOG(const std::string *SpeedOverGround) const;
-  char ParseModeIndicator(const std::string *ModeIndicator) const;
-  char ParseSmode(const std::string *String) const;
-  int ParseFixStatus(const std::string *String) const;
+  ParseMagneticVariation(const std::string &MagneticVariation,
+                         const std::string &MagneticVariatioDirection) const;
+  int ParseSatiliteFixes(const std::string &SatiliteFixes) const;
+  float ParseHDOP(const std::string &HDOP) const;
+  float ParseMSL(const std::string &MDL) const;
+  float ParseGeoidSeparation(const std::string &GeoidSeparation) const;
+  float ParseDifferentialCorrectionAge(const std::string &CorrectionAge) const;
+  float ParseDifferentialStationID(const std::string &StationID) const;
+  float ParseCOGT(const std::string &CourseOverGroundTrue) const;
+  float ParseCOGM(const std::string &CourseOverGroundMagnetic) const;
+  float ParseSOG(const std::string &SpeedOverGround) const;
+  char ParseModeIndicator(const std::string &ModeIndicator) const;
+  char ParseSmode(const std::string &String) const;
+  int ParseFixStatus(const std::string &String) const;
   int *ParseSV(std::vector<std::string>::iterator Start,
                std::vector<std::string>::iterator End) const;
-  float ParsePDOP(const std::string *String) const;
-  float ParseVDOP(const std::string *String) const;
+  float ParsePDOP(const std::string &String) const;
+  float ParseVDOP(const std::string &String) const;
 }; // NMEAParser
 } // NMEA
 #endif

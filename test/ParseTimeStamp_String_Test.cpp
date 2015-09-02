@@ -25,7 +25,7 @@ TEST(FieldParseTests, Valid_ParseTimeStamp_String) {
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp));
 }
 
 TEST(FieldParseTests, Invalid_ParseTimeStamp_String) {
@@ -34,7 +34,7 @@ TEST(FieldParseTests, Invalid_ParseTimeStamp_String) {
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp));
 }
 
 TEST(FieldParseTests, Invalid_Range_ParseTimeStamp_String) {
@@ -43,7 +43,7 @@ TEST(FieldParseTests, Invalid_Range_ParseTimeStamp_String) {
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp));
 }
 
 TEST(FieldParseTests, Invalid_Empty_String_ParseTimeStamp_String) {
@@ -52,6 +52,6 @@ TEST(FieldParseTests, Invalid_Empty_String_ParseTimeStamp_String) {
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp));
 }
 }

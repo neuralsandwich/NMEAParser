@@ -19,7 +19,7 @@ TEST(ValidateChecksum, Valid_Checksum) {
 
   auto Parser = NMEA::NMEAParser{};
 
-  EXPECT_EQ(Expected, Parser.ValidateChecksum(&Message, &Checksum));
+  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
 }
 
 TEST(ValidateChecksum, Invalid_Checksum) {
@@ -30,7 +30,7 @@ TEST(ValidateChecksum, Invalid_Checksum) {
 
   auto Parser = NMEA::NMEAParser{};
 
-  EXPECT_EQ(Expected, Parser.ValidateChecksum(&Message, &Checksum));
+  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
 }
 
 TEST(ValidateChecksum, Invalid_Empty_Message) {
@@ -40,7 +40,7 @@ TEST(ValidateChecksum, Invalid_Empty_Message) {
 
   auto Parser = NMEA::NMEAParser{};
 
-  EXPECT_EQ(Expected, Parser.ValidateChecksum(&Message, &Checksum));
+  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
 }
 
 TEST(ValidateChecksum, Invalid_Short_Range_Checksum) {
@@ -51,7 +51,7 @@ TEST(ValidateChecksum, Invalid_Short_Range_Checksum) {
 
   auto Parser = NMEA::NMEAParser{};
 
-  EXPECT_EQ(Expected, Parser.ValidateChecksum(&Message, &Checksum));
+  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
 }
 
 TEST(ValidateChecksum, Invalid_Long_Range_Checksum) {
@@ -62,6 +62,6 @@ TEST(ValidateChecksum, Invalid_Long_Range_Checksum) {
 
   auto Parser = NMEA::NMEAParser{};
 
-  EXPECT_EQ(Expected, Parser.ValidateChecksum(&Message, &Checksum));
+  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
 }
 }

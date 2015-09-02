@@ -30,7 +30,7 @@ TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Valid_DateStamp) {
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp, &DateStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String, Invalid_TimeStamp_Valid_DateStamp) {
@@ -41,7 +41,7 @@ TEST(ParseTimeStamp_String_String, Invalid_TimeStamp_Valid_DateStamp) {
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp, &DateStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Invalid_DateStamp) {
@@ -52,7 +52,7 @@ TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Invalid_DateStamp) {
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp, &DateStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String, Invalid_TimeStamp_Invalid_DateStamp) {
@@ -63,7 +63,7 @@ TEST(ParseTimeStamp_String_String, Invalid_TimeStamp_Invalid_DateStamp) {
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp, &DateStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -75,7 +75,7 @@ TEST(ParseTimeStamp_String_String,
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp, &DateStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -87,7 +87,7 @@ TEST(ParseTimeStamp_String_String,
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp, &DateStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -99,7 +99,7 @@ TEST(ParseTimeStamp_String_String,
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp, &DateStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -111,7 +111,7 @@ TEST(ParseTimeStamp_String_String,
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp, &DateStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -123,7 +123,7 @@ TEST(ParseTimeStamp_String_String,
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp, &DateStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -135,7 +135,7 @@ TEST(ParseTimeStamp_String_String,
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp, &DateStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String, Invalid_Before_Epoch) {
@@ -146,6 +146,6 @@ TEST(ParseTimeStamp_String_String, Invalid_Before_Epoch) {
 
   auto Parser = NMEA::NMEAParser();
 
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(&TimeStamp, &DateStamp));
+  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
 }
 }
