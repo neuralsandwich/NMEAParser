@@ -34,5 +34,6 @@ parameter signature.
 
 ## Implemented Tests
 
-* ParseTimeStamp_String_Test
 * ParseTimeStamp_String_String_Test
+* ParseTimeStamp_String_Test
+* ValidateChecksum_Test
