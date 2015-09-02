@@ -22,10 +22,10 @@ bool NMEAParser::ValidateChecksum(const std::string &Message,
   }
 
   for (unsigned int i = 1; i < (Message.length() - 3); ++i) {
-    CalculatedChecksum ^= Message[i];
+    CalculatedChecksum ^= (unsigned int)Message[i];
   }
 
-  Check = std::stoi(Checksum, nullptr, 16);
+  Check = (unsigned int)std::stoi(Checksum, nullptr, 16);
 
   if (Check == CalculatedChecksum)
     return true;
@@ -62,7 +62,7 @@ NMEAParser::ParseMessageType(const std::string &Message) const {
   return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
 } // ParseMessageType
 
-float ParseFloat(const std::string &String) {
+static float ParseFloat(const std::string &String) {
   float Result = 0;
   try {
     Result = std::stof(String);
@@ -76,8 +76,8 @@ float ParseFloat(const std::string &String) {
   return Result;
 } // ParseFloat
 
-float ParseInteger(const std::string &String) {
-  float Result = 0;
+static int ParseInteger(const std::string &String) {
+  int Result = 0;
   try {
     Result = std::stoi(String);
   } catch (const std::invalid_argument &ia) {
@@ -350,7 +350,7 @@ float NMEAParser::ParsePDOP(const std::string &PDOP) const {
   return Result;
 } // ParsePDOP
 
-GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
+static GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
   GPGSV *Result = new GPGSV{};
 
   Result->NoMSG = ParseInteger(Elements[1]);
@@ -377,7 +377,7 @@ GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
 
   Result->DataFieldsInMessage = Iterations;
 
-  for (int i = 0; i < Iterations; i++) {
+  for (unsigned int i = 0; i < Iterations; i++) {
     SVs->push_back(ParseInteger(Elements[4 + i]));
     Elvs->push_back(ParseInteger(Elements[5 + i]));
     Azs->push_back(ParseInteger(Elements[6 + i]));
