@@ -377,7 +377,7 @@ static GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
 
   Result->DataFieldsInMessage = Iterations;
 
-  for (unsigned int i = 0; i < Iterations; i++) {
+  for (int i = 0; i < Iterations; i++) {
     SVs->push_back(ParseInteger(Elements[4 + i]));
     Elvs->push_back(ParseInteger(Elements[5 + i]));
     Azs->push_back(ParseInteger(Elements[6 + i]));
