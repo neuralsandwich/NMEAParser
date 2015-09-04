@@ -24,6 +24,7 @@ extern "C" {
 #include <algorithm>
 #include <stdexcept>
 #include <ctime>
+#include <cmath>
 
 namespace NMEA {
 // Printable strings for Talker IDs

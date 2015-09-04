@@ -22,8 +22,12 @@ target_link_libraries(ParseTalkerID_Test ${GOOGLIBS} NMEAParser)
 add_executable(ParseMessageType_Test ParseMessageType_Test.cpp)
 target_link_libraries(ParseMessageType_Test ${GOOGLIBS} NMEAParser)
 
+add_executable(ParseFloat_Test ParseFloat_Test.cpp)
+target_link_libraries(ParseFloat_Test ${GOOGLIBS} NMEAParser)
+
 add_test(NAME ParseTimeStamp_String_Test COMMAND ParseTimeStamp_String_Test)
 add_test(NAME ParseTimeStamp_String_String_Test COMMAND ParseTimeStamp_String_String_Test)
 add_test(NAME ValidateChecksum COMMAND ValidateChecksum_Test)
 add_test(NAME ParseTalkerID COMMAND ParseTalkerID_Test)
 add_test(NAME ParseMessageType COMMAND ParseMessageType_Test)
+add_test(NAME ParseFloat COMMAND ParseFloat_Test)

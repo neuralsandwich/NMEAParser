@@ -67,12 +67,12 @@ static float ParseFloat(const std::string &String) {
   try {
     Result = std::stof(String);
   } catch (const std::invalid_argument &ia) {
-    std::cerr << "NMEAParser: ParseFloat: Invalid arugement: " << ia.what()
+    std::cerr << "NMEAParser: ParseFloat: Invalid argument: " << ia.what()
               << "\n";
-    return 0.0f;
+    return NAN;
   } catch (...) {
     std::cerr << "NMEAParser: ParseFloat: Unexpected exception";
-    return 0.0f;
+    return NAN;
   }
 
   return Result;
