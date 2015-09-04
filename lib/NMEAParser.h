@@ -91,6 +91,10 @@ private:
 #endif
   bool ValidateChecksum(const std::string &Message,
                         const std::string &Checksum) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseTalkerID, Valid_GPS_TalkerID);
+#endif
   enum NMEA_TALKER_ID ParseTalkerID(const std::string &ID) const;
   enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string &Message) const;
 #ifndef DEBUG
