@@ -14,6 +14,7 @@ set(TESTS
   ParseTalkerID
   ParseMessageType
   ParseFloat
+  ParseInteger
   )
 
 foreach(Test ${TESTS})
