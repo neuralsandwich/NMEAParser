@@ -49,6 +49,9 @@ enum NMEA_TALKER_ID NMEAParser::ParseTalkerID(const std::string &ID) const {
 
 enum NMEA_MESSAGE_TYPE
 NMEAParser::ParseMessageType(const std::string &Message) const {
+  if (Message.length() < 5) {
+    return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
+  }
 
   for (int i = 0; i < NMEA_GPS_MESSAGE_NUM; ++i) {
     if (Message.substr(2, 3) == NMEAGPSMessageNames[i].String) {

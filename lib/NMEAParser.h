@@ -100,6 +100,12 @@ private:
   FRIEND_TEST(ParseTalkerID, Invalid_Empty_TalkerID);
 #endif
   enum NMEA_TALKER_ID ParseTalkerID(const std::string &ID) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseMessageType, Valid_Message_Type);
+  FRIEND_TEST(ParseMessageType, Invalid_Message_Type);
+  FRIEND_TEST(ParseMessageType, Invalid_Empty_Message_Type);
+#endif
   enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string &Message) const;
 #ifndef DEBUG
 #else
