@@ -28,12 +28,11 @@ extern "C" {
 namespace NMEA {
 // Printable strings for Talker IDs
 const char *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] = {
-  "Unknown", "GPS", "GLONASS"
-}; // NMEATalkerIDName
+    "Unknown", "GPS", "GLONASS"}; // NMEATalkerIDName
 
 typedef struct NMEAMessageTypeString {
   enum NMEA_MESSAGE_TYPE Type;
-  std::string String;
+  const char *String;
 } NMEAGPSMessageName;
 
 // Printable strings for Message types
