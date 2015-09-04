@@ -85,6 +85,7 @@ private:
   FRIEND_TEST(ValidateChecksum, Valid_Checksum);
   FRIEND_TEST(ValidateChecksum, Invalid_Checksum);
   FRIEND_TEST(ValidateChecksum, Invalid_Empty_Message);
+  FRIEND_TEST(ValidateChecksum, Invalid_Empty_Checksum);
   FRIEND_TEST(ValidateChecksum, Invalid_Short_Range_Checksum);
   FRIEND_TEST(ValidateChecksum, Invalid_Long_Range_Checksum);
 #endif

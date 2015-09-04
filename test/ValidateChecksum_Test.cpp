@@ -43,6 +43,17 @@ TEST(ValidateChecksum, Invalid_Empty_Message) {
   EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
 }
 
+TEST(ValidateChecksum, Invalid_Empty_Checksum) {
+  const std::string Message = "$GPGGA,092725.00,4717.11399,N,00833.91590,E,1,8,"
+                              "1.01,499.6,M,48.0,M,,0*5B";
+  const std::string Checksum = "";
+  const bool Expected = false;
+
+  auto Parser = NMEA::NMEAParser{};
+
+  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
+}
+
 TEST(ValidateChecksum, Invalid_Short_Range_Checksum) {
   const std::string Message = "$GPGGA,092725.00,4717.11399,N,00833.91590,E,1,8,"
                               "1.01,499.6,M,48.0,M,,0*5B";
