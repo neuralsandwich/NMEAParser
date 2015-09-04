@@ -1,3 +1,8 @@
+/**
+ * File: ParseFloat_Test.cpp
+ * Description: Unit tests for
+ * Parse(const std::string &String)
+ */
 #include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
