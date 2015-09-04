@@ -6,7 +6,6 @@
 #include "NMEAParser.h"
 #include "gtest/gtest.h"
 
-#include <iostream>
 #include <ctime>
 
 namespace NMEA {
