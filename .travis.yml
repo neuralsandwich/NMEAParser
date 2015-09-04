@@ -10,3 +10,10 @@ script:
   - cmake .. -DBUILD_TESTING=1
   - make -j$(nproc) -l$(nproc)
   - make test
+
+notifications:
+  email:
+    recipients:
+      - neuralsandwich+nmeaparser@gmail.com
+    on_success: change
+    on_failure: always
