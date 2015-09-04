@@ -22,10 +22,10 @@ bool NMEAParser::ValidateChecksum(const std::string &Message,
   }
 
   for (unsigned int i = 1; i < (Message.length() - 3); ++i) {
-    CalculatedChecksum ^= (unsigned int)Message[i];
+    CalculatedChecksum ^= static_cast<unsigned int>(Message[i]);
   }
 
-  Check = (unsigned int)std::stoi(Checksum, nullptr, 16);
+  Check = static_cast<unsigned int>(std::stoi(Checksum, nullptr, 16));
 
   if (Check == CalculatedChecksum)
     return true;
@@ -45,9 +45,6 @@ enum NMEA_TALKER_ID NMEAParser::ParseTalkerID(const std::string &ID) const {
   } else {
     return NMEA_TALKER_ID::UNKNOWN_TALKER_ID;
   }
-
-  // Shouldn't reach here unless something weird happened
-  return NMEA_TALKER_ID::UNKNOWN_TALKER_ID;
 } // ParseTalkerID
 
 enum NMEA_MESSAGE_TYPE
@@ -69,8 +66,10 @@ static float ParseFloat(const std::string &String) {
   } catch (const std::invalid_argument &ia) {
     std::cerr << "NMEAParser: ParseFloat: Invalid arugement: " << ia.what()
               << "\n";
+    return 0.0f;
   } catch (...) {
     std::cerr << "NMEAParser: ParseFloat: Unexpected exception";
+    return 0.0f;
   }
 
   return Result;
@@ -81,6 +80,8 @@ static int ParseInteger(const std::string &String) {
   try {
     Result = std::stoi(String);
   } catch (const std::invalid_argument &ia) {
+    std::cerr << "NMEAParser: ParseInteger: Invalid arugement: " << ia.what()
+              << "\n";
     return 0;
   } catch (...) {
     std::cerr << "NMEAParser: ParseInteger: Unexpected exception";
@@ -368,16 +369,16 @@ static GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
 
   // This took a while to get
   //
-  int Iterations = 0;
+  unsigned int Iterations = 0;
   if (Result->MSGNo <= (Result->NoSV / 4)) {
     Iterations = 4;
   } else {
     Iterations = Result->NoSV % 4;
   }
 
-  Result->DataFieldsInMessage = Iterations;
+  Result->DataFieldsInMessage = static_cast<int>(Iterations);
 
-  for (int i = 0; i < Iterations; i++) {
+  for (unsigned int i = 0; i < Iterations; i++) {
     SVs->push_back(ParseInteger(Elements[4 + i]));
     Elvs->push_back(ParseInteger(Elements[5 + i]));
     Azs->push_back(ParseInteger(Elements[6 + i]));
@@ -393,9 +394,9 @@ static GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
 } // Parse GPGSV
 
 NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
-  NMEAMessage *Result = new NMEAMessage{0};
+  NMEAMessage *Result = new NMEAMessage;
   Result->Header = new NMEAHeader{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
-                                  NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0};
+                                  NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0, 0};
   std::vector<std::string> Elements(1);
 
   if (*(Message.begin()) != '$')
@@ -421,14 +422,13 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   switch (Result->Header->Type) {
 
   case NMEA_MESSAGE_TYPE::RMC: {
-    Result->RMC =
-        new GPRMC{ParseTimeStamp(Elements[1], Elements[9]),
-                  ParseStatus(Elements[2]),
-                  ParseLatitude(Elements[3], Elements[4]),
-                  ParseLongitude(Elements[5], Elements[6]),
-                  ParseSpeed(Elements[7]),
-                  ParseAngle(Elements[8]),
-                  ParseMagneticVariation(Elements[10], Elements[11])};
+    Result->RMC = new GPRMC{ParseTimeStamp(Elements[1], Elements[9]),
+                            ParseStatus(Elements[2]),
+                            ParseLatitude(Elements[3], Elements[4]),
+                            ParseLongitude(Elements[5], Elements[6]),
+                            ParseSpeed(Elements[7]),
+                            ParseAngle(Elements[8]),
+                            ParseMagneticVariation(Elements[10], Elements[11])};
   } break;
 
   case NMEA_MESSAGE_TYPE::GGA: {
@@ -487,7 +487,6 @@ HNMEAParser *HNMEAParser_Create() {
     return reinterpret_cast<HNMEAParser *>(new NMEA::NMEAParser());
   } catch (...) {
     std::abort();
-    return nullptr;
   }
 } // HNMEAParser_Create
 
@@ -507,6 +506,5 @@ NMEAMessage *HNMEAParser_Parse(HNMEAParser *Parser, char *String) {
   } catch (std::exception &e) {
     std::cout << e.what();
     std::abort();
-    return nullptr;
   }
 }

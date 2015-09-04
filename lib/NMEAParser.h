@@ -13,7 +13,10 @@ extern "C" {
 #include "NMEA.h"
 }
 
+#ifndef DEBUG
+#else
 #include "gtest/gtest_prod.h"
+#endif
 
 #include <string>
 #include <vector>
@@ -78,15 +81,20 @@ public:
   NMEAMessage *Parse(const std::string &String) const;
 
 private:
+#ifndef DEBUG
+#else
   FRIEND_TEST(ValidateChecksum, Valid_Checksum);
   FRIEND_TEST(ValidateChecksum, Invalid_Checksum);
   FRIEND_TEST(ValidateChecksum, Invalid_Empty_Message);
   FRIEND_TEST(ValidateChecksum, Invalid_Short_Range_Checksum);
   FRIEND_TEST(ValidateChecksum, Invalid_Long_Range_Checksum);
+#endif
   bool ValidateChecksum(const std::string &Message,
                         const std::string &Checksum) const;
   enum NMEA_TALKER_ID ParseTalkerID(const std::string &ID) const;
   enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string &Message) const;
+#ifndef DEBUG
+#else
   FRIEND_TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Valid_DateStamp);
   FRIEND_TEST(ParseTimeStamp_String_String, Invalid_TimeStamp_Valid_DateStamp);
   FRIEND_TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Invalid_DateStamp);
@@ -105,12 +113,16 @@ private:
   FRIEND_TEST(ParseTimeStamp_String_String,
               Invalid_Long_Range_TimeStamp_Invalid_Long_Range_DateStamp);
   FRIEND_TEST(ParseTimeStamp_String_String, Invalid_Before_Epoch);
+#endif
   time_t ParseTimeStamp(const std::string &TimeStamp,
                         const std::string &DataStamp) const;
+#ifndef DEBUG
+#else
   FRIEND_TEST(FieldParseTests, Valid_ParseTimeStamp_String);
   FRIEND_TEST(FieldParseTests, Invalid_ParseTimeStamp_String);
   FRIEND_TEST(FieldParseTests, Invalid_Range_ParseTimeStamp_String);
   FRIEND_TEST(FieldParseTests, Invalid_Empty_String_ParseTimeStamp_String);
+#endif
   time_t ParseTimeStamp(const std::string &TimeStamp) const;
   bool ParseStatus(const std::string &Status) const;
   float ParseLatitude(const std::string &Latitude,
