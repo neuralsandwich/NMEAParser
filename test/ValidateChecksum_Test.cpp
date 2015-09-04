@@ -1,13 +1,10 @@
 /**
- * File: ParseTimeStamp_String_String_Test.cpp
+ * File: ValidateChecksum_Test.cpp
  * Description: Unit tests for
- * NMEA::NMEAParser::ParseTimeStamp(const std::string *TimeStamp,
- *                                  const std::string *DateStamp)
+ * NMEA::NMEAParser::ValidateChecksum(const std::string &Message) const
  */
 #include "NMEAParser.h"
 #include "gtest/gtest.h"
-
-#include <iostream>
 
 namespace NMEA {
 
