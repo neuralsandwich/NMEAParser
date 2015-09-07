@@ -139,7 +139,19 @@ private:
   FRIEND_TEST(FieldParseTests, Invalid_Empty_String_ParseTimeStamp_String);
 #endif
   time_t ParseTimeStamp(const std::string &TimeStamp) const;
-  bool ParseStatus(const std::string &Status) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseStatus, Valid_Active_RMC_Status);
+  FRIEND_TEST(ParseStatus, Valid_Void_RMC_Status);
+  FRIEND_TEST(ParseStatus, Valid_Active_GLL_Status);
+  FRIEND_TEST(ParseStatus, Valid_Void_GLL_Status);
+  FRIEND_TEST(ParseStatus, Valid_Fix_GGA_Status);
+  FRIEND_TEST(ParseStatus, Valid_No_Fix_GGA_Status);
+  FRIEND_TEST(ParseStatus, Valid_Fix_GSA_Status);
+  FRIEND_TEST(ParseStatus, Valid_No_Fix_GSA_Status);
+#endif
+  bool ParseStatus(const enum NMEA_MESSAGE_TYPE Type,
+                   const std::string &Status) const;
   float ParseLatitude(const std::string &Latitude,
                       const std::string &Direction) const;
   float ParseLongitude(const std::string &Longitude,

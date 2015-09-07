@@ -15,6 +15,7 @@ set(TESTS
   ParseMessageType
   ParseFloat
   ParseInteger
+  ParseStatus
   )
 
 foreach(Test ${TESTS})
