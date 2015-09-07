@@ -174,6 +174,8 @@ bool NMEAParser::ParseStatus(const enum NMEA_MESSAGE_TYPE Type,
   } else {
     return false;
   }
+
+  return false;
 } // ParseStatus
 
 float NMEAParser::ParseLatitude(const std::string &Latitude,
