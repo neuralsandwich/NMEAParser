@@ -151,6 +151,10 @@ time_t NMEAParser::ParseTimeStamp(const std::string &TimeStamp) const {
 
 bool NMEAParser::ParseStatus(const enum NMEA_MESSAGE_TYPE Type,
                              const std::string &Status) const {
+  if (Status.length() < 1) {
+    return false;
+  }
+  
   // TODO: Refactor this solution. I will do for now but a better way would be
   // nice
   // RMC: A = true, V = false

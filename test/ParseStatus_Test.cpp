@@ -77,4 +77,13 @@ TEST(ParseStatus, Valid_No_Fix_GSA_Status) {
 
   EXPECT_EQ(Expected, Parser.ParseStatus(NMEA_MESSAGE_TYPE::GSA, Status));
 }
+
+TEST(ParseStatus, Invalid_Empty_Status) {
+  const std::string Status = "";
+  const bool Expected = false;
+
+  auto Parser = NMEAParser{};
+
+  EXPECT_EQ(Expected, Parser.ParseStatus(NMEA_MESSAGE_TYPE::RMC, Status));
+}
 }

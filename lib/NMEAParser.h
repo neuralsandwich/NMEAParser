@@ -149,6 +149,7 @@ private:
   FRIEND_TEST(ParseStatus, Valid_No_Fix_GGA_Status);
   FRIEND_TEST(ParseStatus, Valid_Fix_GSA_Status);
   FRIEND_TEST(ParseStatus, Valid_No_Fix_GSA_Status);
+  FRIEND_TEST(ParseStatus, Invalid_Empty_Status);
 #endif
   bool ParseStatus(const enum NMEA_MESSAGE_TYPE Type,
                    const std::string &Status) const;
