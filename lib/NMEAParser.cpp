@@ -154,7 +154,7 @@ bool NMEAParser::ParseStatus(const enum NMEA_MESSAGE_TYPE Type,
   if (Status.length() < 1) {
     return false;
   }
-  
+
   // TODO: Refactor this solution. I will do for now but a better way would be
   // nice
   // RMC: A = true, V = false
@@ -186,10 +186,19 @@ float NMEAParser::ParseLatitude(const std::string &Latitude,
                                 const std::string &Direction) const {
   float Result = 0;
 
+  if (Latitude.length() < 1 || Direction.length() < 1) {
+    return NAN;
+  }
+
+  if ("S" != Direction && "N" != Direction) {
+    return NAN;
+  }
+
   Result = NMEA::ParseFloat(Latitude);
 
-  if ("S" == Direction)
+  if ("S" == Direction) {
     Result = 0 - Result;
+  }
 
   return Result;
 } // ParseLatitude

@@ -153,6 +153,17 @@ private:
 #endif
   bool ParseStatus(const enum NMEA_MESSAGE_TYPE Type,
                    const std::string &Status) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseLatitude, Valid_Latitude_Valid_North);
+  FRIEND_TEST(ParseLatitude, Valid_Latitude_Valid_South);
+  FRIEND_TEST(ParseLatitude, Valid_Latitude_Invalid_Direction);
+  FRIEND_TEST(ParseLatitude, Invalid_Latitude_Valid_Direction);
+  FRIEND_TEST(ParseLatitude, Invalid_Latitude_Invalid_Direction);
+  FRIEND_TEST(ParseLatitude, Empty_Latitude_Valid_Direction);
+  FRIEND_TEST(ParseLatitude, Empty_Latitude_Invalid_Direction);
+  FRIEND_TEST(ParseLatitude, Empty_Latitude_Empty_Direction);
+#endif
   float ParseLatitude(const std::string &Latitude,
                       const std::string &Direction) const;
   float ParseLongitude(const std::string &Longitude,
