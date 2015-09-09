@@ -179,6 +179,12 @@ private:
 #endif
   float ParseLongitude(const std::string &Longitude,
                        const std::string &Direction) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseSpeed, Valid_Speed);
+  FRIEND_TEST(ParseSpeed, Invalid_Speed);
+  FRIEND_TEST(ParseSpeed, Empty_Speed);
+#endif
   float ParseSpeed(const std::string &Speed) const;
   float ParseAngle(const std::string &Angle) const;
   float

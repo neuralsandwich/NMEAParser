@@ -18,6 +18,7 @@ set(TESTS
   ParseStatus
   ParseLatitude
   ParseLongitude
+  ParserSpeed
   )
 
 foreach(Test ${TESTS})

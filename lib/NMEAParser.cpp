@@ -226,6 +226,10 @@ float NMEAParser::ParseLongitude(const std::string &Longitude,
 float NMEAParser::ParseSpeed(const std::string &Speed) const {
   float Result = 0;
 
+  if (Speed.length() < 1) {
+    return NAN;
+  }
+  
   Result = NMEA::ParseFloat(Speed);
 
   return Result;
