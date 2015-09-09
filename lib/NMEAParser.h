@@ -186,6 +186,12 @@ private:
   FRIEND_TEST(ParseSpeed, Empty_Speed);
 #endif
   float ParseSpeed(const std::string &Speed) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseAngle, Valid_Angle);
+  FRIEND_TEST(ParseAngle, Invalid_Angle);
+  FRIEND_TEST(ParseAngle, Empty_Angle);
+#endif
   float ParseAngle(const std::string &Angle) const;
   float
   ParseMagneticVariation(const std::string &MagneticVariation,
