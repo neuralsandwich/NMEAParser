@@ -166,6 +166,17 @@ private:
 #endif
   float ParseLatitude(const std::string &Latitude,
                       const std::string &Direction) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseLongitude, Valid_Longitude_Valid_East);
+  FRIEND_TEST(ParseLongitude, Valid_Longitude_Valid_West);
+  FRIEND_TEST(ParseLongitude, Valid_Longitude_Invalid_Direction);
+  FRIEND_TEST(ParseLongitude, Invalid_Longitude_Valid_Direction);
+  FRIEND_TEST(ParseLongitude, Invalid_Longitude_Invalid_Direction);
+  FRIEND_TEST(ParseLongitude, Empty_Longitude_Valid_Direction);
+  FRIEND_TEST(ParseLongitude, Empty_Longitude_Invalid_Direction);
+  FRIEND_TEST(ParseLongitude, Empty_Longitude_Empty_Direction);
+#endif
   float ParseLongitude(const std::string &Longitude,
                        const std::string &Direction) const;
   float ParseSpeed(const std::string &Speed) const;

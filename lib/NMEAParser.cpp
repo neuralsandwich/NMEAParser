@@ -206,6 +206,14 @@ float NMEAParser::ParseLatitude(const std::string &Latitude,
 float NMEAParser::ParseLongitude(const std::string &Longitude,
                                  const std::string &Direction) const {
   float Result = 0;
+  
+  if (Longitude.length() < 1 || Direction.length() < 1) {
+    return NAN;
+  }
+
+  if ("E" != Direction && "W" != Direction) {
+    return NAN;
+  }
 
   Result = NMEA::ParseFloat(Longitude);
 
