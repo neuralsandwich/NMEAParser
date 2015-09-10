@@ -4,6 +4,7 @@
  */
 #include "NMEAParser.h"
 
+#include <algorithm>
 #include <cmath>
 #include <ctime>
 #include <iostream>
