@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <stdexcept>
 
 namespace NMEA {
 
