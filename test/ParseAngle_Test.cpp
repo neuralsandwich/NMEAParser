@@ -5,6 +5,8 @@
 #include "NMEAParser.h"
 #include "gtest/gtest.h"
 
+#include <cmath>
+
 namespace NMEA {
 TEST(ParseAngle, Valid_Angle) {
   const std::string Angle = "77.52";

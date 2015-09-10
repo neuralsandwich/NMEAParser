@@ -2,8 +2,10 @@
  * @file  NMEAParser.cpp
  * @brief Implementation of NMEAParser.h
  */
-
 #include "NMEAParser.h"
+
+#include <iostream>
+#include <cmath>
 
 namespace NMEA {
 

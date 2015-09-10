@@ -5,6 +5,8 @@
 #include "NMEAParser.h"
 #include "gtest/gtest.h"
 
+#include <cmath>
+
 namespace NMEA {
 TEST(ParseSpeed, Valid_Speed) {
   const std::string Speed = "0.004";

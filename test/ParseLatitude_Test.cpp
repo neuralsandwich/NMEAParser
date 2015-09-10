@@ -7,6 +7,8 @@
 #include "NMEAParser.h"
 #include "gtest/gtest.h"
 
+#include <cmath>
+
 namespace NMEA {
 TEST(ParseLatitude, Valid_Latitude_Valid_North) {
   const std::string Latitude = "4717.11437";
