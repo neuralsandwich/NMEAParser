@@ -20,6 +20,7 @@ set(TESTS
   ParseLongitude
   ParseSpeed
   ParseAngle
+  ParseMagneticVariation
   )
 
 foreach(Test ${TESTS})

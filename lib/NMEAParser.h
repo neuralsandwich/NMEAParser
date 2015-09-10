@@ -194,9 +194,18 @@ private:
   FRIEND_TEST(ParseAngle, Empty_Angle);
 #endif
   float ParseAngle(const std::string &Angle) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseMagneticVariation, Valid_Variable_Valid_North_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Valid_Variable_Valid_South_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Invalid_Variable_Valid_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Valid_Variable_Invalid_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Invalid_Variable_Invalid_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Empty_Variable_Valid_Direction);
+#endif
   float
   ParseMagneticVariation(const std::string &MagneticVariation,
-                         const std::string &MagneticVariatioDirection) const;
+                         const std::string &MagneticVariationDirection) const;
   int ParseSatiliteFixes(const std::string &SatiliteFixes) const;
   float ParseHDOP(const std::string &HDOP) const;
   float ParseMSL(const std::string &MDL) const;

@@ -211,7 +211,7 @@ float NMEAParser::ParseLatitude(const std::string &Latitude,
 float NMEAParser::ParseLongitude(const std::string &Longitude,
                                  const std::string &Direction) const {
   float Result = 0;
-  
+
   if (Longitude.length() < 1 || Direction.length() < 1) {
     return NAN;
   }
@@ -234,7 +234,7 @@ float NMEAParser::ParseSpeed(const std::string &Speed) const {
   if (Speed.length() < 1) {
     return NAN;
   }
-  
+
   Result = NMEA::ParseFloat(Speed);
 
   return Result;
@@ -250,12 +250,20 @@ float NMEAParser::ParseAngle(const std::string &Angle) const {
 
 float NMEAParser::ParseMagneticVariation(
     const std::string &MagneticVariation,
-    const std::string &MagneticVariatioDirection) const {
+    const std::string &MagneticVariationDirection) const {
   float Result = 0;
+
+  if (MagneticVariationDirection.length() < 1) {
+    return NAN;
+  }
+
+  if (MagneticVariationDirection != "W" && MagneticVariationDirection != "E") {
+    return NAN;
+  }
 
   Result = NMEA::ParseFloat(MagneticVariation);
 
-  if ("W" == MagneticVariatioDirection)
+  if ("W" == MagneticVariationDirection)
     Result = 0 - Result;
 
   return Result;
