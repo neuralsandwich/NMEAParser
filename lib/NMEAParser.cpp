@@ -4,8 +4,9 @@
  */
 #include "NMEAParser.h"
 
-#include <iostream>
 #include <cmath>
+#include <ctime>
+#include <iostream>
 #include <stdexcept>
 
 namespace NMEA {
