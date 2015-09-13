@@ -22,6 +22,7 @@ set(TESTS
   ParseMSL
   ParseMagneticVariation
   ParseMessageType
+  ParseSOG
   ParseSatiliteFixes
   ParseSpeed
   ParseStatus
