@@ -202,6 +202,8 @@ private:
   FRIEND_TEST(ParseMagneticVariation, Valid_Variable_Invalid_Direction);
   FRIEND_TEST(ParseMagneticVariation, Invalid_Variable_Invalid_Direction);
   FRIEND_TEST(ParseMagneticVariation, Empty_Variable_Valid_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Valid_Variable_Empty_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Empty_Variable_EmptyDirection);
 #endif
   float
   ParseMagneticVariation(const std::string &MagneticVariation,
