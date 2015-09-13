@@ -24,16 +24,14 @@ cmake ..
 make
 #+END_SRC
 
-## Testing
+** Testing
 
-Test can be compiled and run by
+   Test can be compiled and run by
 
 #+BEGIN_SRC sh
 cmake .. -DBUILD_TESTING=1
 make test
 #+END_SRC
-
-** Testing
 
   All methods of NMEAParser are tested. All parser functions have their
   own test suite. The test suite name is based on the function name and
@@ -41,5 +39,5 @@ make test
 
 ** Implemented Tests
 
-*** DONE NMEAParser Functions
-    CLOSED: [2015-09-14 Mon 00:04]
+   - DONE NMEAParser Functions
+     CLOSED: [2015-09-14 Mon 00:04]
