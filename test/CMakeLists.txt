@@ -25,6 +25,7 @@ set(TESTS
   ParseModeIndicator
   ParseSOG
   ParseSatiliteFixes
+  ParseSmode
   ParseSpeed
   ParseStatus
   ParseTalkerID

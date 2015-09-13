@@ -363,7 +363,11 @@ char NMEAParser::ParseModeIndicator(const enum NMEA_MESSAGE_TYPE Type,
 } // ParseModeIndicator
 
 char NMEAParser::ParseSmode(const std::string &String) const {
-  char Result = '1';
+  char Result = 'M';
+
+  if (String.empty()) {
+    return Result;
+  }
 
   if ('M' == String[0] || 'A' == String[0]) {
     Result = String[0];

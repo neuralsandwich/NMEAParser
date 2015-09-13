@@ -288,6 +288,12 @@ private:
 #endif
   char ParseModeIndicator(const enum NMEA_MESSAGE_TYPE Type,
                           const std::string &ModeIndicator) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseSmode, Manual);
+  FRIEND_TEST(ParseSmode, Automatic);
+  FRIEND_TEST(ParseSmode, Empty);
+#endif
   char ParseSmode(const std::string &String) const;
   int ParseFixStatus(const std::string &String) const;
   int *ParseSV(std::vector<std::string>::iterator Start,
