@@ -5,18 +5,16 @@
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// Unit test for ParseSatiliteFixes
+/// Unit tests for ParseSatiliteFixes(std::string Fixes)
 ///
 //===----------------------------------------------------------------------===//
 
 #include "NMEAParser.h"
 #include "gtest/gtest.h"
 
-#include <cmath>
-
 #if 0
 Test cases
-| N | Variation |
+| N | Fixes     |
 |---+-----------|
 | 1 | Valid     |
 | 2 | Invalid   |
