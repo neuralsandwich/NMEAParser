@@ -24,6 +24,7 @@ set(TESTS
   ParseMagneticVariation
   ParseMessageType
   ParseModeIndicator
+  ParsePDOP
   ParseSOG
   ParseSV
   ParseSatiliteFixes

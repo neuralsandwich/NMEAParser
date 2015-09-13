@@ -312,6 +312,12 @@ private:
 #endif
   int *ParseSV(std::vector<std::string>::iterator Start,
                std::vector<std::string>::iterator End) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParsePDOP, Valid_PDOP);
+  FRIEND_TEST(ParsePDOP, Invalid_PDOP);
+  FRIEND_TEST(ParsePDOP, Empty_PDOP);
+#endif
   float ParsePDOP(const std::string &String) const;
   float ParseVDOP(const std::string &String) const;
 }; // NMEAParser
