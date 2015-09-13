@@ -243,7 +243,13 @@ private:
   FRIEND_TEST(ParseDifferentialCorrectionAge, Empty_CorrectionAge);
 #endif
   float ParseDifferentialCorrectionAge(const std::string &CorrectionAge) const;
-  float ParseDifferentialStationID(const std::string &StationID) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseDifferentialStationID, Valid_StationID);
+  FRIEND_TEST(ParseDifferentialStationID, Invalid_StationID);
+  FRIEND_TEST(ParseDifferentialStationID, Empty_StationID);
+#endif
+  int ParseDifferentialStationID(const std::string &StationID) const;
   float ParseCOGT(const std::string &CourseOverGroundTrue) const;
   float ParseCOGM(const std::string &CourseOverGroundMagnetic) const;
   float ParseSOG(const std::string &SpeedOverGround) const;

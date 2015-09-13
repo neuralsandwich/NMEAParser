@@ -201,7 +201,7 @@ typedef struct GPGGA {
   // Age of Differential Corrections
   float DifferentialCorrectionAge;
   // Diff. Reference Station ID
-  float DifferentialStationID;
+  int DifferentialStationID;
 } GPGGA;
 
 /* GPGLL - Latitude and longitude, with time of position fix and status

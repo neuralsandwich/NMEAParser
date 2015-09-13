@@ -311,11 +311,10 @@ float NMEAParser::ParseDifferentialCorrectionAge(
   return Result;
 } // ParseDifferentialCorrectionAge
 
-float NMEAParser::ParseDifferentialStationID(
-    const std::string &StationID) const {
-  float Result = 0;
+int NMEAParser::ParseDifferentialStationID(const std::string &StationID) const {
+  int Result = 0;
 
-  Result = NMEA::ParseFloat(StationID);
+  Result = NMEA::ParseInteger(StationID);
 
   return Result;
 } // ParseDifferentialStationID
