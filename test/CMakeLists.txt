@@ -25,6 +25,7 @@ set(TESTS
   ParseMessageType
   ParseModeIndicator
   ParseSOG
+  ParseSV
   ParseSatiliteFixes
   ParseSmode
   ParseSpeed

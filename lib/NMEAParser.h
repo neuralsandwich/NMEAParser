@@ -303,6 +303,13 @@ private:
   FRIEND_TEST(ParseFixStatus, Empty_Status);
 #endif
   int ParseFixStatus(const std::string &String) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseSV, Valid_Array);
+  FRIEND_TEST(ParseSV, Invalid_Array);
+  FRIEND_TEST(ParseSV, Mixed_Array);
+  FRIEND_TEST(ParseSV, Empty_Array);
+#endif
   int *ParseSV(std::vector<std::string>::iterator Start,
                std::vector<std::string>::iterator End) const;
   float ParsePDOP(const std::string &String) const;
