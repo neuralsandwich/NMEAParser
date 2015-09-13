@@ -215,6 +215,12 @@ private:
   FRIEND_TEST(ParseSatiliteFixes, Empty_Fixes);
 #endif
   int ParseSatiliteFixes(const std::string &SatiliteFixes) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseHDOP, Valid_Fixes);
+  FRIEND_TEST(ParseHDOP, Invalid_Fixes);
+  FRIEND_TEST(ParseHDOP, Empty_Fixes);
+#endif
   float ParseHDOP(const std::string &HDOP) const;
   float ParseMSL(const std::string &MDL) const;
   float ParseGeoidSeparation(const std::string &GeoidSeparation) const;

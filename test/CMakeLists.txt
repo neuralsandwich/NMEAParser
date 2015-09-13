@@ -22,6 +22,7 @@ set(TESTS
   ParseAngle
   ParseMagneticVariation
   ParseSatiliteFixes
+  ParseHDOP
   )
 
 foreach(Test ${TESTS})

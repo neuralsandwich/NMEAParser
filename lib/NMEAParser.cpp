@@ -291,7 +291,7 @@ float NMEAParser::ParseMSL(const std::string &MSL) const {
   Result = NMEA::ParseFloat(MSL);
 
   return Result;
-} // ParseHDOP
+} // ParseMSL
 
 float NMEAParser::ParseGeoidSeparation(
     const std::string &GeoidSeparation) const {
