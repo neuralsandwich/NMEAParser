@@ -250,6 +250,12 @@ private:
   FRIEND_TEST(ParseDifferentialStationID, Empty_StationID);
 #endif
   int ParseDifferentialStationID(const std::string &StationID) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseCOGT, Valid_COGT);
+  FRIEND_TEST(ParseCOGT, Invalid_COGT);
+  FRIEND_TEST(PraseCOGT, Empty_COGT);
+#endif
   float ParseCOGT(const std::string &CourseOverGroundTrue) const;
   float ParseCOGM(const std::string &CourseOverGroundMagnetic) const;
   float ParseSOG(const std::string &SpeedOverGround) const;

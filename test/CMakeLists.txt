@@ -9,6 +9,7 @@ set(GOOGLIBS ${LIBS} gtest gtest_main)
 
 set(TESTS
   ParseAngle
+  ParseCOGT
   ParseDifferentialCorrectionAge
   ParseDifferentialStationID
   ParseFloat
