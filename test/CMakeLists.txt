@@ -34,6 +34,7 @@ set(TESTS
   ParseTalkerID
   ParseTimeStamp_String
   ParseTimeStamp_String_String
+  ParseVDOP
   ValidateChecksum
   )
 

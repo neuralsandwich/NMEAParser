@@ -319,6 +319,12 @@ private:
   FRIEND_TEST(ParsePDOP, Empty_PDOP);
 #endif
   float ParsePDOP(const std::string &String) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseVDOP, Valid_VDOP);
+  FRIEND_TEST(ParseVDOP, Invalid_VDOP);
+  FRIEND_TEST(ParseVDOP, Empty_VDOP);
+#endif
   float ParseVDOP(const std::string &String) const;
 }; // NMEAParser
 } // NMEA
