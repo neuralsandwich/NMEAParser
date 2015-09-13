@@ -271,7 +271,20 @@ private:
   FRIEND_TEST(ParseSOG, Empty_SOG);
 #endif
   float ParseSOG(const std::string &SpeedOverGround) const;
-  char ParseModeIndicator(const std::string &ModeIndicator) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseModeIndicator, Valid_Fix_Mode_RMC);
+  FRIEND_TEST(ParseModeIndicator, Valid_No_Fix_Mode_RMC);
+  FRIEND_TEST(ParseModeIndicator, Invalid_Mode_RMC);
+  FRIEND_TEST(ParseModeIndicator, Valid_Fix_Mode_GLL);
+  FRIEND_TEST(ParseModeIndicator, Valid_No_Fix_Mode_GLL);
+  FRIEND_TEST(ParseModeIndicator, Invalid_Mode_GLL);
+  FRIEND_TEST(ParseModeIndicator, Valid_Fix_Mode_VTG);
+  FRIEND_TEST(ParseModeIndicator, Valid_No_Fix_Mode_VTG);
+  FRIEND_TEST(ParseModeIndicator, Invalid_Mode_VTG);
+#endif
+  char ParseModeIndicator(const enum NMEA_MESSAGE_TYPE Type,
+                          const std::string &ModeIndicator) const;
   char ParseSmode(const std::string &String) const;
   int ParseFixStatus(const std::string &String) const;
   int *ParseSV(std::vector<std::string>::iterator Start,

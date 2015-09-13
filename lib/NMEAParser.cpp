@@ -343,12 +343,16 @@ float NMEAParser::ParseSOG(const std::string &SpeedOverGround) const {
   return Result;
 } // ParseSOG
 
-char NMEAParser::ParseModeIndicator(const std::string &ModeIndicator) const {
+char NMEAParser::ParseModeIndicator(const enum NMEA_MESSAGE_TYPE Type,
+                                    const std::string &ModeIndicator) const {
   char Result = 'N';
 
-  if ((ModeIndicator[0] == 'N') || (ModeIndicator[0] == 'E') ||
-      (ModeIndicator[0] == 'D') || (ModeIndicator[0] == 'A')) {
-    Result = ModeIndicator[0];
+  if ((Type == NMEA_MESSAGE_TYPE::RMC) || (Type == NMEA_MESSAGE_TYPE::GLL) ||
+      (Type == NMEA_MESSAGE_TYPE::VTG)) {
+    if ((ModeIndicator[0] == 'N') || (ModeIndicator[0] == 'E') ||
+        (ModeIndicator[0] == 'A') || (ModeIndicator[0] == 'D')) {
+      return ModeIndicator[0];
+    }
   }
 
   return Result;
