@@ -222,6 +222,12 @@ private:
   FRIEND_TEST(ParseHDOP, Empty_Fixes);
 #endif
   float ParseHDOP(const std::string &HDOP) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseMSL, Valid_MSL);
+  FRIEND_TEST(ParseMSL, Invalid_MSL);
+  FRIEND_TEST(ParseMSL, Empty_MSL);
+#endif
   float ParseMSL(const std::string &MDL) const;
   float ParseGeoidSeparation(const std::string &GeoidSeparation) const;
   float ParseDifferentialCorrectionAge(const std::string &CorrectionAge) const;
