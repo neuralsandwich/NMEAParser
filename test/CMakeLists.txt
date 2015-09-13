@@ -8,22 +8,23 @@ include_directories("${PROJECT_SOURCE_DIR}/lib")
 set(GOOGLIBS ${LIBS} gtest gtest_main)
 
 set(TESTS
+  ParseAngle
+  ParseFloat
+  ParseGeoidSeparation
+  ParseHDOP
+  ParseInteger
+  ParseLatitude
+  ParseLongitude
+  ParseMSL
+  ParseMagneticVariation
+  ParseMessageType
+  ParseSatiliteFixes
+  ParseSpeed
+  ParseStatus
+  ParseTalkerID
   ParseTimeStamp_String
   ParseTimeStamp_String_String
   ValidateChecksum
-  ParseTalkerID
-  ParseMessageType
-  ParseFloat
-  ParseInteger
-  ParseStatus
-  ParseLatitude
-  ParseLongitude
-  ParseSpeed
-  ParseAngle
-  ParseMagneticVariation
-  ParseSatiliteFixes
-  ParseHDOP
-  ParseMSL
   )
 
 foreach(Test ${TESTS})

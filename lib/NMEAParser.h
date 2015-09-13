@@ -229,6 +229,12 @@ private:
   FRIEND_TEST(ParseMSL, Empty_MSL);
 #endif
   float ParseMSL(const std::string &MDL) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseGeoidSeparation, Valid_GeoidSeparation);
+  FRIEND_TEST(ParseGeoidSeparation, Invalid_GeoidSeparation);
+  FRIEND_TEST(ParseGeoidSeparation, Empty_GeoidSeparation);
+#endif
   float ParseGeoidSeparation(const std::string &GeoidSeparation) const;
   float ParseDifferentialCorrectionAge(const std::string &CorrectionAge) const;
   float ParseDifferentialStationID(const std::string &StationID) const;
