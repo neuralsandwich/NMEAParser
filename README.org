@@ -1,0 +1,45 @@
+#+TITLE: NMEAParser README
+#+AUTHOR: Sean Jones
+#+EMAIL: neuralsandwich@gmail.com
+#+DATE: 2015-09-13
+
+* NMEAParser
+
+** Build Status
+
+| Branch  |
+|---------|
+| [[https://travis-ci.org/NeuralSandwich/NMEAParser.svg?branch=master][master]]  |
+| [[https://travis-ci.org/NeuralSandwich/NMEAParser.svg?branch=develop][develop]] |
+
+Library for parsing NMEA data strings
+
+** Building
+
+   To build the project run the following
+
+#+BEGIN_SRC sh
+mkdir build && cd build
+cmake ..
+make
+#+END_SRC
+
+## Testing
+
+Test can be compiled and run by
+
+#+BEGIN_SRC sh
+cmake .. -DBUILD_TESTING=1
+make test
+#+END_SRC
+
+** Testing
+
+  All methods of NMEAParser are tested. All parser functions have their
+  own test suite. The test suite name is based on the function name and
+  parameter signature.
+
+** Implemented Tests
+
+*** DONE NMEAParser Functions
+    CLOSED: [2015-09-14 Mon 00:04]

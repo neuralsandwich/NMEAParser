@@ -1,11 +1,17 @@
-/* NMEAParser
- *
- * This library is based on information from different sources on the internet.
- *
- * In theory is should be able to parse NMEA 0183 Version 2.3, so it is out of
- * date.
- *
- */
+//===-- NMEAParser.h - NMEA Message definitions -----------------*- C++ -*-===//
+//
+//                                NMEAParser
+//
+// This file is distributed under the MIT license. See LICENSE.TXT for details.
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// This file contains the declaration of the NMEAParser. The parser is based
+/// on different internet sources. In theory it should be able to parse NMEA
+//  0183 Version 2.3.
+///
+//===----------------------------------------------------------------------===//
 #ifndef NMEA_PARSER_HPP
 #define NMEA_PARSER_HPP
 
@@ -13,14 +19,13 @@ extern "C" {
 #include "NMEA.h"
 }
 
+#ifndef DEBUG
+#else
 #include "gtest/gtest_prod.h"
+#endif
 
 #include <string>
 #include <vector>
-#include <iostream>
-#include <algorithm>
-#include <stdexcept>
-#include <ctime>
 
 namespace NMEA {
 // Printable strings for Talker IDs
@@ -29,7 +34,7 @@ const char *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] = {
 
 typedef struct NMEAMessageTypeString {
   enum NMEA_MESSAGE_TYPE Type;
-  std::string String;
+  const char *String;
 } NMEAGPSMessageName;
 
 // Printable strings for Message types
@@ -77,41 +82,250 @@ public:
   NMEAMessage *Parse(const std::string &String) const;
 
 private:
-  bool ValidateChecksum(const std::string *Message,
-                        const std::string *Checksum) const;
-  enum NMEA_TALKER_ID ParseTalkerID(const std::string *ID) const;
-  enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string *Message) const;
-  time_t ParseTimeStamp(const std::string *TimeStamp,
-                        const std::string *DataStamp) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ValidateChecksum, Valid_Checksum);
+  FRIEND_TEST(ValidateChecksum, Invalid_Checksum);
+  FRIEND_TEST(ValidateChecksum, Invalid_Empty_Message);
+  FRIEND_TEST(ValidateChecksum, Invalid_Empty_Checksum);
+  FRIEND_TEST(ValidateChecksum, Invalid_Short_Range_Checksum);
+  FRIEND_TEST(ValidateChecksum, Invalid_Long_Range_Checksum);
+#endif
+  bool ValidateChecksum(const std::string &Message,
+                        const std::string &Checksum) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseTalkerID, Valid_GPS_TalkerID);
+  FRIEND_TEST(ParseTalkerID, Valid_GLONASS_TalkerID);
+  FRIEND_TEST(ParseTalkerID, Invalid_First_Check_TalkerID);
+  FRIEND_TEST(ParseTalkerID, Invalid_Second_Check_TalkerID);
+  FRIEND_TEST(ParseTalkerID, Invalid_Empty_TalkerID);
+#endif
+  enum NMEA_TALKER_ID ParseTalkerID(const std::string &ID) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseMessageType, Valid_Message_Type);
+  FRIEND_TEST(ParseMessageType, Invalid_Message_Type);
+  FRIEND_TEST(ParseMessageType, Invalid_Empty_Message_Type);
+#endif
+  enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string &Message) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Valid_DateStamp);
+  FRIEND_TEST(ParseTimeStamp_String_String, Invalid_TimeStamp_Valid_DateStamp);
+  FRIEND_TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Invalid_DateStamp);
+  FRIEND_TEST(ParseTimeStamp_String_String,
+              Invalid_TimeStamp_Invalid_DateStamp);
+  FRIEND_TEST(ParseTimeStamp_String_String,
+              Invalid_Long_Range_TimeStamp_Valid_DateStamp);
+  FRIEND_TEST(ParseTimeStamp_String_String,
+              Invalid_Short_Range_TimeStamp_Valid_DateStamp);
+  FRIEND_TEST(ParseTimeStamp_String_String,
+              Valid_TimeStamp_Invalid_Long_Range_DateStamp);
+  FRIEND_TEST(ParseTimeStamp_String_String,
+              Valid_TimeStamp_Invalid_Short_Range_DateStamp);
+  FRIEND_TEST(ParseTimeStamp_String_String,
+              Invalid_Short_Range_TimeStamp_Invalid_Short_Range_DateStamp);
+  FRIEND_TEST(ParseTimeStamp_String_String,
+              Invalid_Long_Range_TimeStamp_Invalid_Long_Range_DateStamp);
+  FRIEND_TEST(ParseTimeStamp_String_String, Invalid_Before_Epoch);
+#endif
+  time_t ParseTimeStamp(const std::string &TimeStamp,
+                        const std::string &DataStamp) const;
+#ifndef DEBUG
+#else
   FRIEND_TEST(FieldParseTests, Valid_ParseTimeStamp_String);
   FRIEND_TEST(FieldParseTests, Invalid_ParseTimeStamp_String);
   FRIEND_TEST(FieldParseTests, Invalid_Range_ParseTimeStamp_String);
-  time_t ParseTimeStamp(const std::string *TimeStamp) const;
-  bool ParseStatus(const std::string *Status) const;
-  float ParseLatitude(const std::string *Latitude,
-                      const std::string *Direction) const;
-  float ParseLongitude(const std::string *Longitude,
-                       const std::string *Direction) const;
-  float ParseSpeed(const std::string *Speed) const;
-  float ParseAngle(const std::string *Angle) const;
-  float ParseMagneticVariation(const std::string *MagneticVariation,
-                               const std::string *MagneticVariatioDirection) const;
-  int ParseSatiliteFixes(const std::string *SatiliteFixes) const;
-  float ParseHDOP(const std::string *HDOP) const;
-  float ParseMSL(const std::string *MDL) const;
-  float ParseGeoidSeparation(const std::string *GeoidSeparation) const;
-  float ParseDifferentialCorrectionAge(const std::string *CorrectionAge) const;
-  float ParseDifferentialStationID(const std::string *StationID) const;
-  float ParseCOGT(const std::string *CourseOverGroundTrue) const;
-  float ParseCOGM(const std::string *CourseOverGroundMagnetic) const;
-  float ParseSOG(const std::string *SpeedOverGround) const;
-  char ParseModeIndicator(const std::string *ModeIndicator) const;
-  char ParseSmode(const std::string *String) const;
-  int ParseFixStatus(const std::string *String) const;
+  FRIEND_TEST(FieldParseTests, Invalid_Empty_String_ParseTimeStamp_String);
+#endif
+  time_t ParseTimeStamp(const std::string &TimeStamp) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseStatus, Valid_Active_RMC_Status);
+  FRIEND_TEST(ParseStatus, Valid_Void_RMC_Status);
+  FRIEND_TEST(ParseStatus, Valid_Active_GLL_Status);
+  FRIEND_TEST(ParseStatus, Valid_Void_GLL_Status);
+  FRIEND_TEST(ParseStatus, Valid_Fix_GGA_Status);
+  FRIEND_TEST(ParseStatus, Valid_No_Fix_GGA_Status);
+  FRIEND_TEST(ParseStatus, Valid_Fix_GSA_Status);
+  FRIEND_TEST(ParseStatus, Valid_No_Fix_GSA_Status);
+  FRIEND_TEST(ParseStatus, Invalid_Empty_Status);
+#endif
+  bool ParseStatus(const enum NMEA_MESSAGE_TYPE Type,
+                   const std::string &Status) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseLatitude, Valid_Latitude_Valid_North);
+  FRIEND_TEST(ParseLatitude, Valid_Latitude_Valid_South);
+  FRIEND_TEST(ParseLatitude, Valid_Latitude_Invalid_Direction);
+  FRIEND_TEST(ParseLatitude, Invalid_Latitude_Valid_Direction);
+  FRIEND_TEST(ParseLatitude, Invalid_Latitude_Invalid_Direction);
+  FRIEND_TEST(ParseLatitude, Empty_Latitude_Valid_Direction);
+  FRIEND_TEST(ParseLatitude, Empty_Latitude_Invalid_Direction);
+  FRIEND_TEST(ParseLatitude, Empty_Latitude_Empty_Direction);
+#endif
+  float ParseLatitude(const std::string &Latitude,
+                      const std::string &Direction) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseLongitude, Valid_Longitude_Valid_East);
+  FRIEND_TEST(ParseLongitude, Valid_Longitude_Valid_West);
+  FRIEND_TEST(ParseLongitude, Valid_Longitude_Invalid_Direction);
+  FRIEND_TEST(ParseLongitude, Invalid_Longitude_Valid_Direction);
+  FRIEND_TEST(ParseLongitude, Invalid_Longitude_Invalid_Direction);
+  FRIEND_TEST(ParseLongitude, Empty_Longitude_Valid_Direction);
+  FRIEND_TEST(ParseLongitude, Empty_Longitude_Invalid_Direction);
+  FRIEND_TEST(ParseLongitude, Empty_Longitude_Empty_Direction);
+#endif
+  float ParseLongitude(const std::string &Longitude,
+                       const std::string &Direction) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseSpeed, Valid_Speed);
+  FRIEND_TEST(ParseSpeed, Invalid_Speed);
+  FRIEND_TEST(ParseSpeed, Empty_Speed);
+#endif
+  float ParseSpeed(const std::string &Speed) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseAngle, Valid_Angle);
+  FRIEND_TEST(ParseAngle, Invalid_Angle);
+  FRIEND_TEST(ParseAngle, Empty_Angle);
+#endif
+  float ParseAngle(const std::string &Angle) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseMagneticVariation, Valid_Variable_Valid_North_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Valid_Variable_Valid_South_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Invalid_Variable_Valid_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Valid_Variable_Invalid_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Invalid_Variable_Invalid_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Empty_Variable_Valid_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Valid_Variable_Empty_Direction);
+  FRIEND_TEST(ParseMagneticVariation, Empty_Variable_EmptyDirection);
+#endif
+  float
+  ParseMagneticVariation(const std::string &MagneticVariation,
+                         const std::string &MagneticVariationDirection) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseSatiliteFixes, Valid_Fixes);
+  FRIEND_TEST(ParseSatiliteFixes, Invalid_Fixes);
+  FRIEND_TEST(ParseSatiliteFixes, Empty_Fixes);
+#endif
+  int ParseSatiliteFixes(const std::string &SatiliteFixes) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseHDOP, Valid_Fixes);
+  FRIEND_TEST(ParseHDOP, Invalid_Fixes);
+  FRIEND_TEST(ParseHDOP, Empty_Fixes);
+#endif
+  float ParseHDOP(const std::string &HDOP) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseMSL, Valid_MSL);
+  FRIEND_TEST(ParseMSL, Invalid_MSL);
+  FRIEND_TEST(ParseMSL, Empty_MSL);
+#endif
+  float ParseMSL(const std::string &MDL) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseGeoidSeparation, Valid_GeoidSeparation);
+  FRIEND_TEST(ParseGeoidSeparation, Invalid_GeoidSeparation);
+  FRIEND_TEST(ParseGeoidSeparation, Empty_GeoidSeparation);
+#endif
+  float ParseGeoidSeparation(const std::string &GeoidSeparation) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseDifferentialCorrectionAge, Valid_CorrectionAge);
+  FRIEND_TEST(ParseDifferentialCorrectionAge, Invalid_CorrectionAge);
+  FRIEND_TEST(ParseDifferentialCorrectionAge, Empty_CorrectionAge);
+#endif
+  float ParseDifferentialCorrectionAge(const std::string &CorrectionAge) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseDifferentialStationID, Valid_StationID);
+  FRIEND_TEST(ParseDifferentialStationID, Invalid_StationID);
+  FRIEND_TEST(ParseDifferentialStationID, Empty_StationID);
+#endif
+  int ParseDifferentialStationID(const std::string &StationID) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseCOGT, Valid_COGT);
+  FRIEND_TEST(ParseCOGT, Invalid_COGT);
+  FRIEND_TEST(ParseCOGT, Empty_COGT);
+#endif
+  float ParseCOGT(const std::string &CourseOverGroundTrue) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseCOGM, Valid_COGM);
+  FRIEND_TEST(ParseCOGM, Invalid_COGM);
+  FRIEND_TEST(ParseCOGM, Empty_COGM);
+#endif
+  float ParseCOGM(const std::string &CourseOverGroundMagnetic) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseSOG, Valid_SOG);
+  FRIEND_TEST(ParseSOG, Invalid_SOG);
+  FRIEND_TEST(ParseSOG, Empty_SOG);
+#endif
+  float ParseSOG(const std::string &SpeedOverGround) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseModeIndicator, Valid_Fix_Mode_RMC);
+  FRIEND_TEST(ParseModeIndicator, Valid_No_Fix_Mode_RMC);
+  FRIEND_TEST(ParseModeIndicator, Invalid_Mode_RMC);
+  FRIEND_TEST(ParseModeIndicator, Empty_Mode_RMC);
+  FRIEND_TEST(ParseModeIndicator, Valid_Fix_Mode_GLL);
+  FRIEND_TEST(ParseModeIndicator, Valid_No_Fix_Mode_GLL);
+  FRIEND_TEST(ParseModeIndicator, Invalid_Mode_GLL);
+  FRIEND_TEST(ParseModeIndicator, Empty_Mode_GLL);
+  FRIEND_TEST(ParseModeIndicator, Valid_Fix_Mode_VTG);
+  FRIEND_TEST(ParseModeIndicator, Valid_No_Fix_Mode_VTG);
+  FRIEND_TEST(ParseModeIndicator, Invalid_Mode_VTG);
+  FRIEND_TEST(ParseModeIndicator, Empty_Mode_VTG);
+#endif
+  char ParseModeIndicator(const enum NMEA_MESSAGE_TYPE Type,
+                          const std::string &ModeIndicator) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseSmode, Manual);
+  FRIEND_TEST(ParseSmode, Automatic);
+  FRIEND_TEST(ParseSmode, Empty);
+#endif
+  char ParseSmode(const std::string &String) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseFixStatus, Valid_Status);
+  FRIEND_TEST(ParseFixStatus, Under_Status);
+  FRIEND_TEST(ParseFixStatus, Over_Status);
+  FRIEND_TEST(ParseFixStatus, Empty_Status);
+#endif
+  int ParseFixStatus(const std::string &String) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseSV, Valid_Array);
+  FRIEND_TEST(ParseSV, Invalid_Array);
+  FRIEND_TEST(ParseSV, Mixed_Array);
+  FRIEND_TEST(ParseSV, Empty_Array);
+#endif
   int *ParseSV(std::vector<std::string>::iterator Start,
                std::vector<std::string>::iterator End) const;
-  float ParsePDOP(const std::string *String) const;
-  float ParseVDOP(const std::string *String) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParsePDOP, Valid_PDOP);
+  FRIEND_TEST(ParsePDOP, Invalid_PDOP);
+  FRIEND_TEST(ParsePDOP, Empty_PDOP);
+#endif
+  float ParsePDOP(const std::string &String) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseVDOP, Valid_VDOP);
+  FRIEND_TEST(ParseVDOP, Invalid_VDOP);
+  FRIEND_TEST(ParseVDOP, Empty_VDOP);
+#endif
+  float ParseVDOP(const std::string &String) const;
 }; // NMEAParser
 } // NMEA
 #endif

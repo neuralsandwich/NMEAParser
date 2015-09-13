@@ -1,3 +1,15 @@
+//===-- NMEA.h - NMEA Message definitions -----------------------*- C -*---===//
+//
+//                                NMEAParser
+//
+// This file is distributed under the MIT license. See LICENSE.TXT for details.
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// This file contains the declaration of the NMEA Message structures.
+///
+//===----------------------------------------------------------------------===//
 #ifndef NMEA_H
 #define NMEA_H
 
@@ -189,7 +201,7 @@ typedef struct GPGGA {
   // Age of Differential Corrections
   float DifferentialCorrectionAge;
   // Diff. Reference Station ID
-  float DifferentialStationID;
+  int DifferentialStationID;
 } GPGGA;
 
 /* GPGLL - Latitude and longitude, with time of position fix and status
