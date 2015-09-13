@@ -7,10 +7,10 @@
 
 ** Build Status
 
-| Branch  |
-|---------|
-| [[https://travis-ci.org/NeuralSandwich/NMEAParser.svg?branch=master][master]]  |
-| [[https://travis-ci.org/NeuralSandwich/NMEAParser.svg?branch=develop][develop]] |
+| Branch                                                                  |
+|-------------------------------------------------------------------------|
+| [[https://travis-ci.org/NeuralSandwich/NMEAParser][file:https://travis-ci.org/NeuralSandwich/NMEAParser.svg?branch=master]]  |
+| [[https://travis-ci.org/NeuralSandwich/NMEAParser][file:https://travis-ci.org/NeuralSandwich/NMEAParser.svg?branch=develop]] |
 
 Library for parsing NMEA data strings
 
