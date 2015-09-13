@@ -236,6 +236,12 @@ private:
   FRIEND_TEST(ParseGeoidSeparation, Empty_GeoidSeparation);
 #endif
   float ParseGeoidSeparation(const std::string &GeoidSeparation) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseDifferentialCorrectionAge, Valid_CorrectionAge);
+  FRIEND_TEST(ParseDifferentialCorrectionAge, Invalid_CorrectionAge);
+  FRIEND_TEST(ParseDifferentialCorrectionAge, Empty_CorrectionAge);
+#endif
   float ParseDifferentialCorrectionAge(const std::string &CorrectionAge) const;
   float ParseDifferentialStationID(const std::string &StationID) const;
   float ParseCOGT(const std::string &CourseOverGroundTrue) const;

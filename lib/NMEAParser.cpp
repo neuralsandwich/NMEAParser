@@ -306,9 +306,6 @@ float NMEAParser::ParseDifferentialCorrectionAge(
     const std::string &CorrectionAge) const {
   float Result = 0;
 
-  if (CorrectionAge.empty())
-    return Result;
-
   Result = NMEA::ParseFloat(CorrectionAge);
 
   return Result;
