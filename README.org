@@ -3,9 +3,7 @@
 #+EMAIL: neuralsandwich@gmail.com
 #+DATE: 2015-09-13
 
-* NMEAParser
-
-** Build Status
+* Build Status
 
 | Master                                                                 | Develop                                                                 |
 |------------------------------------------------------------------------+-------------------------------------------------------------------------|
@@ -13,7 +11,7 @@
 
 Library for parsing NMEA data strings
 
-** Building
+* Building
 
    To build the project run the following
 
@@ -23,7 +21,7 @@ cmake ..
 make
 #+END_SRC
 
-** Testing
+* Testing
 
    Test can be compiled and run by
 
@@ -36,7 +34,7 @@ make test
   own test suite. The test suite name is based on the function name and
   parameter signature.
 
-** Implemented Tests
+* Implemented Tests
 
    - DONE NMEAParser Functions
      CLOSED: [2015-09-14 Mon 00:04]
