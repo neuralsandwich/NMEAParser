@@ -276,12 +276,15 @@ private:
   FRIEND_TEST(ParseModeIndicator, Valid_Fix_Mode_RMC);
   FRIEND_TEST(ParseModeIndicator, Valid_No_Fix_Mode_RMC);
   FRIEND_TEST(ParseModeIndicator, Invalid_Mode_RMC);
+  FRIEND_TEST(ParseModeIndicator, Empty_Mode_RMC);
   FRIEND_TEST(ParseModeIndicator, Valid_Fix_Mode_GLL);
   FRIEND_TEST(ParseModeIndicator, Valid_No_Fix_Mode_GLL);
   FRIEND_TEST(ParseModeIndicator, Invalid_Mode_GLL);
+  FRIEND_TEST(ParseModeIndicator, Empty_Mode_GLL);
   FRIEND_TEST(ParseModeIndicator, Valid_Fix_Mode_VTG);
   FRIEND_TEST(ParseModeIndicator, Valid_No_Fix_Mode_VTG);
   FRIEND_TEST(ParseModeIndicator, Invalid_Mode_VTG);
+  FRIEND_TEST(ParseModeIndicator, Empty_Mode_VTG);
 #endif
   char ParseModeIndicator(const enum NMEA_MESSAGE_TYPE Type,
                           const std::string &ModeIndicator) const;
