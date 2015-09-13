@@ -330,10 +330,6 @@ float NMEAParser::ParseCOGT(const std::string &CourseOverGroundTrue) const {
 float NMEAParser::ParseCOGM(const std::string &CourseOverGroundMagnetic) const {
   float Result = 0;
 
-  if (CourseOverGroundMagnetic.empty()) {
-    return Result;
-  }
-
   Result = NMEA::ParseFloat(CourseOverGroundMagnetic);
 
   return Result;

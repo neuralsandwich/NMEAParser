@@ -254,9 +254,15 @@ private:
 #else
   FRIEND_TEST(ParseCOGT, Valid_COGT);
   FRIEND_TEST(ParseCOGT, Invalid_COGT);
-  FRIEND_TEST(PraseCOGT, Empty_COGT);
+  FRIEND_TEST(ParseCOGT, Empty_COGT);
 #endif
   float ParseCOGT(const std::string &CourseOverGroundTrue) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseCOGM, Valid_COGM);
+  FRIEND_TEST(ParseCOGM, Invalid_COGM);
+  FRIEND_TEST(ParseCOGM, Empty_COGM);
+#endif
   float ParseCOGM(const std::string &CourseOverGroundMagnetic) const;
   float ParseSOG(const std::string &SpeedOverGround) const;
   char ParseModeIndicator(const std::string &ModeIndicator) const;
