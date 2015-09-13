@@ -295,6 +295,13 @@ private:
   FRIEND_TEST(ParseSmode, Empty);
 #endif
   char ParseSmode(const std::string &String) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseFixStatus, Valid_Status);
+  FRIEND_TEST(ParseFixStatus, Under_Status);
+  FRIEND_TEST(ParseFixStatus, Over_Status);
+  FRIEND_TEST(ParseFixStatus, Empty_Status);
+#endif
   int ParseFixStatus(const std::string &String) const;
   int *ParseSV(std::vector<std::string>::iterator Start,
                std::vector<std::string>::iterator End) const;

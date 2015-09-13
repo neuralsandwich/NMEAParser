@@ -13,6 +13,7 @@ set(TESTS
   ParseCOGT
   ParseDifferentialCorrectionAge
   ParseDifferentialStationID
+  ParseFixStatus
   ParseFloat
   ParseGeoidSeparation
   ParseHDOP
