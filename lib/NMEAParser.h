@@ -208,6 +208,12 @@ private:
   float
   ParseMagneticVariation(const std::string &MagneticVariation,
                          const std::string &MagneticVariationDirection) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseSatiliteFixes, Valid_Fixes);
+  FRIEND_TEST(ParseSatiliteFixes, Invalid_Fixes);
+  FRIEND_TEST(ParseSatiliteFixes, Empty_Fixes);
+#endif
   int ParseSatiliteFixes(const std::string &SatiliteFixes) const;
   float ParseHDOP(const std::string &HDOP) const;
   float ParseMSL(const std::string &MDL) const;

@@ -21,6 +21,7 @@ set(TESTS
   ParseSpeed
   ParseAngle
   ParseMagneticVariation
+  ParseSatiliteFixes
   )
 
 foreach(Test ${TESTS})

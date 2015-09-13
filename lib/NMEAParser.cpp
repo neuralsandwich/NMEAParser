@@ -272,7 +272,7 @@ float NMEAParser::ParseMagneticVariation(
 int NMEAParser::ParseSatiliteFixes(const std::string &Fixes) const {
   int Result = 0;
 
-  Result = std::stoi(Fixes);
+  Result = ParseInteger(Fixes);
 
   return Result;
 } // ParseSatiltieFixes
