@@ -37,14 +37,14 @@ make test
 * Features and Testing status
 ** DONE NMEAParser Functions
    CLOSED: [2015-09-14 Mon 00:04]
-** TODO Message Parse Tesst
-   - [ ] GGA - Fix information
+** TODO Message Parse Tesst [1/6]
+   - [X] GGA - Fix information
    - [ ] GLL - Lat/Lon data
    - [ ] GSA - Overall Satellite data
    - [ ] GSV - Detailed Satellite data
    - [ ] RMC - recommended minimum data for gps
    - [ ] VTG - Vector track an Speed over the Ground
-** TODO Messages To Implement
+** TODO Messages To Implement [0/23]
    - [ ] AAM - Waypoint Arrival Alarm
    - [ ] ALM - Almanac data
    - [ ] APA - Auto Pilot A sentence

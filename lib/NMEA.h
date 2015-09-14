@@ -93,7 +93,6 @@ typedef enum NMEA_MESSAGE_TYPE NMEA_MESSAGE_TYPE;
 typedef struct NMEAHeader {
   enum NMEA_TALKER_ID ID;
   enum NMEA_MESSAGE_TYPE Type;
-  char *Data;
   int Valid;
 } NMEAHeader;
 

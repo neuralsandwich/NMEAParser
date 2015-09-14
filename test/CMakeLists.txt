@@ -8,6 +8,7 @@ include_directories("${PROJECT_SOURCE_DIR}/lib")
 set(GOOGLIBS ${LIBS} gtest gtest_main)
 
 set(TESTS
+  GGAMessageParse
   ParseAngle
   ParseCOGM
   ParseCOGT

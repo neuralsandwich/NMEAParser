@@ -458,9 +458,9 @@ static GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
 } // Parse GPGSV
 
 NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
-  NMEAMessage *Result = new NMEAMessage;
+  NMEAMessage *Result = new NMEAMessage{0, {0}};
   Result->Header = new NMEAHeader{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
-                                  NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0, 0};
+                                  NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0};
   std::vector<std::string> Elements(1);
 
   if (*(Message.begin()) != '$')
