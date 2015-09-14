@@ -34,7 +34,37 @@ make test
   own test suite. The test suite name is based on the function name and
   parameter signature.
 
-* Implemented Tests
-
-   - DONE NMEAParser Functions
-     CLOSED: [2015-09-14 Mon 00:04]
+* Features and Testing status
+** DONE NMEAParser Functions
+   CLOSED: [2015-09-14 Mon 00:04]
+** TODO Message Parse Tesst
+   - [ ] GGA - Fix information
+   - [ ] GLL - Lat/Lon data
+   - [ ] GSA - Overall Satellite data
+   - [ ] GSV - Detailed Satellite data
+   - [ ] RMC - recommended minimum data for gps
+   - [ ] VTG - Vector track an Speed over the Ground
+** TODO Messages To Implement
+   - [ ] AAM - Waypoint Arrival Alarm
+   - [ ] ALM - Almanac data
+   - [ ] APA - Auto Pilot A sentence
+   - [ ] APB - Auto Pilot B sentence
+   - [ ] BOD - Bearing Origin to Destination
+   - [ ] BWC - Bearing using Great Circle route
+   - [ ] DTM - Datum being used.
+   - [ ] GRS - GPS Range Residuals
+   - [ ] GST - GPS Pseudorange Noise Statistics
+   - [ ] MSK - send control for a beacon receiver
+   - [ ] MSS - Beacon receiver status information.
+   - [ ] RMA - recommended Loran data
+   - [ ] RMB - recommended navigation data for gps
+   - [ ] RTE - route message
+   - [ ] STN - Multiple Data ID
+   - [ ] TRF - Transit Fix Data
+   - [ ] VBW - dual Ground / Water Spped
+   - [ ] WCV - Waypoint closure velocity (Velocity Made Good)
+   - [ ] WPL - Waypoint Location information
+   - [ ] XTC - cross track error
+   - [ ] XTE - measured cross track error
+   - [ ] ZDA - Date and Time
+   - [ ] ZTG - Zulu (UTC) time and time to go (to destination)
