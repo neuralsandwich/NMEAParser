@@ -41,6 +41,7 @@ set(TESTS
   ParseTimeStamp_String_String
   ParseVDOP
   RMCMessageParse
+  VTGMessageParse
   ValidateChecksum
   )
 

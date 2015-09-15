@@ -37,13 +37,14 @@ make test
 * Features and Testing status
 ** DONE NMEAParser Functions
    CLOSED: [2015-09-14 Mon 00:04]
-** TODO Message Parse Tesst [5/6]
+** DONE Message Parse Tesst [6/6]
+   CLOSED: [2015-09-15 Tue 16:12]
    - [X] GGA - Fix information
    - [X] GLL - Lat/Lon data
    - [X] GSA - Overall Satellite data
    - [X] GSV - Detailed Satellite data
    - [X] RMC - recommended minimum data for gps
-   - [ ] VTG - Vector track an Speed over the Ground
+   - [X] VTG - Vector track an Speed over the Ground
 ** TODO Messages To Implement [0/23]
    - [ ] AAM - Waypoint Arrival Alarm
    - [ ] ALM - Almanac data
