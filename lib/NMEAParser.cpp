@@ -156,36 +156,33 @@ time_t NMEAParser::ParseTimeStamp(const std::string &TimeStamp) const {
 
 bool NMEAParser::ParseStatus(const enum NMEA_MESSAGE_TYPE Type,
                              const std::string &Status) const {
-  if (Status.length() < 1) {
+  if (Status.empty()) {
     return false;
   }
 
-  // TODO: Refactor this solution. I will do for now but a better way would be
-  // nice
-  // RMC: A = true, V = false
-  // GGA: 0 = false, 1,2,6 = true (Standard GPS, Differential GPS, Estimated
-  //      (DR) Fix)
-  // GLL: A = true, V = false
-  // GSA: 1 = false, 2,3 = true (2D fix, 3D fix)
   if (Type == NMEA_MESSAGE_TYPE::RMC || Type == NMEA_MESSAGE_TYPE::GLL) {
     if ("A" == Status) {
       return true;
-    }
-  } else if (Type == NMEA_MESSAGE_TYPE::GGA) {
-    if (1 == ParseInteger(Status) || 2 == ParseInteger(Status) ||
-        6 == ParseInteger(Status)) {
-      return true;
-    }
-  } else if (Type == NMEA_MESSAGE_TYPE::GSA) {
-    if (2 == ParseInteger(Status) || 3 == ParseInteger(Status)) {
-      return true;
+    } else {
+      return false;
     }
   } else {
     return false;
   }
-
-  return false;
 } // ParseStatus
+
+int NMEAParser::ParseFixStatus(const std::string &Status) const {
+  if (Status.empty()) {
+    return 0;
+  }
+
+  if ((Status == "0") || (Status == "1") || (Status == "2") ||
+      (Status == "6")) {
+    return ParseInteger(Status);
+  } else {
+    return 0;
+  }
+} // ParseFixStatus
 
 float NMEAParser::ParseLatitude(const std::string &Latitude,
                                 const std::string &Direction) const {
@@ -376,7 +373,7 @@ char NMEAParser::ParseSmode(const std::string &String) const {
   return Result;
 } // ParseSmode
 
-int NMEAParser::ParseFixStatus(const std::string &String) const {
+int NMEAParser::ParseNavMode(const std::string &String) const {
   int Result = 1;
 
   Result = ParseInteger(String);
@@ -386,7 +383,7 @@ int NMEAParser::ParseFixStatus(const std::string &String) const {
   }
 
   return 1;
-} // ParseFixStatus
+} // ParseNavMode
 
 int *NMEAParser::ParseSV(std::vector<std::string>::iterator Start,
                          std::vector<std::string>::iterator End) const {
@@ -499,7 +496,7 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
     Result->GGA = new GPGGA{ParseTimeStamp(Elements[1]),
                             ParseLatitude(Elements[2], Elements[3]),
                             ParseLongitude(Elements[4], Elements[5]),
-                            ParseStatus(NMEA_MESSAGE_TYPE::GGA, Elements[6]),
+                            ParseFixStatus(Elements[6]),
                             ParseSatiliteFixes(Elements[7]),
                             ParseHDOP(Elements[8]),
                             ParseMSL(Elements[9]),
@@ -514,7 +511,8 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
     Result->GLL = new GPGLL{
         ParseLatitude(Elements[1], Elements[2]),
         ParseLongitude(Elements[3], Elements[4]), ParseTimeStamp(Elements[5]),
-        ParseStatus(NMEA_MESSAGE_TYPE::GLL, Elements[6]), Elements[7][0]};
+        ParseStatus(NMEA_MESSAGE_TYPE::GLL, Elements[6].c_str()),
+        Elements[7][0]};
   } break;
 
   case NMEA_MESSAGE_TYPE::VTG: {
@@ -527,7 +525,7 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   case NMEA_MESSAGE_TYPE::GSA: {
     Result->GSA =
         new GPGSA{ParseSmode(Elements[1]),
-                  ParseFixStatus(Elements[2]),
+                  ParseNavMode(Elements[2]),
                   ParseSV(Elements.begin() + 3, Elements.begin() + 14),
                   ParsePDOP(Elements[15]),
                   ParseHDOP(Elements[16]),

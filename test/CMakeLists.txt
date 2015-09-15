@@ -9,6 +9,7 @@ set(GOOGLIBS ${LIBS} gtest gtest_main)
 
 set(TESTS
   GGAMessageParse
+  GLLMessageParse
   ParseAngle
   ParseCOGM
   ParseCOGT
@@ -25,6 +26,7 @@ set(TESTS
   ParseMagneticVariation
   ParseMessageType
   ParseModeIndicator
+  ParseNavMode
   ParsePDOP
   ParseSOG
   ParseSV

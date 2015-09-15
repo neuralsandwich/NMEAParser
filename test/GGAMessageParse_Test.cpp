@@ -27,6 +27,7 @@ TEST(GGAMessageParse, Valid_Message) {
   const std::string RawMessage =
       "$GPGGA,092725.00,4717.11399,N,00833.91590,E,1,8,"
       "1.01,499.6,M,48.0,M,,0*5B";
+  
   NMEAHeader Header = {
       .ID = NMEA_TALKER_ID::GPS, .Type = NMEA_MESSAGE_TYPE::GGA, .Valid = 1};
 

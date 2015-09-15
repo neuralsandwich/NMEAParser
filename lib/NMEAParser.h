@@ -144,16 +144,23 @@ private:
 #else
   FRIEND_TEST(ParseStatus, Valid_Active_RMC_Status);
   FRIEND_TEST(ParseStatus, Valid_Void_RMC_Status);
+  FRIEND_TEST(ParseStatus, Invalid_RMC_Status);
   FRIEND_TEST(ParseStatus, Valid_Active_GLL_Status);
   FRIEND_TEST(ParseStatus, Valid_Void_GLL_Status);
-  FRIEND_TEST(ParseStatus, Valid_Fix_GGA_Status);
-  FRIEND_TEST(ParseStatus, Valid_No_Fix_GGA_Status);
-  FRIEND_TEST(ParseStatus, Valid_Fix_GSA_Status);
-  FRIEND_TEST(ParseStatus, Valid_No_Fix_GSA_Status);
-  FRIEND_TEST(ParseStatus, Invalid_Empty_Status);
+  FRIEND_TEST(ParseStatus, Invalid_GLL_Status);
 #endif
   bool ParseStatus(const enum NMEA_MESSAGE_TYPE Type,
                    const std::string &Status) const;
+#ifndef DEBUG
+#else
+  FRIEND_TEST(ParseFixStatus, Valid_No_Fix_Status);
+  FRIEND_TEST(ParseFixStatus, Valid_Standard_Fix_Status);
+  FRIEND_TEST(ParseFixStatus, Valid_Differential_Fix_Status);
+  FRIEND_TEST(ParseFixStatus, Valid_Estimated_DR_Fix_Status);
+  FRIEND_TEST(ParseFixStatus, Invalid_Fix_Status);
+  FRIEND_TEST(ParseFixStatus, Empty_Fix_Status);
+#endif
+  int ParseFixStatus(const std::string &Status) const;
 #ifndef DEBUG
 #else
   FRIEND_TEST(ParseLatitude, Valid_Latitude_Valid_North);
@@ -297,12 +304,12 @@ private:
   char ParseSmode(const std::string &String) const;
 #ifndef DEBUG
 #else
-  FRIEND_TEST(ParseFixStatus, Valid_Status);
-  FRIEND_TEST(ParseFixStatus, Under_Status);
-  FRIEND_TEST(ParseFixStatus, Over_Status);
-  FRIEND_TEST(ParseFixStatus, Empty_Status);
+  FRIEND_TEST(ParseNavMode, Valid_Status);
+  FRIEND_TEST(ParseNavMode, Under_Status);
+  FRIEND_TEST(ParseNavMode, Over_Status);
+  FRIEND_TEST(ParseNavMode, Empty_Status);
 #endif
-  int ParseFixStatus(const std::string &String) const;
+  int ParseNavMode(const std::string &String) const;
 #ifndef DEBUG
 #else
   FRIEND_TEST(ParseSV, Valid_Array);

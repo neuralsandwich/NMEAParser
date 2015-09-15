@@ -37,9 +37,9 @@ make test
 * Features and Testing status
 ** DONE NMEAParser Functions
    CLOSED: [2015-09-14 Mon 00:04]
-** TODO Message Parse Tesst [1/6]
+** TODO Message Parse Tesst [2/6]
    - [X] GGA - Fix information
-   - [ ] GLL - Lat/Lon data
+   - [X] GLL - Lat/Lon data
    - [ ] GSA - Overall Satellite data
    - [ ] GSV - Detailed Satellite data
    - [ ] RMC - recommended minimum data for gps
