@@ -12,7 +12,7 @@
 namespace NMEA {
 TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Valid_DateStamp) {
   const std::string TimeStamp = "092725.00";
-  const std::string DateStamp = "01012000";
+  const std::string DateStamp = "010100";
 
   time_t Expected = 0;
   struct tm *TimeInfo;

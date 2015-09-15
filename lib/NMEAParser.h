@@ -142,15 +142,12 @@ private:
   time_t ParseTimeStamp(const std::string &TimeStamp) const;
 #ifndef DEBUG
 #else
-  FRIEND_TEST(ParseStatus, Valid_Active_RMC_Status);
-  FRIEND_TEST(ParseStatus, Valid_Void_RMC_Status);
-  FRIEND_TEST(ParseStatus, Invalid_RMC_Status);
-  FRIEND_TEST(ParseStatus, Valid_Active_GLL_Status);
-  FRIEND_TEST(ParseStatus, Valid_Void_GLL_Status);
-  FRIEND_TEST(ParseStatus, Invalid_GLL_Status);
+  FRIEND_TEST(ParseStatus, Valid_Active_Status);
+  FRIEND_TEST(ParseStatus, Valid_Void_Status);
+  FRIEND_TEST(ParseStatus, Invalid_Status);
+  FRIEND_TEST(ParseStatus, Empty_Status);
 #endif
-  bool ParseStatus(const enum NMEA_MESSAGE_TYPE Type,
-                   const std::string &Status) const;
+  bool ParseStatus(const std::string &Status) const;
 #ifndef DEBUG
 #else
   FRIEND_TEST(ParseFixStatus, Valid_No_Fix_Status);

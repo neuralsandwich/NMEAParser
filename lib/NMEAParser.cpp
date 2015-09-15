@@ -108,11 +108,11 @@ time_t NMEAParser::ParseTimeStamp(const std::string &TimeStamp,
   time(&Result);
   TimeInfo = gmtime(&Result);
   if ((TimeStamp.length() >= 6) && (TimeStamp.length() <= 9) &&
-      (DateStamp.length() == 8)) {
+      (DateStamp.length() == 6)) {
     try {
       TimeInfo->tm_mday = std::stoi(DateStamp.substr(0, 2), nullptr, 10);
       TimeInfo->tm_mon = std::stoi(DateStamp.substr(2, 2), nullptr, 10) - 1;
-      TimeInfo->tm_year = std::stoi(DateStamp.substr(4, 4), nullptr, 10) - 1900;
+      TimeInfo->tm_year = std::stoi(DateStamp.substr(4, 2), nullptr, 10) + 100;
       TimeInfo->tm_hour = std::stoi(TimeStamp.substr(0, 2), nullptr, 10);
       TimeInfo->tm_min = std::stoi(TimeStamp.substr(2, 2), nullptr, 10);
       TimeInfo->tm_sec = std::stoi(TimeStamp.substr(4, 2), nullptr, 10);
@@ -147,25 +147,20 @@ time_t NMEAParser::ParseTimeStamp(const std::string &TimeStamp) const {
   time(&Result);
   TimeInfo = gmtime(&Result);
   char buffer[80];
-  std::strftime(buffer, 80, "%d%m%Y", TimeInfo);
+  std::strftime(buffer, 80, "%d%m%y", TimeInfo);
   const std::string DateStamp(buffer);
   Result = ParseTimeStamp(TimeStamp, DateStamp);
 
   return Result;
 } // ParseTimeStamp(TimeStamp)
 
-bool NMEAParser::ParseStatus(const enum NMEA_MESSAGE_TYPE Type,
-                             const std::string &Status) const {
+bool NMEAParser::ParseStatus(const std::string &Status) const {
   if (Status.empty()) {
     return false;
   }
 
-  if (Type == NMEA_MESSAGE_TYPE::RMC || Type == NMEA_MESSAGE_TYPE::GLL) {
-    if ("A" == Status) {
-      return true;
-    } else {
-      return false;
-    }
+  if ("A" == Status) {
+    return true;
   } else {
     return false;
   }
@@ -250,7 +245,7 @@ float NMEAParser::ParseMagneticVariation(
     const std::string &MagneticVariationDirection) const {
   float Result = 0;
 
-  if (MagneticVariationDirection.length() < 1) {
+  if (MagneticVariationDirection.empty()) {
     return NAN;
   }
 
@@ -483,7 +478,7 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
 
   case NMEA_MESSAGE_TYPE::RMC: {
     Result->RMC = new GPRMC{ParseTimeStamp(Elements[1], Elements[9]),
-                            ParseStatus(NMEA_MESSAGE_TYPE::RMC, Elements[2]),
+                            ParseStatus(Elements[2]),
                             ParseLatitude(Elements[3], Elements[4]),
                             ParseLongitude(Elements[5], Elements[6]),
                             ParseSpeed(Elements[7]),
@@ -510,7 +505,7 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
     Result->GLL = new GPGLL{
         ParseLatitude(Elements[1], Elements[2]),
         ParseLongitude(Elements[3], Elements[4]), ParseTimeStamp(Elements[5]),
-        ParseStatus(NMEA_MESSAGE_TYPE::GLL, Elements[6].c_str()),
+        ParseStatus(Elements[6].c_str()),
         Elements[7][0]};
   } break;
 

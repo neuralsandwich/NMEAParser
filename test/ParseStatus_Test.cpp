@@ -13,69 +13,48 @@
 
 #if 0
 Test Cases
-| N | Message          |
-|---+------------------|
-|   | RMC Valid active |
-|   | RMC Valid void   |
-|   | RMC Invalid      |
-|   | GLL Valid active |
-|   | GLL Valid void   |
-|   | GLL Invalid      |
-
+| N | Message      |
+|---+--------------|
+| 1 | Valid active |
+| 2 | Valid void   |
+| 3 | Invalid      |
+| 4 | Empty        |
 #endif
 
 namespace NMEA {
-TEST(ParseStatus, Valid_Active_RMC_Status) {
+TEST(ParseStatus, Valid_Active_Status) {
   const std::string Status = "A";
   const bool Expected = true;
 
   auto Parser = NMEAParser{};
 
-  EXPECT_EQ(Expected, Parser.ParseStatus(NMEA_MESSAGE_TYPE::RMC, Status));
+  EXPECT_EQ(Expected, Parser.ParseStatus(Status));
 }
 
-TEST(ParseStatus, Valid_Void_RMC_Status) {
+TEST(ParseStatus, Valid_Void_Status) {
   const std::string Status = "V";
   const bool Expected = false;
 
   auto Parser = NMEAParser{};
 
-  EXPECT_EQ(Expected, Parser.ParseStatus(NMEA_MESSAGE_TYPE::RMC, Status));
+  EXPECT_EQ(Expected, Parser.ParseStatus(Status));
 }
 
-TEST(ParseStatus, Invalid_RMC_Status) {
+TEST(ParseStatus, Invalid_Status) {
   const std::string Status = "Q";
   const bool Expected = false;
 
   auto Parser = NMEAParser{};
 
-  EXPECT_EQ(Expected, Parser.ParseStatus(NMEA_MESSAGE_TYPE::RMC, Status));
+  EXPECT_EQ(Expected, Parser.ParseStatus(Status));
 }
 
-TEST(ParseStatus, Valid_Active_GLL_Status) {
-  const std::string Status = "A";
-  const bool Expected = true;
-
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseStatus(NMEA_MESSAGE_TYPE::GLL, Status));
-}
-
-TEST(ParseStatus, Valid_Void_GLL_Status) {
-  const std::string Status = "V";
+TEST(ParseStatus, Empty_Status) {
+  const std::string Status = "";
   const bool Expected = false;
 
   auto Parser = NMEAParser{};
 
-  EXPECT_EQ(Expected, Parser.ParseStatus(NMEA_MESSAGE_TYPE::GLL, Status));
-}
-
-TEST(ParseStatus, Invalid_GLL_Status) {
-  const std::string Status = "Q";
-  const bool Expected = false;
-
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseStatus(NMEA_MESSAGE_TYPE::GLL, Status));
+  EXPECT_EQ(Expected, Parser.ParseStatus(Status));
 }
 }
