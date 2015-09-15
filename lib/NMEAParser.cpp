@@ -429,7 +429,6 @@ static GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
   std::vector<int> &CnosRef = *Cnos;
 
   // This took a while to get
-  //
   unsigned int Iterations = 0;
   if (Result->MSGNo <= (Result->NoSV / 4)) {
     Iterations = 4;
@@ -440,10 +439,10 @@ static GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
   Result->DataFieldsInMessage = static_cast<int>(Iterations);
 
   for (unsigned int i = 0; i < Iterations; i++) {
-    SVs->push_back(ParseInteger(Elements[4 + i]));
-    Elvs->push_back(ParseInteger(Elements[5 + i]));
-    Azs->push_back(ParseInteger(Elements[6 + i]));
-    Cnos->push_back(ParseInteger(Elements[7 + i]));
+    SVs->push_back(ParseInteger(Elements[4 + (i * 4)]));
+    Elvs->push_back(ParseInteger(Elements[5 + (i * 4)]));
+    Azs->push_back(ParseInteger(Elements[6 + (i * 4)]));
+    Cnos->push_back(ParseInteger(Elements[7 + (i * 4)]));
   }
 
   Result->sv = &SVsRef[0];

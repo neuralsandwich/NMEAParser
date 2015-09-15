@@ -11,6 +11,7 @@ set(TESTS
   GGAMessageParse
   GLLMessageParse
   GSAMessageParse
+  GSVMessageParse
   ParseAngle
   ParseCOGM
   ParseCOGT
