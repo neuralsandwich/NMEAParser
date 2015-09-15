@@ -10,6 +10,7 @@ set(GOOGLIBS ${LIBS} gtest gtest_main)
 set(TESTS
   GGAMessageParse
   GLLMessageParse
+  GSAMessageParse
   ParseAngle
   ParseCOGM
   ParseCOGT
