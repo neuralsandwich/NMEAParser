@@ -8,7 +8,7 @@
 /// Unit tests for ParseModeIndicator(std::string ModeIndicator)
 ///
 //===----------------------------------------------------------------------===//
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #if 0
@@ -33,107 +33,83 @@ TEST(ParseModeIndicator, Valid_Fix_Mode_RMC) {
   const std::string Mode = "A";
   const char Expected = 'A';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::RMC, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::RMC, Mode));
 }
 
 TEST(ParseModeIndicator, Valid_No_Fix_Mode_RMC) {
   const std::string Mode = "N";
   const char Expected = 'N';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::RMC, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::RMC, Mode));
 }
 
 TEST(ParseModeIndicator, Invalid_Mode_RMC) {
   const std::string Mode = "P";
   const char Expected = 'N';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::RMC, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::RMC, Mode));
 }
 
 TEST(ParseModeIndicator, Empty_Mode_RMC) {
   const std::string Mode = "";
   const char Expected = 'N';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::RMC, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::RMC, Mode));
 }
 
 TEST(ParseModeIndicator, Valid_Fix_Mode_GLL) {
   const std::string Mode = "A";
   const char Expected = 'A';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::GLL, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::GLL, Mode));
 }
 
 TEST(ParseModeIndicator, Valid_No_Fix_Mode_GLL) {
   const std::string Mode = "N";
   const char Expected = 'N';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::GLL, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::GLL, Mode));
 }
 
 TEST(ParseModeIndicator, Invalid_Mode_GLL) {
   const std::string Mode = "Z";
   const char Expected = 'N';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::GLL, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::GLL, Mode));
 }
 
 TEST(ParseModeIndicator, Empty_Mode_GLL) {
   const std::string Mode = "";
   const char Expected = 'N';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::GLL, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::GLL, Mode));
 }
 
 TEST(ParseModeIndicator, Valid_Fix_Mode_VTG) {
   const std::string Mode = "A";
   const char Expected = 'A';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::VTG, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::VTG, Mode));
 }
 
 TEST(ParseModeIndicator, Valid_No_Fix_Mode_VTG) {
   const std::string Mode = "N";
   const char Expected = 'N';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::VTG, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::VTG, Mode));
 }
 
 TEST(ParseModeIndicator, Invalid_Mode_VTG) {
   const std::string Mode = "G";
   const char Expected = 'N';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::VTG, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::VTG, Mode));
 }
 
 TEST(ParseModeIndicator, Empty_Mode_VTG) {
   const std::string Mode = "";
   const char Expected = 'N';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseModeIndicator(NMEA_MESSAGE_TYPE::VTG, Mode));
+  EXPECT_EQ(Expected, ParseModeIndicator(NMEA_MESSAGE_TYPE::VTG, Mode));
 }
 }

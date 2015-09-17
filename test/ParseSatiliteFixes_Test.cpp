@@ -8,8 +8,7 @@
 /// Unit tests for ParseSatiliteFixes(std::string Fixes)
 ///
 //===----------------------------------------------------------------------===//
-
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #if 0
@@ -26,26 +25,20 @@ TEST(ParseSatiliteFixes, Valid_Fixes) {
   const std::string Fixes = "10";
   const int Expected = 10;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseSatiliteFixes(Fixes));
+  EXPECT_EQ(Expected, ParseSatiliteFixes(Fixes));
 }
 
 TEST(ParseSatiliteFixes, Invalid_Fixes) {
   const std::string Fixes = "ertyhgf";
   const int Expected = 0;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseSatiliteFixes(Fixes));
+  EXPECT_EQ(Expected, ParseSatiliteFixes(Fixes));
 }
 
 TEST(ParseSatiliteFixes, Empty_Fixes) {
   const std::string Fixes = "";
   const int Expected = 0;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseSatiliteFixes(Fixes));
+  EXPECT_EQ(Expected, ParseSatiliteFixes(Fixes));
 }
 }

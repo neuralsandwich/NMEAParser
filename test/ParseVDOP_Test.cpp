@@ -8,8 +8,7 @@
 /// Unit tests for ParseVDOP()
 ///
 //===----------------------------------------------------------------------===//
-
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <cmath>
@@ -28,24 +27,18 @@ TEST(ParseVDOP, Valid_VDOP) {
   const std::string VDOP = "1.54";
   const float Expected = 1.54f;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_FLOAT_EQ(Expected, Parser.ParseVDOP(VDOP));
+  EXPECT_FLOAT_EQ(Expected, ParseVDOP(VDOP));
 }
 
 TEST(ParseVDOP, Invalid_VDOP) {
   const std::string VDOP = "ertyhgf";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseVDOP(VDOP)));
+  EXPECT_TRUE(isnan(ParseVDOP(VDOP)));
 }
 
 TEST(ParseVDOP, Empty_VDOP) {
   const std::string VDOP = "";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseVDOP(VDOP)));
+  EXPECT_TRUE(isnan(ParseVDOP(VDOP)));
 }
 }

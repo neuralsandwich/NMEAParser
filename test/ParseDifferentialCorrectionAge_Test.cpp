@@ -8,7 +8,7 @@
 /// Unit tests for ParseDifferentialCorrectionAge(std::string CorrectionAge)
 ///
 //===----------------------------------------------------------------------===//
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <cmath>
@@ -27,25 +27,19 @@ TEST(ParseDifferentialCorrectionAge, Valid_CorrectionAge) {
   const std::string CorrectionAge = "48.0";
   const float Expected = 48.0f;
 
-  auto Parser = NMEAParser{};
-
   EXPECT_FLOAT_EQ(Expected,
-                  Parser.ParseDifferentialCorrectionAge(CorrectionAge));
+                  ParseDifferentialCorrectionAge(CorrectionAge));
 }
 
 TEST(ParseDifferentialCorrectionAge, Invalid_CorrectionAge) {
   const std::string CorrectionAge = "ertyhgf";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseDifferentialCorrectionAge(CorrectionAge)));
+  EXPECT_TRUE(isnan(ParseDifferentialCorrectionAge(CorrectionAge)));
 }
 
 TEST(ParseDifferentialCorrectionAge, Empty_CorrectionAge) {
   const std::string CorrectionAge = "";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseDifferentialCorrectionAge(CorrectionAge)));
+  EXPECT_TRUE(isnan(ParseDifferentialCorrectionAge(CorrectionAge)));
 }
 }

@@ -1,0 +1,15 @@
+//===-- ParseLLL_Test.cpp ---------------------------------------*- C++ -*-===//
+//
+// This file is distributed uner the MIT license. See LICENSE.txt for details.
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// Unit tests for ParseLLL(const std::string)
+///
+//===----------------------------------------------------------------------===//
+include "NMEAParser.cpp"
+#include "gtest/gtest.h"
+
+namespace NMEA {
+}

@@ -1,10 +1,15 @@
-/**
- * File: ParseTimeStamp_String_String_Test.cpp
- * Description: Unit tests for
- * NMEA::NMEAParser::ParseTimeStamp(const std::string *TimeStamp,
- *                                  const std::string *DateStamp)
- */
-#include "NMEAParser.h"
+//===-- ParseTimeStamp_String_String_Test.cpp -------------------*- C++ -*-===//
+//
+// This file is distributed uner the MIT license. See LICENSE.txt for details.
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// Unit tests for ParseTimeStamp(const std::string *TimeStamp,
+///                               const std::string *DateStamp)
+///
+//===----------------------------------------------------------------------===//
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <ctime>
@@ -27,9 +32,7 @@ TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Valid_DateStamp) {
   TimeInfo->tm_year = 100;
   Expected = mktime(TimeInfo);
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String, Invalid_TimeStamp_Valid_DateStamp) {
@@ -38,9 +41,7 @@ TEST(ParseTimeStamp_String_String, Invalid_TimeStamp_Valid_DateStamp) {
 
   time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Invalid_DateStamp) {
@@ -49,9 +50,7 @@ TEST(ParseTimeStamp_String_String, Valid_TimeStamp_Invalid_DateStamp) {
 
   time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String, Invalid_TimeStamp_Invalid_DateStamp) {
@@ -60,9 +59,7 @@ TEST(ParseTimeStamp_String_String, Invalid_TimeStamp_Invalid_DateStamp) {
 
   time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -72,9 +69,7 @@ TEST(ParseTimeStamp_String_String,
 
   time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -84,9 +79,7 @@ TEST(ParseTimeStamp_String_String,
 
   time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -96,9 +89,7 @@ TEST(ParseTimeStamp_String_String,
 
   time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -108,9 +99,7 @@ TEST(ParseTimeStamp_String_String,
 
   time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -120,9 +109,7 @@ TEST(ParseTimeStamp_String_String,
 
   time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String,
@@ -132,9 +119,7 @@ TEST(ParseTimeStamp_String_String,
 
   time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp, DateStamp));
 }
 
 TEST(ParseTimeStamp_String_String, Invalid_Before_Epoch) {
@@ -143,8 +128,6 @@ TEST(ParseTimeStamp_String_String, Invalid_Before_Epoch) {
 
   time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp, DateStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp, DateStamp));
 }
 }

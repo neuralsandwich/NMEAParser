@@ -8,7 +8,7 @@
 /// Unit tests for ParseGeoidSeparation(std::string GeoidSeparation)
 ///
 //===----------------------------------------------------------------------===//
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <cmath>
@@ -27,24 +27,18 @@ TEST(ParseGeoidSeparation, Valid_GeoidSeparation) {
   const std::string GeoidSeparation = "48.0";
   const float Expected = 48.0f;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_FLOAT_EQ(Expected, Parser.ParseGeoidSeparation(GeoidSeparation));
+  EXPECT_FLOAT_EQ(Expected, ParseGeoidSeparation(GeoidSeparation));
 }
 
 TEST(ParseGeoidSeparation, Invalid_GeoidSeparation) {
   const std::string GeoidSeparation = "ertyhgf";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseGeoidSeparation(GeoidSeparation)));
+  EXPECT_TRUE(isnan(ParseGeoidSeparation(GeoidSeparation)));
 }
 
 TEST(ParseGeoidSeparation, Empty_GeoidSeparation) {
   const std::string GeoidSeparation = "";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseGeoidSeparation(GeoidSeparation)));
+  EXPECT_TRUE(isnan(ParseGeoidSeparation(GeoidSeparation)));
 }
 }

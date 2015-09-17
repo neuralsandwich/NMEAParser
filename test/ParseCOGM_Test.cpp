@@ -8,8 +8,7 @@
 /// Unit tests for ParseCOGM(std::string COGM)
 ///
 //===----------------------------------------------------------------------===//
-
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <cmath>
@@ -28,24 +27,18 @@ TEST(ParseCOGM, Valid_COGM) {
   const std::string COGM = "77.52";
   const float Expected = 77.52f;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_FLOAT_EQ(Expected, Parser.ParseCOGM(COGM));
+  EXPECT_FLOAT_EQ(Expected, ParseCOGM(COGM));
 }
 
 TEST(ParseCOGM, Invalid_COGM) {
   const std::string COGM = "ertyhgf";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseCOGM(COGM)));
+  EXPECT_TRUE(isnan(ParseCOGM(COGM)));
 }
 
 TEST(ParseCOGM, Empty_COGM) {
   const std::string COGM = "";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseCOGM(COGM)));
+  EXPECT_TRUE(isnan(ParseCOGM(COGM)));
 }
 }

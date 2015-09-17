@@ -22,6 +22,7 @@ set(TESTS
   ParseGeoidSeparation
   ParseHDOP
   ParseInteger
+  ParseLLL
   ParseLatitude
   ParseLongitude
   ParseMSL

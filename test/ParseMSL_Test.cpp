@@ -8,7 +8,7 @@
 /// Unit tests for ParseMSL(std::string MSL)
 ///
 //===----------------------------------------------------------------------===//
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <cmath>
@@ -27,24 +27,18 @@ TEST(ParseMSL, Valid_MSL) {
   const std::string MSL = "499.6";
   const float Expected = 499.6f;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_FLOAT_EQ(Expected, Parser.ParseMSL(MSL));
+  EXPECT_FLOAT_EQ(Expected, ParseMSL(MSL));
 }
 
 TEST(ParseMSL, Invalid_MSL) {
   const std::string MSL = "ertyhgf";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseMSL(MSL)));
+  EXPECT_TRUE(isnan(ParseMSL(MSL)));
 }
 
 TEST(ParseMSL, Empty_MSL) {
   const std::string MSL = "";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseMSL(MSL)));
+  EXPECT_TRUE(isnan(ParseMSL(MSL)));
 }
 }

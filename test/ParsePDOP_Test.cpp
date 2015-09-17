@@ -8,8 +8,7 @@
 /// Unit tests for ParsePDOP()
 ///
 //===----------------------------------------------------------------------===//
-
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <cmath>
@@ -28,24 +27,18 @@ TEST(ParsePDOP, Valid_PDOP) {
   const std::string PDOP = "1.54";
   const float Expected = 1.54f;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_FLOAT_EQ(Expected, Parser.ParsePDOP(PDOP));
+  EXPECT_FLOAT_EQ(Expected, ParsePDOP(PDOP));
 }
 
 TEST(ParsePDOP, Invalid_PDOP) {
   const std::string PDOP = "ertyhgf";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParsePDOP(PDOP)));
+  EXPECT_TRUE(isnan(ParsePDOP(PDOP)));
 }
 
 TEST(ParsePDOP, Empty_PDOP) {
   const std::string PDOP = "";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParsePDOP(PDOP)));
+  EXPECT_TRUE(isnan(ParsePDOP(PDOP)));
 }
 }

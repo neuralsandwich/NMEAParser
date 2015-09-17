@@ -8,7 +8,7 @@
 /// Unit tests for ParseDifferentialStationID(std::string CorrectionAge)
 ///
 //===----------------------------------------------------------------------===//
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <cmath>
@@ -27,26 +27,20 @@ TEST(ParseDifferentialStationID, Valid_StationID) {
   const std::string StationID = "0";
   const int Expected = 0;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseDifferentialStationID(StationID));
+  EXPECT_EQ(Expected, ParseDifferentialStationID(StationID));
 }
 
 TEST(ParseDifferentialStationID, Invalid_StationID) {
   const std::string StationID = "ertyhgf";
   const int Expected = 0;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseDifferentialStationID(StationID));
+  EXPECT_EQ(Expected, ParseDifferentialStationID(StationID));
 }
 
 TEST(ParseDifferentialStationID, Empty_StationID) {
   const std::string StationID = "";
   const int Expected = 0;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseDifferentialStationID(StationID));
+  EXPECT_EQ(Expected, ParseDifferentialStationID(StationID));
 }
 }

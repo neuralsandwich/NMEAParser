@@ -1,9 +1,14 @@
-/**
- * File: ParseTimeStamp_String_Test.cpp
- * Description: Unit tests for
- * NMEA::NMEAParser::ParseTimeStamp(const std::string *TimeStamp)
- */
-#include "NMEAParser.h"
+//===-- ParseTimeStamp_String_Test.cpp --------------------------*- C++ -*-===//
+//
+// This file is distributed uner the MIT license. See LICENSE.txt for details.
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// Unit tests for ParseTimeStamp(const std::string *TimeStamp)
+///
+//===----------------------------------------------------------------------===//
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <ctime>
@@ -22,35 +27,27 @@ TEST(FieldParseTests, Valid_ParseTimeStamp_String) {
   TimeInfo->tm_sec = 25;
   Expected = mktime(TimeInfo);
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp));
 }
 
 TEST(FieldParseTests, Invalid_ParseTimeStamp_String) {
   const std::string TimeStamp = "asdfkjasd=234";
   const time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp));
 }
 
 TEST(FieldParseTests, Invalid_Range_ParseTimeStamp_String) {
   const std::string TimeStamp = "444294967297";
   const time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp));
 }
 
 TEST(FieldParseTests, Invalid_Empty_String_ParseTimeStamp_String) {
   const std::string TimeStamp = "";
   const time_t Expected = -1;
 
-  auto Parser = NMEA::NMEAParser();
-
-  EXPECT_EQ(Expected, Parser.ParseTimeStamp(TimeStamp));
+  EXPECT_EQ(Expected, ParseTimeStamp(TimeStamp));
 }
 }

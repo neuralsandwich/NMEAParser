@@ -8,8 +8,7 @@
 /// Unit tests for ParseHDOP(std::string HDOP)
 ///
 //===----------------------------------------------------------------------===//
-
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <cmath>
@@ -28,24 +27,18 @@ TEST(ParseHDOP, Valid_Fixes) {
   const std::string Fixes = "1.01";
   const float Expected = 1.01f;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_FLOAT_EQ(Expected, Parser.ParseHDOP(Fixes));
+  EXPECT_FLOAT_EQ(Expected, ParseHDOP(Fixes));
 }
 
 TEST(ParseHDOP, Invalid_Fixes) {
   const std::string Fixes = "ertyhgf";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseHDOP(Fixes)));
+  EXPECT_TRUE(isnan(ParseHDOP(Fixes)));
 }
 
 TEST(ParseHDOP, Empty_Fixes) {
   const std::string Fixes = "";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseHDOP(Fixes)));
+  EXPECT_TRUE(isnan(ParseHDOP(Fixes)));
 }
 }

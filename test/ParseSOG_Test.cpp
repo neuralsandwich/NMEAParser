@@ -8,8 +8,7 @@
 /// Unit tests for ParseSOG(std::string SOG)
 ///
 //===----------------------------------------------------------------------===//
-
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <cmath>
@@ -28,24 +27,18 @@ TEST(ParseSOG, Valid_SOG) {
   const std::string SOG = "77.52";
   const float Expected = 77.52f;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_FLOAT_EQ(Expected, Parser.ParseSOG(SOG));
+  EXPECT_FLOAT_EQ(Expected, ParseSOG(SOG));
 }
 
 TEST(ParseSOG, Invalid_SOG) {
   const std::string SOG = "ertyhgf";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseSOG(SOG)));
+  EXPECT_TRUE(isnan(ParseSOG(SOG)));
 }
 
 TEST(ParseSOG, Empty_SOG) {
   const std::string SOG = "";
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_TRUE(isnan(Parser.ParseSOG(SOG)));
+  EXPECT_TRUE(isnan(ParseSOG(SOG)));
 }
 }

@@ -8,7 +8,7 @@
 /// Unit tests for ParseNavMode(std::string String)
 ///
 //===----------------------------------------------------------------------===//
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #if 0
@@ -25,35 +25,27 @@ TEST(ParseNavMode, Valid_Status) {
   const std::string Status = "2";
   const int Expected = 2;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseNavMode(Status));
+  EXPECT_EQ(Expected, ParseNavMode(Status));
 }
 
 TEST(ParseNavMode, Under_Status) {
   const std::string Status = "0";
   const int Expected = 1;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseNavMode(Status));
+  EXPECT_EQ(Expected, ParseNavMode(Status));
 }
 
 TEST(ParseNavMode, Over_Status) {
   const std::string Status = "4";
   const int Expected = 1;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseNavMode(Status));
+  EXPECT_EQ(Expected, ParseNavMode(Status));
 }
 
 TEST(ParseNavMode, Empty_Status) {
   const std::string Status = "";
   const int Expected = 1;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseNavMode(Status));
+  EXPECT_EQ(Expected, ParseNavMode(Status));
 }
 }

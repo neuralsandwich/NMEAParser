@@ -96,7 +96,86 @@ typedef struct NMEAHeader {
   int Valid;
 } NMEAHeader;
 
-/* GPRMC - GPS Recommended Minimum Data
+/**
+ * GPAAM - Away point alarm
+ */
+typedef struct GPAAM {
+} GPAAM;
+
+/**
+ * GPALM - Almanac data
+ */
+typedef struct GPALM {
+} GPALM;
+
+/**
+ * GPAPA - Auto Pilot A sentence
+ */
+typedef struct GPAPA {
+} GPAPA;
+
+/**
+ * GPAPB - Auto Pilier B Sentence
+ */
+typedef struct GPAPB {
+} GPAPB;
+
+/**
+ *  GPBOD - Bearing Origin to Destination
+ */
+typedef struct GPDOB {
+} GPDOB;
+
+/**
+ * GPBWC - Bearing using Great Circle route
+ */
+typedef struct GPBWC{
+} GPBWC;
+
+/**
+ * GPDTM - Datum Reference
+ *
+ * This message gives the difference between the currently selected
+ * Datum, and the reference Datum.
+ *
+ * Message Structure:
+ * $GPDTM, LLL, LSD,l at, N/S, lon, E/W, alt, RRR *cs <CR><LF>
+ *
+ * 01. Messae ID, DTM protocol header
+ * 02. Local Datum Code, W84 = WGS84, W72 = WGS72, 999 = user defined
+ * 03. Local Datum Subdivision Code, This field outputs the currently
+ *     selected Datum as a string (see also note above).
+ * 04. Offset in Latitude
+ * 05. North/South indicator
+ * 06. Offset in Longitude
+ * 07. East/West indicator
+ * 08. Offset in altitude
+ * 09. Reference Datum Code, W84 = WGS 84. This is the only supported
+ *     Reference datum.
+ * 10. Checksum
+ * 11. Carriage Return and Line Feed
+ */
+typedef struct GPDTM {
+  // Local datum code, W84 = WGS84, W72 = WGS72, 999 = user
+  // defined
+  char LLL[4];
+  // Local datam Subdivision code, This field outputs the
+  // currently selected Datum as a string
+  char LSD[53];
+  // Offset in Latitude (minutes)
+  // Posive for North, negative for south
+  float lat;
+  // Offset in Longitude (minutes)
+  // Positive for East negative for west
+  float lon;
+  // Offeset in altitude
+  float alt;
+  // Reference Datum code, W84 = WGS84
+  char RRR[4];
+} GPDTM;
+
+/**
+ * GPRMC - GPS Recommended Minimum Data
  *
  * The Recommended Minimum sentence defined by NMEA for GPS/Transit system data.
  *
@@ -353,35 +432,35 @@ typedef struct GPGSV {
 typedef struct NMEAMessage {
   NMEAHeader *Header;
   union {
-    // GPAAM *AAM,
-    // GPALM *ALM,
-    // GPAPA *APA,
-    // GPAPB *APB,
-    // GPBOD *BOD,
-    // GPBWC *BWC,
-    // GPDTM *DTM,
+    // GPAAM *AAM;
+    // GPALM *ALM;
+    // GPAPA *APA;
+    // GPAPB *APB;
+    // GPBOD *BOD;
+    // GPBWC *BWC;
+    GPDTM *DTM;
     GPGGA *GGA;
     GPGLL *GLL;
-    // GPGRS *GRS,
+    // GPGRS *GRS;
     GPGSA *GSA;
-    // GPGST *GST,
+    // GPGST *GST;
     GPGSV *GSV;
-    // GPMSK *MSK,
-    // GPMSS *MSS,
-    // GPRMA *RMA,
-    // GPRMB *RMB,
+    // GPMSK *MSK;
+    // GPMSS *MSS;
+    // GPRMA *RMA;
+    // GPRMB *RMB;
     GPRMC *RMC;
-    // GPRTE *RTE,
-    // GPTRF *TRF,
-    // GPSTN *STN,
-    // GPVBW *VBW,
+    // GPRTE *RTE;
+    // GPTRF *TRF;
+    // GPSTN *STN;
+    // GPVBW *VBW;
     GPVTG *VTG;
-    // GPWCV *WCV,
-    // GPWPL *WPL,
-    // GPXTC *XTC,
-    // GPXTE *XTE,
-    // GPZTG *ZTG,
-    // GPZDA *ZDA,
+    // GPWCV *WCV;
+    // GPWPL *WPL;
+    // GPXTC *XTC;
+    // GPXTE *XTE;
+    // GPZTG *ZTG;
+    // GPZDA *ZDA;
   };
 } NMEAMessage;
 

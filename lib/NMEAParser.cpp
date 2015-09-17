@@ -1,7 +1,13 @@
-/**
- * @file  NMEAParser.cpp
- * @brief Implementation of NMEAParser.h
- */
+//===-- NMEAParser.cpp ------------------------------------------*- C++ -*-===//
+//
+// This file is distributed uner the MIT license. See LICENSE.txt for details.
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// Implementation of NMEAParser.h
+///
+//===----------------------------------------------------------------------===//
 #include "NMEAParser.h"
 
 #include <algorithm>
@@ -12,8 +18,8 @@
 
 namespace NMEA {
 
-bool NMEAParser::ValidateChecksum(const std::string &Message,
-                                  const std::string &Checksum) const {
+static bool ValidateChecksum(const std::string &Message,
+                             const std::string &Checksum) {
   unsigned int CalculatedChecksum = 0;
   unsigned int Check = 0;
 
@@ -38,7 +44,7 @@ bool NMEAParser::ValidateChecksum(const std::string &Message,
   return false;
 } // ValidChecksum
 
-enum NMEA_TALKER_ID NMEAParser::ParseTalkerID(const std::string &ID) const {
+static enum NMEA_TALKER_ID ParseTalkerID(const std::string &ID) {
   if (ID[0] != 'G') {
     return NMEA_TALKER_ID::UNKNOWN_TALKER_ID;
   }
@@ -52,8 +58,8 @@ enum NMEA_TALKER_ID NMEAParser::ParseTalkerID(const std::string &ID) const {
   }
 } // ParseTalkerID
 
-enum NMEA_MESSAGE_TYPE
-NMEAParser::ParseMessageType(const std::string &Message) const {
+static enum NMEA_MESSAGE_TYPE
+ParseMessageType(const std::string &Message) {
   if (Message.length() < 5) {
     return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
   }
@@ -99,8 +105,8 @@ static int ParseInteger(const std::string &String) {
   return Result;
 } // ParseInteger
 
-time_t NMEAParser::ParseTimeStamp(const std::string &TimeStamp,
-                                  const std::string &DateStamp) const {
+static time_t ParseTimeStamp(const std::string &TimeStamp,
+                                  const std::string &DateStamp) {
   time_t Result = 0;
   struct tm *TimeInfo;
 
@@ -140,7 +146,7 @@ time_t NMEAParser::ParseTimeStamp(const std::string &TimeStamp,
  *
  * ParserTimeStamp takes
  */
-time_t NMEAParser::ParseTimeStamp(const std::string &TimeStamp) const {
+static time_t ParseTimeStamp(const std::string &TimeStamp) {
   time_t Result = 0;
   struct tm *TimeInfo;
 
@@ -154,7 +160,7 @@ time_t NMEAParser::ParseTimeStamp(const std::string &TimeStamp) const {
   return Result;
 } // ParseTimeStamp(TimeStamp)
 
-bool NMEAParser::ParseStatus(const std::string &Status) const {
+static bool ParseStatus(const std::string &Status) {
   if (Status.empty()) {
     return false;
   }
@@ -166,7 +172,7 @@ bool NMEAParser::ParseStatus(const std::string &Status) const {
   }
 } // ParseStatus
 
-int NMEAParser::ParseFixStatus(const std::string &Status) const {
+static int ParseFixStatus(const std::string &Status) {
   if (Status.empty()) {
     return 0;
   }
@@ -179,8 +185,8 @@ int NMEAParser::ParseFixStatus(const std::string &Status) const {
   }
 } // ParseFixStatus
 
-float NMEAParser::ParseLatitude(const std::string &Latitude,
-                                const std::string &Direction) const {
+static float ParseLatitude(const std::string &Latitude,
+                                const std::string &Direction) {
   float Result = 0;
 
   if (Latitude.length() < 1 || Direction.length() < 1) {
@@ -200,8 +206,8 @@ float NMEAParser::ParseLatitude(const std::string &Latitude,
   return Result;
 } // ParseLatitude
 
-float NMEAParser::ParseLongitude(const std::string &Longitude,
-                                 const std::string &Direction) const {
+static float ParseLongitude(const std::string &Longitude,
+                                 const std::string &Direction) {
   float Result = 0;
 
   if (Longitude.length() < 1 || Direction.length() < 1) {
@@ -220,7 +226,7 @@ float NMEAParser::ParseLongitude(const std::string &Longitude,
   return Result;
 } // ParseLongitude
 
-float NMEAParser::ParseSpeed(const std::string &Speed) const {
+static float ParseSpeed(const std::string &Speed) {
   float Result = 0;
 
   if (Speed.length() < 1) {
@@ -232,7 +238,7 @@ float NMEAParser::ParseSpeed(const std::string &Speed) const {
   return Result;
 } // ParseSpeed
 
-float NMEAParser::ParseAngle(const std::string &Angle) const {
+static float ParseAngle(const std::string &Angle) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(Angle);
@@ -240,9 +246,9 @@ float NMEAParser::ParseAngle(const std::string &Angle) const {
   return Result;
 } // ParseAngle
 
-float NMEAParser::ParseMagneticVariation(
+static float ParseMagneticVariation(
     const std::string &MagneticVariation,
-    const std::string &MagneticVariationDirection) const {
+    const std::string &MagneticVariationDirection) {
   float Result = 0;
 
   if (MagneticVariationDirection.empty()) {
@@ -261,7 +267,7 @@ float NMEAParser::ParseMagneticVariation(
   return Result;
 } // ParseMagneticVariation
 
-int NMEAParser::ParseSatiliteFixes(const std::string &Fixes) const {
+static int ParseSatiliteFixes(const std::string &Fixes) {
   int Result = 0;
 
   Result = ParseInteger(Fixes);
@@ -269,7 +275,7 @@ int NMEAParser::ParseSatiliteFixes(const std::string &Fixes) const {
   return Result;
 } // ParseSatiltieFixes
 
-float NMEAParser::ParseHDOP(const std::string &HDOP) const {
+static float ParseHDOP(const std::string &HDOP) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(HDOP);
@@ -277,7 +283,7 @@ float NMEAParser::ParseHDOP(const std::string &HDOP) const {
   return Result;
 } // ParseHDOP
 
-float NMEAParser::ParseMSL(const std::string &MSL) const {
+static float ParseMSL(const std::string &MSL) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(MSL);
@@ -285,8 +291,8 @@ float NMEAParser::ParseMSL(const std::string &MSL) const {
   return Result;
 } // ParseMSL
 
-float NMEAParser::ParseGeoidSeparation(
-    const std::string &GeoidSeparation) const {
+static float ParseGeoidSeparation(
+    const std::string &GeoidSeparation) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(GeoidSeparation);
@@ -294,8 +300,8 @@ float NMEAParser::ParseGeoidSeparation(
   return Result;
 } // ParseGeoidSeparation
 
-float NMEAParser::ParseDifferentialCorrectionAge(
-    const std::string &CorrectionAge) const {
+static float ParseDifferentialCorrectionAge(
+    const std::string &CorrectionAge) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(CorrectionAge);
@@ -303,7 +309,7 @@ float NMEAParser::ParseDifferentialCorrectionAge(
   return Result;
 } // ParseDifferentialCorrectionAge
 
-int NMEAParser::ParseDifferentialStationID(const std::string &StationID) const {
+static int ParseDifferentialStationID(const std::string &StationID) {
   int Result = 0;
 
   Result = NMEA::ParseInteger(StationID);
@@ -311,7 +317,7 @@ int NMEAParser::ParseDifferentialStationID(const std::string &StationID) const {
   return Result;
 } // ParseDifferentialStationID
 
-float NMEAParser::ParseCOGT(const std::string &CourseOverGroundTrue) const {
+static float ParseCOGT(const std::string &CourseOverGroundTrue) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(CourseOverGroundTrue);
@@ -319,7 +325,7 @@ float NMEAParser::ParseCOGT(const std::string &CourseOverGroundTrue) const {
   return Result;
 } // ParseCOGT
 
-float NMEAParser::ParseCOGM(const std::string &CourseOverGroundMagnetic) const {
+static float ParseCOGM(const std::string &CourseOverGroundMagnetic) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(CourseOverGroundMagnetic);
@@ -327,7 +333,7 @@ float NMEAParser::ParseCOGM(const std::string &CourseOverGroundMagnetic) const {
   return Result;
 } // ParserCOGM
 
-float NMEAParser::ParseSOG(const std::string &SpeedOverGround) const {
+static float ParseSOG(const std::string &SpeedOverGround) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(SpeedOverGround);
@@ -335,8 +341,8 @@ float NMEAParser::ParseSOG(const std::string &SpeedOverGround) const {
   return Result;
 } // ParseSOG
 
-char NMEAParser::ParseModeIndicator(const enum NMEA_MESSAGE_TYPE Type,
-                                    const std::string &ModeIndicator) const {
+static char ParseModeIndicator(const enum NMEA_MESSAGE_TYPE Type,
+                                    const std::string &ModeIndicator) {
   char Result = 'N';
 
   if (ModeIndicator.empty()) {
@@ -354,7 +360,7 @@ char NMEAParser::ParseModeIndicator(const enum NMEA_MESSAGE_TYPE Type,
   return Result;
 } // ParseModeIndicator
 
-char NMEAParser::ParseSmode(const std::string &String) const {
+static char ParseSmode(const std::string &String) {
   char Result = 'M';
 
   if (String.empty()) {
@@ -368,7 +374,7 @@ char NMEAParser::ParseSmode(const std::string &String) const {
   return Result;
 } // ParseSmode
 
-int NMEAParser::ParseNavMode(const std::string &String) const {
+static int ParseNavMode(const std::string &String) {
   int Result = 1;
 
   Result = ParseInteger(String);
@@ -380,8 +386,8 @@ int NMEAParser::ParseNavMode(const std::string &String) const {
   return 1;
 } // ParseNavMode
 
-int *NMEAParser::ParseSV(std::vector<std::string>::iterator Start,
-                         std::vector<std::string>::iterator End) const {
+static int *ParseSV(std::vector<std::string>::iterator Start,
+                         std::vector<std::string>::iterator End) {
   std::vector<int> *Result = new std::vector<int>();
   std::vector<int> &ResultRef = *Result;
 
@@ -391,7 +397,7 @@ int *NMEAParser::ParseSV(std::vector<std::string>::iterator Start,
   return &ResultRef[0];
 } // ParseSV
 
-float NMEAParser::ParseVDOP(const std::string &VDOP) const {
+static float ParseVDOP(const std::string &VDOP) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(VDOP);
@@ -399,7 +405,7 @@ float NMEAParser::ParseVDOP(const std::string &VDOP) const {
   return Result;
 } // ParseVDOP
 
-float NMEAParser::ParsePDOP(const std::string &PDOP) const {
+static float ParsePDOP(const std::string &PDOP) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(PDOP);
@@ -448,6 +454,53 @@ static GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
   return Result;
 } // Parse GPGSV
 
+static char *ParseLLL(const std::string LLL) {
+  char *Result = strdup("999");
+  if (LLL.empty() && (LLL.length() == 3)) {
+    return Result;
+  }
+  
+  if ((LLL == "W84") || (LLL == "W72")) {
+    return strdup(LLL.substr(0, 3).c_str());
+  } else {
+      return Result;
+  }
+} // ParseLLL
+
+static char *ParseLSD(const std::string LSD) {
+  char *Result = strdup("-1");
+
+  if (LSD.empty() && (LSD.length() <= 52)) {
+    return Result;
+  } else {
+    return strdup(LSD.c_str());
+  }
+} // ParseLSD
+
+static float ParseAltitude(const std::string Alt) {
+  float Result = 0.0f;
+  if (Alt.empty()) {
+    return NAN;
+  }
+
+  Result = ParseFloat(Alt);
+  
+  return Result;
+} // ParseAltitude
+
+static char *ParseRRR(const std::string LLL) {
+  char *Result = strdup("999");
+  if (LLL.empty() && (LLL.length() == 3)) {
+    return Result;
+  }
+  
+  if ((LLL == "W84") || (LLL == "W72")) {
+    return strdup(LLL.substr(0, 3).c_str());
+  } else {
+      return Result;
+  }
+} // ParseRRR
+  
 NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   NMEAMessage *Result = new NMEAMessage{0, {0}};
   Result->Header = new NMEAHeader{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
@@ -476,6 +529,15 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
 
   switch (Result->Header->Type) {
 
+  case NMEA_MESSAGE_TYPE::DTM: {
+    Result->DTM = new GPDTM{.LLL = *ParseLLL(Elements[1]),
+			    .LSD = *ParseLSD(Elements[2]),
+                            .lat = ParseLatitude(Elements[3], Elements[4]),
+                            .lon = ParseLongitude(Elements[5], Elements[6]),
+                            .alt = ParseAltitude(Elements[7]),
+                            .RRR = *ParseRRR(Elements[8])};
+  } break;
+    
   case NMEA_MESSAGE_TYPE::RMC: {
     Result->RMC = new GPRMC{ParseTimeStamp(Elements[1], Elements[9]),
                             ParseStatus(Elements[2]),

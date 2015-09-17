@@ -9,7 +9,7 @@
 ///                        std::vector<std::string>::iterator End)
 ///
 //===----------------------------------------------------------------------===//
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #if 0
@@ -28,9 +28,7 @@ TEST(ParseSV, Valid_Array) {
                                   "09", "18", "26", "28"};
   std::vector<int> Expected = {3, 23, 29, 7, 8, 9, 18, 26, 28};
 
-  auto Parser = NMEAParser{};
-
-  int *Result = Parser.ParseSV(SVs.begin(), SVs.end());
+  int *Result = ParseSV(SVs.begin(), SVs.end());
 
   for (unsigned int i = 0; i < SVs.size(); i++) {
     EXPECT_EQ(Expected[i], Result[i]);
@@ -41,9 +39,7 @@ TEST(ParseSV, Invalid_Array) {
   std::vector<std::string> SVs = {"b", "gr", "[]"};
   std::vector<int> Expected = {0, 0, 0};
 
-  auto Parser = NMEAParser{};
-
-  int *Result = Parser.ParseSV(SVs.begin(), SVs.end());
+  int *Result = ParseSV(SVs.begin(), SVs.end());
 
   for (unsigned int i = 0; i < SVs.size(); i++) {
     EXPECT_EQ(Expected[i], Result[i]);
@@ -54,9 +50,7 @@ TEST(ParseSV, Mixed_Array) {
   std::vector<std::string> SVs = {"b", "7", "gr", "[]", "100"};
   std::vector<int> Expected = {0, 7, 0, 0, 100};
 
-  auto Parser = NMEAParser{};
-
-  int *Result = Parser.ParseSV(SVs.begin(), SVs.end());
+  int *Result = ParseSV(SVs.begin(), SVs.end());
 
   for (unsigned int i = 0; i < SVs.size(); i++) {
     EXPECT_EQ(Expected[i], Result[i]);
@@ -67,9 +61,7 @@ TEST(ParseSV, Empty_Array) {
   std::vector<std::string> SVs = {};
   std::vector<int> Expected = {};
 
-  auto Parser = NMEAParser{};
-
-  int *Result = Parser.ParseSV(SVs.begin(), SVs.end());
+  int *Result = ParseSV(SVs.begin(), SVs.end());
 
   for (unsigned int i = 0; i < SVs.size(); i++) {
     EXPECT_EQ(Expected[i], Result[i]);

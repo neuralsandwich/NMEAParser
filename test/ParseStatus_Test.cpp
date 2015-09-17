@@ -8,7 +8,7 @@
 /// Unit tests for ParseStatus(const std::string &String)
 ///
 //===----------------------------------------------------------------------===//
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #if 0
@@ -26,35 +26,27 @@ TEST(ParseStatus, Valid_Active_Status) {
   const std::string Status = "A";
   const bool Expected = true;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseStatus(Status));
+  EXPECT_EQ(Expected, ParseStatus(Status));
 }
 
 TEST(ParseStatus, Valid_Void_Status) {
   const std::string Status = "V";
   const bool Expected = false;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseStatus(Status));
+  EXPECT_EQ(Expected, ParseStatus(Status));
 }
 
 TEST(ParseStatus, Invalid_Status) {
   const std::string Status = "Q";
   const bool Expected = false;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseStatus(Status));
+  EXPECT_EQ(Expected, ParseStatus(Status));
 }
 
 TEST(ParseStatus, Empty_Status) {
   const std::string Status = "";
   const bool Expected = false;
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseStatus(Status));
+  EXPECT_EQ(Expected, ParseStatus(Status));
 }
 }

@@ -8,7 +8,7 @@
 /// Unit tests for ParseSmode(std::string ModeIndicator)
 ///
 //===----------------------------------------------------------------------===//
-#include "NMEAParser.h"
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #if 0
@@ -24,26 +24,20 @@ TEST(ParseSmode, Manual) {
   const std::string Smode = "M";
   const char Expected = 'M';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseSmode(Smode));
+  EXPECT_EQ(Expected, ParseSmode(Smode));
 }
 
 TEST(ParseSmode, Automatic) {
   const std::string Smode = "A";
   const char Expected = 'A';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseSmode(Smode));
+  EXPECT_EQ(Expected, ParseSmode(Smode));
 }
 
 TEST(ParseSmode, Empty) {
   const std::string Smode = "";
   const char Expected = 'M';
 
-  auto Parser = NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ParseSmode(Smode));
+  EXPECT_EQ(Expected, ParseSmode(Smode));
 }
 }

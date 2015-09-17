@@ -1,9 +1,14 @@
-/**
- * File: ValidateChecksum_Test.cpp
- * Description: Unit tests for
- * NMEA::NMEAParser::ValidateChecksum(const std::string &Message) const
- */
-#include "NMEAParser.h"
+//===-- ValidateChecksum_Test.cpp -------------------------------*- C++ -*-===//
+//
+// This file is distributed uner the MIT license. See LICENSE.txt for details.
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// Unit tests for ValidateChecksum(const std::string &Message)
+///
+//===----------------------------------------------------------------------===//
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 namespace NMEA {
@@ -14,9 +19,7 @@ TEST(ValidateChecksum, Valid_Checksum) {
   const std::string Checksum = "5B";
   const bool Expected = true;
 
-  auto Parser = NMEA::NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
+  EXPECT_EQ(Expected, ValidateChecksum(Message, Checksum));
 }
 
 TEST(ValidateChecksum, Invalid_Checksum) {
@@ -25,9 +28,7 @@ TEST(ValidateChecksum, Invalid_Checksum) {
   const std::string Checksum = "AB";
   const bool Expected = false;
 
-  auto Parser = NMEA::NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
+  EXPECT_EQ(Expected, ValidateChecksum(Message, Checksum));
 }
 
 TEST(ValidateChecksum, Invalid_Empty_Message) {
@@ -35,9 +36,7 @@ TEST(ValidateChecksum, Invalid_Empty_Message) {
   const std::string Checksum = "AB";
   const bool Expected = false;
 
-  auto Parser = NMEA::NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
+  EXPECT_EQ(Expected, ValidateChecksum(Message, Checksum));
 }
 
 TEST(ValidateChecksum, Invalid_Empty_Checksum) {
@@ -46,9 +45,7 @@ TEST(ValidateChecksum, Invalid_Empty_Checksum) {
   const std::string Checksum = "";
   const bool Expected = false;
 
-  auto Parser = NMEA::NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
+  EXPECT_EQ(Expected, ValidateChecksum(Message, Checksum));
 }
 
 TEST(ValidateChecksum, Invalid_Short_Range_Checksum) {
@@ -57,9 +54,7 @@ TEST(ValidateChecksum, Invalid_Short_Range_Checksum) {
   const std::string Checksum = "5";
   const bool Expected = false;
 
-  auto Parser = NMEA::NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
+  EXPECT_EQ(Expected, ValidateChecksum(Message, Checksum));
 }
 
 TEST(ValidateChecksum, Invalid_Long_Range_Checksum) {
@@ -68,8 +63,6 @@ TEST(ValidateChecksum, Invalid_Long_Range_Checksum) {
   const std::string Checksum = "5BB";
   const bool Expected = false;
 
-  auto Parser = NMEA::NMEAParser{};
-
-  EXPECT_EQ(Expected, Parser.ValidateChecksum(Message, Checksum));
+  EXPECT_EQ(Expected, ValidateChecksum(Message, Checksum));
 }
 }

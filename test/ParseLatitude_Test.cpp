@@ -1,10 +1,15 @@
-/**
- * @file: ParseLatitude_Test.cpp
- * @brief: Unit tests for ParseLatitue(const std::string &String,
- *                                      const std::string &Direction)
- */
-
-#include "NMEAParser.h"
+//===-- ParseLatitude_Test.cpp ----------------------------------*- C++ -*-===//
+//
+// This file is distributed uner the MIT license. See LICENSE.txt for details.
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// Unit tests for ParseLatitue(const std::string &String,
+///                             const std::string &Direction
+///
+//===----------------------------------------------------------------------===//
+#include "NMEAParser.cpp"
 #include "gtest/gtest.h"
 
 #include <cmath>
@@ -17,7 +22,7 @@ TEST(ParseLatitude, Valid_Latitude_Valid_North) {
 
   auto Parser = NMEAParser{};
 
-  EXPECT_FLOAT_EQ(Expected, Parser.ParseLatitude(Latitude, Direction));
+  EXPECT_FLOAT_EQ(Expected, ParseLatitude(Latitude, Direction));
 }
 
 TEST(ParseLatitude, Valid_Latitude_Valid_South) {
@@ -27,7 +32,7 @@ TEST(ParseLatitude, Valid_Latitude_Valid_South) {
 
   auto Parser = NMEAParser{};
 
-  EXPECT_FLOAT_EQ(Expected, Parser.ParseLatitude(Latitude, Direction));
+  EXPECT_FLOAT_EQ(Expected, ParseLatitude(Latitude, Direction));
 }
 
 TEST(ParseLatitude, Valid_Latitude_Invalid_Direction) {
@@ -36,7 +41,7 @@ TEST(ParseLatitude, Valid_Latitude_Invalid_Direction) {
 
   auto Parser = NMEAParser{};
 
-  EXPECT_TRUE(isnan(Parser.ParseLatitude(Latitude, Direction)));
+  EXPECT_TRUE(isnan(ParseLatitude(Latitude, Direction)));
 }
 
 TEST(ParseLatitude, Invalid_Latitude_Valid_Direction) {
@@ -45,7 +50,7 @@ TEST(ParseLatitude, Invalid_Latitude_Valid_Direction) {
 
   auto Parser = NMEAParser{};
 
-  EXPECT_TRUE(isnan(Parser.ParseLatitude(Latitude, Direction)));
+  EXPECT_TRUE(isnan(ParseLatitude(Latitude, Direction)));
 }
 
 TEST(ParseLatitude, Invalid_Latitude_Invalid_Direction) {
@@ -54,7 +59,7 @@ TEST(ParseLatitude, Invalid_Latitude_Invalid_Direction) {
 
   auto Parser = NMEAParser{};
 
-  EXPECT_TRUE(isnan(Parser.ParseLatitude(Latitude, Direction)));
+  EXPECT_TRUE(isnan(ParseLatitude(Latitude, Direction)));
 }
 
 TEST(ParseLatitude, Empty_Latitude_Valid_Direction) {
@@ -63,7 +68,7 @@ TEST(ParseLatitude, Empty_Latitude_Valid_Direction) {
 
   auto Parser = NMEAParser{};
 
-  EXPECT_TRUE(isnan(Parser.ParseLatitude(Latitude, Direction)));
+  EXPECT_TRUE(isnan(ParseLatitude(Latitude, Direction)));
 }
 
 TEST(ParseLatitude, Empty_Latitude_Invalid_Direction) {
@@ -72,7 +77,7 @@ TEST(ParseLatitude, Empty_Latitude_Invalid_Direction) {
 
   auto Parser = NMEAParser{};
 
-  EXPECT_TRUE(isnan(Parser.ParseLatitude(Latitude, Direction)));
+  EXPECT_TRUE(isnan(ParseLatitude(Latitude, Direction)));
 }
 
 TEST(ParseLatitude, Empty_Latitude_Empty_Direction) {
@@ -81,6 +86,6 @@ TEST(ParseLatitude, Empty_Latitude_Empty_Direction) {
 
   auto Parser = NMEAParser{};
 
-  EXPECT_TRUE(isnan(Parser.ParseLatitude(Latitude, Direction)));
+  EXPECT_TRUE(isnan(ParseLatitude(Latitude, Direction)));
 }
 }
