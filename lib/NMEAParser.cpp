@@ -15,6 +15,7 @@
 #include <ctime>
 #include <iostream>
 #include <stdexcept>
+#include <cstring>
 
 namespace NMEA {
 
@@ -470,7 +471,7 @@ static char *ParseLLL(const std::string LLL) {
 static char *ParseLSD(const std::string LSD) {
   char *Result = strdup("-1");
 
-  if (LSD.empty() && (LSD.length() <= 52)) {
+  if (LSD.empty() || (LSD.length() >= 53)) {
     return Result;
   } else {
     return strdup(LSD.c_str());

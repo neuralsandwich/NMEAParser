@@ -23,6 +23,7 @@ set(TESTS
   ParseHDOP
   ParseInteger
   ParseLLL
+  ParseLSD
   ParseLatitude
   ParseLongitude
   ParseMSL

@@ -35,8 +35,8 @@ make test
   parameter signature.
 
 * Features and Testing status
-** DONE NMEAParser Functions
-   CLOSED: [2015-09-14 Mon 00:04]
+** TODO NMEAParser Functions
+   - [ ] Redo ParseLSD (Requires addition infrastructure)
 ** DONE Message Parse Tesst [6/6]
    CLOSED: [2015-09-15 Tue 16:12]
    - [X] GGA - Fix information
@@ -45,14 +45,14 @@ make test
    - [X] GSV - Detailed Satellite data
    - [X] RMC - recommended minimum data for gps
    - [X] VTG - Vector track an Speed over the Ground
-** TODO Messages To Implement [0/23]
+** TODO Messages To Implement [1/23]
    - [ ] AAM - Waypoint Arrival Alarm
    - [ ] ALM - Almanac data
    - [ ] APA - Auto Pilot A sentence
    - [ ] APB - Auto Pilot B sentence
    - [ ] BOD - Bearing Origin to Destination
    - [ ] BWC - Bearing using Great Circle route
-   - [ ] DTM - Datum being used.
+   - [X] DTM - Datum being used.
    - [ ] GRS - GPS Range Residuals
    - [ ] GST - GPS Pseudorange Noise Statistics
    - [ ] MSK - send control for a beacon receiver
