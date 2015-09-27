@@ -8,6 +8,7 @@ include_directories("${PROJECT_SOURCE_DIR}/lib")
 set(GOOGLIBS ${LIBS} gtest gtest_main)
 
 set(TESTS
+  DTMMessageParse
   GGAMessageParse
   GLLMessageParse
   GSAMessageParse
@@ -33,6 +34,7 @@ set(TESTS
   ParseModeIndicator
   ParseNavMode
   ParsePDOP
+  ParseRRR
   ParseSOG
   ParseSV
   ParseSatiliteFixes

@@ -158,10 +158,10 @@ typedef struct GPBWC{
 typedef struct GPDTM {
   // Local datum code, W84 = WGS84, W72 = WGS72, 999 = user
   // defined
-  char LLL[4];
+  char *LLL;
   // Local datam Subdivision code, This field outputs the
   // currently selected Datum as a string
-  char LSD[53];
+  char *LSD;
   // Offset in Latitude (minutes)
   // Posive for North, negative for south
   float lat;
@@ -171,7 +171,7 @@ typedef struct GPDTM {
   // Offeset in altitude
   float alt;
   // Reference Datum code, W84 = WGS84
-  char RRR[4];
+  char *RRR;
 } GPDTM;
 
 /**

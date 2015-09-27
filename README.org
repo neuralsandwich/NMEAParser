@@ -37,8 +37,8 @@ make test
 * Features and Testing status
 ** TODO NMEAParser Functions
    - [ ] Redo ParseLSD (Requires addition infrastructure)
-** DONE Message Parse Tesst [6/6]
-   CLOSED: [2015-09-15 Tue 16:12]
+** TODO Message Parse Tesst [7/7]
+   - [X] DTM - Datum being used.
    - [X] GGA - Fix information
    - [X] GLL - Lat/Lon data
    - [X] GSA - Overall Satellite data
@@ -52,7 +52,6 @@ make test
    - [ ] APB - Auto Pilot B sentence
    - [ ] BOD - Bearing Origin to Destination
    - [ ] BWC - Bearing using Great Circle route
-   - [X] DTM - Datum being used.
    - [ ] GRS - GPS Range Residuals
    - [ ] GST - GPS Pseudorange Noise Statistics
    - [ ] MSK - send control for a beacon receiver

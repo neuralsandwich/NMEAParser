@@ -21,7 +21,7 @@ TEST(ParseLSD, Valid_Datum) {
 
 TEST(ParseLLL, Invalid_Datum) {
   const std::string Datum = "11111111111111111111111111111111111111111111111111111";
-  const char Expected[4] = "-1";
+  const char Expected[4] = "";
 
   EXPECT_EQ(Expected[0], ParseLSD(Datum)[0]);
   EXPECT_EQ(Expected[1], ParseLSD(Datum)[1]);
@@ -29,7 +29,7 @@ TEST(ParseLLL, Invalid_Datum) {
   
 TEST(ParseLLL, Empty_Datum) {
   const std::string Datum = "";
-  const char Expected[4] = "-1";
+  const char Expected[4] = "";
 
   EXPECT_EQ(Expected[0], ParseLSD(Datum)[0]);
   EXPECT_EQ(Expected[1], ParseLSD(Datum)[1]);

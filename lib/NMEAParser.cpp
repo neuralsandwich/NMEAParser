@@ -59,8 +59,7 @@ static enum NMEA_TALKER_ID ParseTalkerID(const std::string &ID) {
   }
 } // ParseTalkerID
 
-static enum NMEA_MESSAGE_TYPE
-ParseMessageType(const std::string &Message) {
+static enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string &Message) {
   if (Message.length() < 5) {
     return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
   }
@@ -107,7 +106,7 @@ static int ParseInteger(const std::string &String) {
 } // ParseInteger
 
 static time_t ParseTimeStamp(const std::string &TimeStamp,
-                                  const std::string &DateStamp) {
+                             const std::string &DateStamp) {
   time_t Result = 0;
   struct tm *TimeInfo;
 
@@ -187,7 +186,7 @@ static int ParseFixStatus(const std::string &Status) {
 } // ParseFixStatus
 
 static float ParseLatitude(const std::string &Latitude,
-                                const std::string &Direction) {
+                           const std::string &Direction) {
   float Result = 0;
 
   if (Latitude.length() < 1 || Direction.length() < 1) {
@@ -208,7 +207,7 @@ static float ParseLatitude(const std::string &Latitude,
 } // ParseLatitude
 
 static float ParseLongitude(const std::string &Longitude,
-                                 const std::string &Direction) {
+                            const std::string &Direction) {
   float Result = 0;
 
   if (Longitude.length() < 1 || Direction.length() < 1) {
@@ -247,9 +246,9 @@ static float ParseAngle(const std::string &Angle) {
   return Result;
 } // ParseAngle
 
-static float ParseMagneticVariation(
-    const std::string &MagneticVariation,
-    const std::string &MagneticVariationDirection) {
+static float
+ParseMagneticVariation(const std::string &MagneticVariation,
+                       const std::string &MagneticVariationDirection) {
   float Result = 0;
 
   if (MagneticVariationDirection.empty()) {
@@ -292,8 +291,7 @@ static float ParseMSL(const std::string &MSL) {
   return Result;
 } // ParseMSL
 
-static float ParseGeoidSeparation(
-    const std::string &GeoidSeparation) {
+static float ParseGeoidSeparation(const std::string &GeoidSeparation) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(GeoidSeparation);
@@ -301,8 +299,7 @@ static float ParseGeoidSeparation(
   return Result;
 } // ParseGeoidSeparation
 
-static float ParseDifferentialCorrectionAge(
-    const std::string &CorrectionAge) {
+static float ParseDifferentialCorrectionAge(const std::string &CorrectionAge) {
   float Result = 0;
 
   Result = NMEA::ParseFloat(CorrectionAge);
@@ -343,7 +340,7 @@ static float ParseSOG(const std::string &SpeedOverGround) {
 } // ParseSOG
 
 static char ParseModeIndicator(const enum NMEA_MESSAGE_TYPE Type,
-                                    const std::string &ModeIndicator) {
+                               const std::string &ModeIndicator) {
   char Result = 'N';
 
   if (ModeIndicator.empty()) {
@@ -376,9 +373,7 @@ static char ParseSmode(const std::string &String) {
 } // ParseSmode
 
 static int ParseNavMode(const std::string &String) {
-  int Result = 1;
-
-  Result = ParseInteger(String);
+  int Result = ParseInteger(String);
 
   if ((Result > 0) && (Result < 4)) {
     return Result;
@@ -388,7 +383,7 @@ static int ParseNavMode(const std::string &String) {
 } // ParseNavMode
 
 static int *ParseSV(std::vector<std::string>::iterator Start,
-                         std::vector<std::string>::iterator End) {
+                    std::vector<std::string>::iterator End) {
   std::vector<int> *Result = new std::vector<int>();
   std::vector<int> &ResultRef = *Result;
 
@@ -455,53 +450,60 @@ static GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
   return Result;
 } // Parse GPGSV
 
-static char *ParseLLL(const std::string LLL) {
+static char *ParseLLL(const std::string &LLL) {
   char *Result = strdup("999");
+
   if (LLL.empty() && (LLL.length() == 3)) {
     return Result;
   }
-  
+
   if ((LLL == "W84") || (LLL == "W72")) {
-    return strdup(LLL.substr(0, 3).c_str());
+    delete Result;
+    Result = strdup(LLL.substr(0, 3).c_str());
+    return Result;
   } else {
-      return Result;
+    return Result;
   }
 } // ParseLLL
 
-static char *ParseLSD(const std::string LSD) {
-  char *Result = strdup("-1");
+static char *ParseLSD(const std::string &LSD) {
+  char *Result = strdup("");
 
   if (LSD.empty() || (LSD.length() >= 53)) {
     return Result;
   } else {
-    return strdup(LSD.c_str());
+    delete Result;
+    Result = strdup(LSD.c_str());
+    return Result;
   }
 } // ParseLSD
 
-static float ParseAltitude(const std::string Alt) {
+static float ParseAltitude(const std::string &Alt) {
   float Result = 0.0f;
   if (Alt.empty()) {
     return NAN;
   }
 
   Result = ParseFloat(Alt);
-  
+
   return Result;
 } // ParseAltitude
 
-static char *ParseRRR(const std::string LLL) {
+static char *ParseRRR(const std::string &RRR) {
   char *Result = strdup("999");
-  if (LLL.empty() && (LLL.length() == 3)) {
+  if (RRR.empty() && (RRR.length() == 3)) {
     return Result;
   }
-  
-  if ((LLL == "W84") || (LLL == "W72")) {
-    return strdup(LLL.substr(0, 3).c_str());
+
+  if ((RRR == "W84") || (RRR == "W72")) {
+    delete Result;
+    Result = strdup(RRR.substr(0, 3).c_str());
+    return Result;
   } else {
-      return Result;
+    return Result;
   }
 } // ParseRRR
-  
+
 NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   NMEAMessage *Result = new NMEAMessage{0, {0}};
   Result->Header = new NMEAHeader{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
@@ -531,14 +533,14 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   switch (Result->Header->Type) {
 
   case NMEA_MESSAGE_TYPE::DTM: {
-    Result->DTM = new GPDTM{.LLL = *ParseLLL(Elements[1]),
-			    .LSD = *ParseLSD(Elements[2]),
-                            .lat = ParseLatitude(Elements[3], Elements[4]),
-                            .lon = ParseLongitude(Elements[5], Elements[6]),
-                            .alt = ParseAltitude(Elements[7]),
-                            .RRR = *ParseRRR(Elements[8])};
+    Result->DTM = new GPDTM{ParseLLL(Elements[1]),
+                            ParseLSD(Elements[2]),
+                            ParseLatitude(Elements[3], Elements[4]),
+                            ParseLongitude(Elements[5], Elements[6]),
+                            ParseAltitude(Elements[7]),
+                            ParseRRR(Elements[8])};
   } break;
-    
+
   case NMEA_MESSAGE_TYPE::RMC: {
     Result->RMC = new GPRMC{ParseTimeStamp(Elements[1], Elements[9]),
                             ParseStatus(Elements[2]),
@@ -565,11 +567,10 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   } break;
 
   case NMEA_MESSAGE_TYPE::GLL: {
-    Result->GLL = new GPGLL{
-        ParseLatitude(Elements[1], Elements[2]),
-        ParseLongitude(Elements[3], Elements[4]), ParseTimeStamp(Elements[5]),
-        ParseStatus(Elements[6].c_str()),
-        Elements[7][0]};
+    Result->GLL = new GPGLL{ParseLatitude(Elements[1], Elements[2]),
+                            ParseLongitude(Elements[3], Elements[4]),
+                            ParseTimeStamp(Elements[5]),
+                            ParseStatus(Elements[6].c_str()), Elements[7][0]};
   } break;
 
   case NMEA_MESSAGE_TYPE::VTG: {
