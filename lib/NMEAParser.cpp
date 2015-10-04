@@ -79,7 +79,8 @@ static float ParseFloat(const std::string &String) {
     Result = std::stof(String);
   } catch (const std::invalid_argument &ia) {
     std::cerr << "NMEAParser: ParseFloat: Invalid argument: " << ia.what()
-              << "\n";
+              << "\n"
+              << "Input: " << String << '\n';
     return NAN;
   } catch (...) {
     std::cerr << "NMEAParser: ParseFloat: Unexpected exception";
@@ -95,7 +96,8 @@ static int ParseInteger(const std::string &String) {
     Result = std::stoi(String);
   } catch (const std::invalid_argument &ia) {
     std::cerr << "NMEAParser: ParseInteger: Invalid arugement: " << ia.what()
-              << "\n";
+              << "\n"
+              << "Input: " << String << '\n';
     return 0;
   } catch (...) {
     std::cerr << "NMEAParser: ParseInteger: Unexpected exception";
@@ -382,13 +384,13 @@ static int ParseNavMode(const std::string &String) {
   return 1;
 } // ParseNavMode
 
-static int *ParseSV(std::vector<std::string>::iterator Start,
-                    std::vector<std::string>::iterator End) {
+template <typename Iter> static int *ParseSV(Iter Start, Iter End) {
   std::vector<int> *Result = new std::vector<int>();
   std::vector<int> &ResultRef = *Result;
 
-  for_each(Start, End,
-           [&Result](std::string &s) { Result->push_back(ParseInteger(s)); });
+  std::for_each(Start, End, [&Result](const std::string &s) {
+    Result->push_back(ParseInteger(s));
+  });
 
   return &ResultRef[0];
 } // ParseSV
@@ -408,47 +410,6 @@ static float ParsePDOP(const std::string &PDOP) {
 
   return Result;
 } // ParsePDOP
-
-static GPGSV *ParseGPGSV(std::vector<std::string> &Elements) {
-  GPGSV *Result = new GPGSV{};
-
-  Result->NoMSG = ParseInteger(Elements[1]);
-  Result->MSGNo = ParseInteger(Elements[2]);
-  Result->NoSV = ParseInteger(Elements[3]);
-
-  std::vector<int> *SVs = new std::vector<int>();
-  std::vector<int> *Elvs = new std::vector<int>();
-  std::vector<int> *Azs = new std::vector<int>();
-  std::vector<int> *Cnos = new std::vector<int>();
-  std::vector<int> &SVsRef = *SVs;
-  std::vector<int> &ElvsRef = *Elvs;
-  std::vector<int> &AzsRef = *Azs;
-  std::vector<int> &CnosRef = *Cnos;
-
-  // This took a while to get
-  unsigned int Iterations = 0;
-  if (Result->MSGNo <= (Result->NoSV / 4)) {
-    Iterations = 4;
-  } else {
-    Iterations = Result->NoSV % 4;
-  }
-
-  Result->DataFieldsInMessage = static_cast<int>(Iterations);
-
-  for (unsigned int i = 0; i < Iterations; i++) {
-    SVs->push_back(ParseInteger(Elements[4 + (i * 4)]));
-    Elvs->push_back(ParseInteger(Elements[5 + (i * 4)]));
-    Azs->push_back(ParseInteger(Elements[6 + (i * 4)]));
-    Cnos->push_back(ParseInteger(Elements[7 + (i * 4)]));
-  }
-
-  Result->sv = &SVsRef[0];
-  Result->elv = &ElvsRef[0];
-  Result->az = &AzsRef[0];
-  Result->cno = &CnosRef[0];
-
-  return Result;
-} // Parse GPGSV
 
 static char *ParseLLL(const std::string &LLL) {
   char *Result = strdup("999");
@@ -504,7 +465,180 @@ static char *ParseRRR(const std::string &RRR) {
   }
 } // ParseRRR
 
+struct MessageParser {
+  virtual ~MessageParser() = 0;
+  virtual void Parse(NMEAMessage *, const std::vector<std::string> &) const;
+};
+MessageParser::~MessageParser() {}
+void MessageParser::Parse(NMEAMessage *,
+                          const std::vector<std::string> &) const {}
+
+struct GPDTMParser : MessageParser {
+  virtual void Parse(NMEAMessage *Message,
+                     const std::vector<std::string> &Elements) const;
+};
+void GPDTMParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPDTM()"};
+  }
+
+  Message->DTM = new GPDTM{ParseLLL(Elements[1]),
+                           ParseLSD(Elements[2]),
+                           ParseLatitude(Elements[3], Elements[4]),
+                           ParseLongitude(Elements[5], Elements[6]),
+                           ParseAltitude(Elements[7]),
+                           ParseRRR(Elements[8])};
+}
+
+struct GPGSVParser : MessageParser {
+  virtual void Parse(NMEAMessage *Message,
+                     const std::vector<std::string> &Elements) const;
+};
+void GPGSVParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPGSV()"};
+  }
+
+  GPGSV *Result = new GPGSV{};
+
+  Result->NoMSG = ParseInteger(Elements[1]);
+  Result->MSGNo = ParseInteger(Elements[2]);
+  Result->NoSV = ParseInteger(Elements[3]);
+
+  std::vector<int> *SVs = new std::vector<int>();
+  std::vector<int> *Elvs = new std::vector<int>();
+  std::vector<int> *Azs = new std::vector<int>();
+  std::vector<int> *Cnos = new std::vector<int>();
+  std::vector<int> &SVsRef = *SVs;
+  std::vector<int> &ElvsRef = *Elvs;
+  std::vector<int> &AzsRef = *Azs;
+  std::vector<int> &CnosRef = *Cnos;
+
+  // This took a while to get
+  unsigned int Iterations = 0;
+  if (Result->MSGNo <= (Result->NoSV / 4)) {
+    Iterations = 4;
+  } else {
+    Iterations = Result->NoSV % 4;
+  }
+
+  Result->DataFieldsInMessage = static_cast<int>(Iterations);
+
+  for (unsigned int i = 0; i < Iterations; i++) {
+    SVs->push_back(ParseInteger(Elements[4 + (i * 4)]));
+    Elvs->push_back(ParseInteger(Elements[5 + (i * 4)]));
+    Azs->push_back(ParseInteger(Elements[6 + (i * 4)]));
+    Cnos->push_back(ParseInteger(Elements[7 + (i * 4)]));
+  }
+
+  Result->sv = &SVsRef[0];
+  Result->elv = &ElvsRef[0];
+  Result->az = &AzsRef[0];
+  Result->cno = &CnosRef[0];
+
+  Message->GSV = Result;
+} // ParseGPGSV
+
+struct GPRMCParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+void GPRMCParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPRMC()"};
+  }
+
+  Message->RMC = new GPRMC{ParseTimeStamp(Elements[1], Elements[9]),
+                           ParseStatus(Elements[2]),
+                           ParseLatitude(Elements[3], Elements[4]),
+                           ParseLongitude(Elements[5], Elements[6]),
+                           ParseSpeed(Elements[7]),
+                           ParseAngle(Elements[8]),
+                           ParseMagneticVariation(Elements[10], Elements[11])};
+}
+
+struct GPGGAParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+
+void GPGGAParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPGGA()"};
+  }
+
+  Message->GGA = new GPGGA{ParseTimeStamp(Elements[1]),
+                           ParseLatitude(Elements[2], Elements[3]),
+                           ParseLongitude(Elements[4], Elements[5]),
+                           ParseFixStatus(Elements[6]),
+                           ParseSatiliteFixes(Elements[7]),
+                           ParseHDOP(Elements[8]),
+                           ParseMSL(Elements[9]),
+                           'M',
+                           ParseGeoidSeparation(Elements[11]),
+                           'M',
+                           ParseDifferentialCorrectionAge(Elements[13]),
+                           ParseDifferentialStationID(Elements[14])};
+}
+
+struct GPGLLParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+void GPGLLParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPGLL"};
+  }
+
+  Message->GLL = new GPGLL{ParseLatitude(Elements[1], Elements[2]),
+                           ParseLongitude(Elements[3], Elements[4]),
+                           ParseTimeStamp(Elements[5]),
+                           ParseStatus(Elements[6].c_str()), Elements[7][0]};
+}
+
+struct GPVTGParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+void GPVTGParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  Message->VTG =
+      new GPVTG{ParseCOGT(Elements[1]), 'T', ParseCOGM(Elements[3]),  'M',
+                ParseSOG(Elements[5]),  'N', ParseSpeed(Elements[7]), 'K',
+                Elements[9][0]};
+}
+
+struct GPGSAParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+void GPGSAParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+
+  Message->GSA = new GPGSA{ParseSmode(Elements[1]), ParseNavMode(Elements[2]),
+                           // nullptr,
+                           ParseSV(Elements.begin() + 3, Elements.begin() + 14),
+                           ParsePDOP(Elements[15]), ParseHDOP(Elements[16]),
+                           ParseVDOP(Elements[17])};
+}
+
 NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
+
+  std::vector<MessageParser *> Parsers{NMEA_MESSAGE_TYPE::NMEA_GPS_MESSAGE_NUM};
+
+  Parsers[NMEA_MESSAGE_TYPE::DTM] = new GPDTMParser{};
+  Parsers[NMEA_MESSAGE_TYPE::GSV] = new GPGSVParser{};
+  Parsers[NMEA_MESSAGE_TYPE::RMC] = new GPRMCParser{};
+  Parsers[NMEA_MESSAGE_TYPE::GGA] = new GPGGAParser{};
+  Parsers[NMEA_MESSAGE_TYPE::GLL] = new GPGLLParser{};
+  Parsers[NMEA_MESSAGE_TYPE::VTG] = new GPVTGParser{};
+  Parsers[NMEA_MESSAGE_TYPE::GSA] = new GPGSAParser{};
+
   NMEAMessage *Result = new NMEAMessage{0, {0}};
   Result->Header = new NMEAHeader{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
                                   NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0};
@@ -530,71 +664,12 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   Result->Header->ID = ParseTalkerID(Elements[0]);
   Result->Header->Type = ParseMessageType(Elements[0]);
 
-  switch (Result->Header->Type) {
-
-  case NMEA_MESSAGE_TYPE::DTM: {
-    Result->DTM = new GPDTM{ParseLLL(Elements[1]),
-                            ParseLSD(Elements[2]),
-                            ParseLatitude(Elements[3], Elements[4]),
-                            ParseLongitude(Elements[5], Elements[6]),
-                            ParseAltitude(Elements[7]),
-                            ParseRRR(Elements[8])};
-  } break;
-
-  case NMEA_MESSAGE_TYPE::RMC: {
-    Result->RMC = new GPRMC{ParseTimeStamp(Elements[1], Elements[9]),
-                            ParseStatus(Elements[2]),
-                            ParseLatitude(Elements[3], Elements[4]),
-                            ParseLongitude(Elements[5], Elements[6]),
-                            ParseSpeed(Elements[7]),
-                            ParseAngle(Elements[8]),
-                            ParseMagneticVariation(Elements[10], Elements[11])};
-  } break;
-
-  case NMEA_MESSAGE_TYPE::GGA: {
-    Result->GGA = new GPGGA{ParseTimeStamp(Elements[1]),
-                            ParseLatitude(Elements[2], Elements[3]),
-                            ParseLongitude(Elements[4], Elements[5]),
-                            ParseFixStatus(Elements[6]),
-                            ParseSatiliteFixes(Elements[7]),
-                            ParseHDOP(Elements[8]),
-                            ParseMSL(Elements[9]),
-                            'M',
-                            ParseGeoidSeparation(Elements[11]),
-                            'M',
-                            ParseDifferentialCorrectionAge(Elements[13]),
-                            ParseDifferentialStationID(Elements[14])};
-  } break;
-
-  case NMEA_MESSAGE_TYPE::GLL: {
-    Result->GLL = new GPGLL{ParseLatitude(Elements[1], Elements[2]),
-                            ParseLongitude(Elements[3], Elements[4]),
-                            ParseTimeStamp(Elements[5]),
-                            ParseStatus(Elements[6].c_str()), Elements[7][0]};
-  } break;
-
-  case NMEA_MESSAGE_TYPE::VTG: {
-    Result->VTG =
-        new GPVTG{ParseCOGT(Elements[1]), 'T', ParseCOGM(Elements[3]),  'M',
-                  ParseSOG(Elements[5]),  'N', ParseSpeed(Elements[7]), 'K',
-                  Elements[9][0]};
-  } break;
-
-  case NMEA_MESSAGE_TYPE::GSA: {
-    Result->GSA =
-        new GPGSA{ParseSmode(Elements[1]),
-                  ParseNavMode(Elements[2]),
-                  ParseSV(Elements.begin() + 3, Elements.begin() + 14),
-                  ParsePDOP(Elements[15]),
-                  ParseHDOP(Elements[16]),
-                  ParseVDOP(Elements[17])};
-  } break;
-
-  case NMEA_MESSAGE_TYPE::GSV: {
-    Result->GSV = ParseGPGSV(Elements);
-  } break;
-
-  default: { Result->Header->Valid = 1; } break;
+  try {
+    Parsers[Result->Header->Type]->Parse(Result, Elements);
+  } catch (std::length_error) {
+    return Result;
+  } catch (std::bad_alloc) {
+    return Result;
   }
 
   return Result;
