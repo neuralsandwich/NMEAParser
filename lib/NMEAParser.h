@@ -47,6 +47,7 @@ const NMEAGPSMessageName NMEAGPSMessageNames[NMEA_GPS_MESSAGE_NUM] = {
     {NMEA_MESSAGE_TYPE::BOD, "BOD"}, // Bearing Origin to Destination
     {NMEA_MESSAGE_TYPE::BWC, "BWC"}, // Bearing using Great Circle route
     {NMEA_MESSAGE_TYPE::DTM, "DTM"}, // Datum being used.
+    {NMEA_MESSAGE_TYPE::GBS, "GBS"}, // GNSS Satellite Fault Detection
     {NMEA_MESSAGE_TYPE::GGA, "GGA"}, // Fix information
     {NMEA_MESSAGE_TYPE::GLL, "GLL"}, // Lat/Lon data
     {NMEA_MESSAGE_TYPE::GRS, "GRS"}, // GPS Range Residuals

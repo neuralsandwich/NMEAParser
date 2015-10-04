@@ -22,6 +22,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weverything -std=c++11 -Wno-c++98-compa
 IF(BUILD_TESTING)
   add_definitions(-DDEBUG)
   add_subdirectory(gtest)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
 ENDIF(BUILD_TESTING)
 
 add_subdirectory(lib)

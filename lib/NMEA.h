@@ -34,6 +34,7 @@ enum NMEA_MESSAGE_TYPE {
   BOD, // Bearing Origin to Destination
   BWC, // Bearing using Great Circle route
   DTM, // Datum being used.
+  GBS, // GNSS Satellite Fault Detection
   GGA, // Fix information
   GLL, // Lat/Lon data
   GRS, // GPS Range Residuals
@@ -96,6 +97,7 @@ typedef struct NMEAHeader {
   int Valid;
 } NMEAHeader;
 
+#if 0
 /**
  * GPAAM - Away point alarm
  */
@@ -131,6 +133,48 @@ typedef struct GPDOB {
  */
 typedef struct GPBWC{
 } GPBWC;
+#endif
+
+/**
+ * GPGBS - GNSS Satellite Fault Detection
+ *
+ * This message outputs the results of the Receiver Autonomous
+ * Integrity Monitoring Algorithm (RAIM).
+ * 
+ * Message Strucuter:
+ * $GPGBS,hhmmss.ss,errlat,errlon,erralt,svid,prob,bias,stddev*cs<CR><LF>
+ *
+ * 01. Message ID, GBS protocol header
+ * 02. UTC Time, Time to which this RAIM sentence belongs
+ * 03. Expected error in latitude
+ * 04. Expected error in longitude
+ * 05. Expected error in altitude
+ * 06. Satellite ID of most likely failed satellite
+ * 07. Probability of missed detection, no supported (empty)
+ * 08. Estimate on most likely failed satellite (a priori residual)
+ * 09. Standard deviation of estimated bias
+ * 10. Checksum
+ * 11. Carriage Return and Line Feed
+ */
+typedef struct GPGBS {
+  // UTC Time, Time to which this RAIM sentence belongs
+  time_t TimeStamp;
+  // Expected error in latitude
+  float errlat;
+  // Expected error in longitude
+  float errlon;
+  // Expected error in altitude
+  float erralt;
+  // Satellite ID of most likely failed satellite
+  int svid;
+  // Probability of missed detection, no supported (empty)
+  float prob;
+  // Estimate on most likely failed satellite (a priori residual)
+  float bias;
+  // Standard deviation of estimated bias
+  float stddev;
+} GPGBS;
+
 
 /**
  * GPDTM - Datum Reference
@@ -439,6 +483,7 @@ typedef struct NMEAMessage {
     // GPBOD *BOD;
     // GPBWC *BWC;
     GPDTM *DTM;
+    GPGBS *GBS;
     GPGGA *GGA;
     GPGLL *GLL;
     // GPGRS *GRS;

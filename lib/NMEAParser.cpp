@@ -46,6 +46,10 @@ static bool ValidateChecksum(const std::string &Message,
 } // ValidChecksum
 
 static enum NMEA_TALKER_ID ParseTalkerID(const std::string &ID) {
+  if (ID.empty()) {
+    return NMEA_TALKER_ID::UNKNOWN_TALKER_ID;
+  }
+
   if (ID[0] != 'G') {
     return NMEA_TALKER_ID::UNKNOWN_TALKER_ID;
   }
@@ -60,6 +64,10 @@ static enum NMEA_TALKER_ID ParseTalkerID(const std::string &ID) {
 } // ParseTalkerID
 
 static enum NMEA_MESSAGE_TYPE ParseMessageType(const std::string &Message) {
+  if (Message.empty()) {
+    return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
+  }
+
   if (Message.length() < 5) {
     return NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE;
   }
@@ -474,8 +482,8 @@ void MessageParser::Parse(NMEAMessage *,
                           const std::vector<std::string> &) const {}
 
 struct GPDTMParser : MessageParser {
-  virtual void Parse(NMEAMessage *Message,
-                     const std::vector<std::string> &Elements) const;
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
 };
 void GPDTMParser::Parse(NMEAMessage *Message,
                         const std::vector<std::string> &Elements) const {
@@ -492,8 +500,8 @@ void GPDTMParser::Parse(NMEAMessage *Message,
 }
 
 struct GPGSVParser : MessageParser {
-  virtual void Parse(NMEAMessage *Message,
-                     const std::vector<std::string> &Elements) const;
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
 };
 void GPGSVParser::Parse(NMEAMessage *Message,
                         const std::vector<std::string> &Elements) const {
@@ -607,6 +615,10 @@ struct GPVTGParser : MessageParser {
 };
 void GPVTGParser::Parse(NMEAMessage *Message,
                         const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPVTG"};
+  }
+
   Message->VTG =
       new GPVTG{ParseCOGT(Elements[1]), 'T', ParseCOGM(Elements[3]),  'M',
                 ParseSOG(Elements[5]),  'N', ParseSpeed(Elements[7]), 'K',
@@ -619,12 +631,33 @@ struct GPGSAParser : MessageParser {
 };
 void GPGSAParser::Parse(NMEAMessage *Message,
                         const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPGSA"};
+  }
 
-  Message->GSA = new GPGSA{ParseSmode(Elements[1]), ParseNavMode(Elements[2]),
-                           // nullptr,
+  Message->GSA = new GPGSA{ParseSmode(Elements[1]),
+                           ParseNavMode(Elements[2]),
                            ParseSV(Elements.begin() + 3, Elements.begin() + 14),
-                           ParsePDOP(Elements[15]), ParseHDOP(Elements[16]),
+                           ParsePDOP(Elements[15]),
+                           ParseHDOP(Elements[16]),
                            ParseVDOP(Elements[17])};
+}
+
+struct GPGBSParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+void GPGBSParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPGBS"};
+  }
+
+  Message->GBS =
+      new GPGBS{ParseTimeStamp(Elements[1]), ParseFloat(Elements[2]),
+                ParseFloat(Elements[3]),     ParseFloat(Elements[4]),
+                ParseInteger(Elements[5]),   ParseFloat(Elements[6]),
+                ParseFloat(Elements[7]),     ParseFloat(Elements[8])};
 }
 
 NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
@@ -632,6 +665,7 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   std::vector<MessageParser *> Parsers{NMEA_MESSAGE_TYPE::NMEA_GPS_MESSAGE_NUM};
 
   Parsers[NMEA_MESSAGE_TYPE::DTM] = new GPDTMParser{};
+  Parsers[NMEA_MESSAGE_TYPE::GBS] = new GPGBSParser{};
   Parsers[NMEA_MESSAGE_TYPE::GSV] = new GPGSVParser{};
   Parsers[NMEA_MESSAGE_TYPE::RMC] = new GPRMCParser{};
   Parsers[NMEA_MESSAGE_TYPE::GGA] = new GPGGAParser{};
@@ -644,8 +678,13 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
                                   NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0};
   std::vector<std::string> Elements(1);
 
-  if (*(Message.begin()) != '$')
+  if (Message.empty()) {
     return Result;
+  }
+
+  if (*(Message.begin()) != '$') {
+    return Result;
+  }
 
   for (auto it = Message.begin() + 1; it != Message.end(); ++it) {
     if (*it == ',' || *it == '*') {
@@ -660,15 +699,21 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
     return Result;
   }
 
-  Result->Header->Valid = 1;
-  Result->Header->ID = ParseTalkerID(Elements[0]);
-  Result->Header->Type = ParseMessageType(Elements[0]);
-
   try {
-    Parsers[Result->Header->Type]->Parse(Result, Elements);
+    Result->Header->Valid = 1;
+    Result->Header->ID = ParseTalkerID(Elements[0]);
+    Result->Header->Type = ParseMessageType(Elements[0]);
+
+    if (Result->Header->Type != NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE) {
+      Parsers[Result->Header->Type]->Parse(Result, Elements);
+    } else {
+      throw std::out_of_range{"Invalid Message Type"};
+    }
   } catch (std::length_error) {
     return Result;
   } catch (std::bad_alloc) {
+    return Result;
+  } catch (std::out_of_range) {
     return Result;
   }
 
