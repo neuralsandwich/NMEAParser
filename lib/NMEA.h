@@ -140,7 +140,7 @@ typedef struct GPBWC{
  *
  * This message outputs the results of the Receiver Autonomous
  * Integrity Monitoring Algorithm (RAIM).
- * 
+ *
  * Message Strucuter:
  * $GPGBS,hhmmss.ss,errlat,errlon,erralt,svid,prob,bias,stddev*cs<CR><LF>
  *
@@ -174,7 +174,6 @@ typedef struct GPGBS {
   // Standard deviation of estimated bias
   float stddev;
 } GPGBS;
-
 
 /**
  * GPDTM - Datum Reference

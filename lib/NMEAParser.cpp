@@ -473,10 +473,6 @@ static char *ParseRRR(const std::string &RRR) {
   }
 } // ParseRRR
 
-struct MessageParser {
-  virtual ~MessageParser() = 0;
-  virtual void Parse(NMEAMessage *, const std::vector<std::string> &) const;
-};
 MessageParser::~MessageParser() {}
 void MessageParser::Parse(NMEAMessage *,
                           const std::vector<std::string> &) const {}
@@ -660,19 +656,18 @@ void GPGBSParser::Parse(NMEAMessage *Message,
                 ParseFloat(Elements[7]),     ParseFloat(Elements[8])};
 }
 
-NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
-
-  std::vector<MessageParser *> Parsers{NMEA_MESSAGE_TYPE::NMEA_GPS_MESSAGE_NUM};
-
+NMEAParser::NMEAParser() {
   Parsers[NMEA_MESSAGE_TYPE::DTM] = new GPDTMParser{};
   Parsers[NMEA_MESSAGE_TYPE::GBS] = new GPGBSParser{};
-  Parsers[NMEA_MESSAGE_TYPE::GSV] = new GPGSVParser{};
-  Parsers[NMEA_MESSAGE_TYPE::RMC] = new GPRMCParser{};
   Parsers[NMEA_MESSAGE_TYPE::GGA] = new GPGGAParser{};
   Parsers[NMEA_MESSAGE_TYPE::GLL] = new GPGLLParser{};
-  Parsers[NMEA_MESSAGE_TYPE::VTG] = new GPVTGParser{};
   Parsers[NMEA_MESSAGE_TYPE::GSA] = new GPGSAParser{};
+  Parsers[NMEA_MESSAGE_TYPE::GSV] = new GPGSVParser{};
+  Parsers[NMEA_MESSAGE_TYPE::RMC] = new GPRMCParser{};
+  Parsers[NMEA_MESSAGE_TYPE::VTG] = new GPVTGParser{};
+};
 
+NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   NMEAMessage *Result = new NMEAMessage{0, {0}};
   Result->Header = new NMEAHeader{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
                                   NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0};

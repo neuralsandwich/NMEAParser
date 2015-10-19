@@ -74,12 +74,23 @@ const NMEAGPSMessageName NMEAGPSMessageNames[NMEA_GPS_MESSAGE_NUM] = {
     {NMEA_MESSAGE_TYPE::ZDA, "ZDA"}, // Date and Time
 };                                   // NMEAGPSMessageName
 
+/* MessageParse - Interface for Message Parsers
+ * TODO
+ */
+struct MessageParser {
+  virtual ~MessageParser() = 0;
+  virtual void Parse(NMEAMessage *, const std::vector<std::string> &) const;
+};
+
 /* NMEAParser - Factory for NMEA message objects
  *
  * TODO: Document this once we have initial work on messages done.
  */
 class NMEAParser {
+  std::vector<MessageParser *> Parsers{NMEA_MESSAGE_TYPE::NMEA_GPS_MESSAGE_NUM};
+
 public:
+  NMEAParser();
   NMEAMessage *Parse(const std::string &String) const;
 }; // NMEAParser
 } // NMEA
