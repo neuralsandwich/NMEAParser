@@ -358,6 +358,34 @@ typedef struct GPGLL {
   char PositioningMode;
 } GPGLL;
 
+/* GPGRS - GNSS Range Residuals
+ *
+ * Message Structure:
+ * $GPGRS,hhmmss.ss, mode {,residual}*cs<CR><LF>
+ *
+ * 01. Message ID, GRS protocol header
+ * 02. UTC Time, Time of associated position fix
+ * 03. Mode
+ - Start of repeated block (12 times)
+ * 04. Range residuals for SVs used in navigation. The SV order
+ *     matches the order from the GSA sentence.
+ - End of repeated block
+ * 16. Checksum
+ * 17. Carriage Return and Line Feed
+ */
+typedef struct GPGRS {
+  // UTC time stamp of data fix
+  time_t TimeStamp;
+  // Mode
+  int mode;
+  // residuals
+  float *Residuals;
+  /* Helper number = 12
+   * NMEAParser will always output maximum storage
+   */
+  int ResidualNum;
+} GPGRS;
+
 /* GPVTG - Course over groud and Ground speed
  *
  * Message Structure:
@@ -485,7 +513,7 @@ typedef struct NMEAMessage {
     GPGBS *GBS;
     GPGGA *GGA;
     GPGLL *GLL;
-    // GPGRS *GRS;
+    GPGRS *GRS;
     GPGSA *GSA;
     // GPGST *GST;
     GPGSV *GSV;

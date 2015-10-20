@@ -349,21 +349,14 @@ static float ParseSOG(const std::string &SpeedOverGround) {
   return Result;
 } // ParseSOG
 
-static char ParseModeIndicator(const enum NMEA_MESSAGE_TYPE Type,
-                               const std::string &ModeIndicator) {
-  char Result = 'N';
+static int ParseMode(const std::string &String) {
+  int Result = -1;
 
-  if (ModeIndicator.empty()) {
+  if (String.empty()) {
     return Result;
   }
 
-  if ((Type == NMEA_MESSAGE_TYPE::RMC) || (Type == NMEA_MESSAGE_TYPE::GLL) ||
-      (Type == NMEA_MESSAGE_TYPE::VTG)) {
-    if ((ModeIndicator[0] == 'N') || (ModeIndicator[0] == 'E') ||
-        (ModeIndicator[0] == 'A') || (ModeIndicator[0] == 'D')) {
-      return ModeIndicator[0];
-    }
-  }
+  Result = NMEA::ParseInteger(String);
 
   return Result;
 } // ParseModeIndicator
@@ -472,6 +465,17 @@ static char *ParseRRR(const std::string &RRR) {
     return Result;
   }
 } // ParseRRR
+
+template <typename Iter> static float *ParseResiduals(Iter ResidualIter, Iter End) {
+  std::vector<float> Result(12, 0.0f);
+
+  for (size_t i = 0; ResidualIter != End; ResidualIter++, i++) {
+    Result[i] = ParseFloat(*ResidualIter);
+  }
+
+  // Return the address of the first element of Result
+  return &(Result[0]);
+} // ParseResiduals
 
 MessageParser::~MessageParser() {}
 void MessageParser::Parse(NMEAMessage *,
@@ -656,11 +660,36 @@ void GPGBSParser::Parse(NMEAMessage *Message,
                 ParseFloat(Elements[7]),     ParseFloat(Elements[8])};
 }
 
+struct GPGRSParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+void GPGRSParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPGRS"};
+  }
+
+  // Start of Residuals is element 4
+  auto Start = Elements.begin() + 3;
+  // End of Residuals is 2nd last element of message
+  auto End = Elements.begin() + static_cast<int>(Elements.size() - 2);
+
+  if (Elements.size() < 5) {
+    Message->GRS =
+        new GPGRS{ParseTimeStamp(Elements[1]), ParseMode(Elements[2]),
+                  ParseResiduals(Start, End), 12};
+  } else {
+    Message->GRS = new GPGRS{};
+  }
+}
+
 NMEAParser::NMEAParser() {
   Parsers[NMEA_MESSAGE_TYPE::DTM] = new GPDTMParser{};
   Parsers[NMEA_MESSAGE_TYPE::GBS] = new GPGBSParser{};
   Parsers[NMEA_MESSAGE_TYPE::GGA] = new GPGGAParser{};
   Parsers[NMEA_MESSAGE_TYPE::GLL] = new GPGLLParser{};
+  Parsers[NMEA_MESSAGE_TYPE::GRS] = new GPGRSParser{};
   Parsers[NMEA_MESSAGE_TYPE::GSA] = new GPGSAParser{};
   Parsers[NMEA_MESSAGE_TYPE::GSV] = new GPGSVParser{};
   Parsers[NMEA_MESSAGE_TYPE::RMC] = new GPRMCParser{};

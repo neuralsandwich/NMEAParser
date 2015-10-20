@@ -32,10 +32,10 @@ set(TESTS
   ParseMSL
   ParseMagneticVariation
   ParseMessageType
-  ParseModeIndicator
   ParseNavMode
   ParsePDOP
   ParseRRR
+  ParseResiduals
   ParseSOG
   ParseSV
   ParseSatiliteFixes
