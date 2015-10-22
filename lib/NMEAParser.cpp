@@ -385,7 +385,8 @@ static int ParseNavMode(const std::string &String) {
   return 1;
 } // ParseNavMode
 
-template <typename Iter> static int *ParseSV(Iter Start, Iter End) {
+static int *ParseSV(std::vector<std::string>::const_iterator Start,
+                    std::vector<std::string>::const_iterator End) {
   std::vector<int> *Result = new std::vector<int>();
   std::vector<int> &ResultRef = *Result;
 
@@ -466,7 +467,8 @@ static char *ParseRRR(const std::string &RRR) {
   }
 } // ParseRRR
 
-template <typename Iter> static float *ParseResiduals(Iter ResidualIter, Iter End) {
+static float *ParseResiduals(std::vector<std::string>::const_iterator ResidualIter,
+                             std::vector<std::string>::const_iterator End) {
   std::vector<float> Result(12, 0.0f);
 
   for (size_t i = 0; ResidualIter != End; ResidualIter++, i++) {
