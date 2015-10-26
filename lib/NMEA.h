@@ -462,6 +462,43 @@ typedef struct GPGSA {
   float vdop;
 } GPGSA;
 
+/* GPGST - GNSS Pseudo Range Error Statistics
+ *
+ * Message Structure:
+ * $GPGST,hhmmss.ss,range_rms,std_major,std_minor,hdg,std_lat,std_long,std_alt*cs<CR><LF>
+ *
+ * 01. Message ID, GST protocol header
+ * 02. UTC Time, Time of associated position fix
+ * 03. RMS value of the standard deviation of the ranges
+ * 04. Standard deviation of semi-major axis
+ * 05. Standard deviation of semi-minor axis
+ * 06. Orientation of semi-major axis
+ * 07. Standard deviation of latitude, error in meters
+ * 08. Standard deviation of longitude, error in meters
+ * 09. Standard deviation of altitude, error in meters
+ * 10. Checksum
+ * 11. Carriage Return and Line Feed
+ */
+typedef struct GPGST {
+  // UTC Time, Time of associated position fix
+  // Format: hhmmss.sss
+  time_t TimeStamp;
+  // RMS value of the standard deviation of the ranges
+  float range_rms;
+  // Standard deviation of semi-major axis
+  float std_major;
+  // Standard deviation of semi-minor axis
+  float std_minor;
+  // Orientation of semi-major axis
+  float hdg;
+  // Standard deviation of latitude, error in meters
+  float std_lat;
+  // Standard deviation of longitude, error in meters
+  float std_long;
+  // Standard deviation of altitude, error in meters
+  float std_alt;
+} GPGST;
+
 /* GPGSV - GNSS Satellites in View
  *
  * Message structure:
@@ -515,7 +552,7 @@ typedef struct NMEAMessage {
     GPGLL *GLL;
     GPGRS *GRS;
     GPGSA *GSA;
-    // GPGST *GST;
+    GPGST *GST;
     GPGSV *GSV;
     // GPMSK *MSK;
     // GPMSS *MSS;

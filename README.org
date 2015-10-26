@@ -37,16 +37,17 @@ make test
 * Features and Testing status
 ** TODO NMEAParser Functions
    - [ ] Redo ParseLSD (Requires addition infrastructure)
-** TODO Message Parse Tesst [8/8]
+** TODO Message Parse Tesst [9/9]
    - [X] DTM - Datum being used.
    - [X] GBS - Integrity Monitoring Algorithm
    - [X] GGA - Fix information
    - [X] GLL - Lat/Lon data
    - [X] GSA - Overall Satellite data
+   - [X] GST - GPS Pseudorange Noise Statistics
    - [X] GSV - Detailed Satellite data
    - [X] RMC - recommended minimum data for gps
    - [X] VTG - Vector track an Speed over the Ground
-** TODO Messages To Implement [1/23]
+** TODO Messages To Implement [0/21]
    - [ ] AAM - Waypoint Arrival Alarm
    - [ ] ALM - Almanac data
    - [ ] APA - Auto Pilot A sentence
@@ -54,7 +55,6 @@ make test
    - [ ] BOD - Bearing Origin to Destination
    - [ ] BWC - Bearing using Great Circle route
    - [ ] GRS - GPS Range Residuals
-   - [ ] GST - GPS Pseudorange Noise Statistics
    - [ ] MSK - send control for a beacon receiver
    - [ ] MSS - Beacon receiver status information.
    - [ ] RMA - recommended Loran data

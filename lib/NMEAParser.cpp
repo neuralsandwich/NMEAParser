@@ -467,8 +467,9 @@ static char *ParseRRR(const std::string &RRR) {
   }
 } // ParseRRR
 
-static float *ParseResiduals(std::vector<std::string>::const_iterator ResidualIter,
-                             std::vector<std::string>::const_iterator End) {
+static float *
+ParseResiduals(std::vector<std::string>::const_iterator ResidualIter,
+               std::vector<std::string>::const_iterator End) {
   std::vector<float> Result(12, 0.0f);
 
   for (size_t i = 0; ResidualIter != End; ResidualIter++, i++) {
@@ -686,6 +687,23 @@ void GPGRSParser::Parse(NMEAMessage *Message,
   }
 }
 
+struct GPGSTParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+void GPGSTParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"PraseGPGST"};
+  }
+
+  Message->GST =
+      new GPGST{ParseTimeStamp(Elements[1]), ParseFloat(Elements[2]),
+                ParseFloat(Elements[3]),     ParseFloat(Elements[4]),
+                ParseFloat(Elements[5]),     ParseFloat(Elements[6]),
+                ParseFloat(Elements[7]),     ParseFloat(Elements[8])};
+}
+
 NMEAParser::NMEAParser() {
   Parsers[NMEA_MESSAGE_TYPE::DTM] = new GPDTMParser{};
   Parsers[NMEA_MESSAGE_TYPE::GBS] = new GPGBSParser{};
@@ -693,6 +711,7 @@ NMEAParser::NMEAParser() {
   Parsers[NMEA_MESSAGE_TYPE::GLL] = new GPGLLParser{};
   Parsers[NMEA_MESSAGE_TYPE::GRS] = new GPGRSParser{};
   Parsers[NMEA_MESSAGE_TYPE::GSA] = new GPGSAParser{};
+  Parsers[NMEA_MESSAGE_TYPE::GST] = new GPGSTParser{};
   Parsers[NMEA_MESSAGE_TYPE::GSV] = new GPGSVParser{};
   Parsers[NMEA_MESSAGE_TYPE::RMC] = new GPRMCParser{};
   Parsers[NMEA_MESSAGE_TYPE::VTG] = new GPVTGParser{};

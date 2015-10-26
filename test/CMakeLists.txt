@@ -13,6 +13,7 @@ set(TESTS
   GGAMessageParse
   GLLMessageParse
   GSAMessageParse
+  GSTMessageParse
   GSVMessageParse
   ParseAltitude
   ParseAngle
