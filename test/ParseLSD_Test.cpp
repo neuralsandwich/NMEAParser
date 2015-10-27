@@ -24,7 +24,6 @@ TEST(ParseLLL, Invalid_Datum) {
   const char Expected[4] = "";
 
   EXPECT_EQ(Expected[0], ParseLSD(Datum)[0]);
-  EXPECT_EQ(Expected[1], ParseLSD(Datum)[1]);
 }
   
 TEST(ParseLLL, Empty_Datum) {
@@ -32,6 +31,5 @@ TEST(ParseLLL, Empty_Datum) {
   const char Expected[4] = "";
 
   EXPECT_EQ(Expected[0], ParseLSD(Datum)[0]);
-  EXPECT_EQ(Expected[1], ParseLSD(Datum)[1]);
 }
 }
