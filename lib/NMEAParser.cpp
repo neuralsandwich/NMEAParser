@@ -486,14 +486,14 @@ static char *ParseRRR(const std::string &RRR) {
 static float *
 ParseResiduals(std::vector<std::string>::const_iterator ResidualIter,
                std::vector<std::string>::const_iterator End) {
-  std::vector<float> Result(12, 0.0f);
+  std::vector<float> *Result = new std::vector<float>(12, 0.0f);
 
   for (size_t i = 0; ResidualIter != End; ResidualIter++, i++) {
-    Result[i] = ParseFloat(*ResidualIter);
+    (*Result)[i] = ParseFloat(*ResidualIter);
   }
 
-  // Return the address of the first element of Result
-  return &(Result[0]);
+  // Return the address of the first element of the vector Result points to
+  return &((*Result)[0]);
 } // ParseResiduals
 
 MessageParser::~MessageParser() {}
