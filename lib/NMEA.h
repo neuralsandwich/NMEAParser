@@ -217,54 +217,6 @@ typedef struct GPDTM {
   char *RRR;
 } GPDTM;
 
-/**
- * GPRMC - GPS Recommended Minimum Data
- *
- * The Recommended Minimum sentence defined by NMEA for GPS/Transit system data.
- *
- * Message Structure:
- * $GPRMC, hhmmss, status, latitude, N, longitude, E, spd, cog, ddmmyy, mv, mvE,
- * mode *cs <CR><LF>
- *
- * 01. Message ID, RMC protocol header
- * 02. UTC Time, Time of fix. HHMMSS format
- * 03. Status, V = Navigation receiver warning, A = Data valid.
- * 04. Latitude, Degrees + minutes
- * 05. North/South hemisphere indicator
- * 06. Longitude, Degrees + minutes
- * 07. East/West indicator
- * 08. Speed over ground (knots)
- * 09. Course over ground (degrees)
- * 10. Date in DDMMYY format
- * 11. Magnetic variation in degrees
- * 12. Magnetic variation, east/west indicator
- * 13. Mode indicator
- * 14. CheckSum in Hex
- * 15. <CR><LF>
- */
-typedef struct GPRMC {
-  // UTC time stamp of data fix
-  time_t TimeStamp;
-  // Status A = active, V = void
-  int Status;
-  // Latitude of position:
-  // e.g. 4807.038,N = 48 deg 07.038' N
-  // N = positive, S = negative
-  float Latitude;
-  // Longitude of position:
-  // e.g. 01131.000,E = 11 deg 31.000' E
-  // E = positive, W = negative
-  float Longitude;
-  // Speed over the ground in knots
-  float Speed;
-  // Track angle in degrees True
-  float Angle;
-  // Magnetic Variation
-  // e.g. 003.1,W
-  // E = positive, W = negative
-  float MagneticVariation;
-} GPRMC;
-
 /* GPGGA - GPS Fix Data
  *
  * Time and position, together with GPS fixing related data (number of
@@ -536,6 +488,54 @@ typedef struct GPGSV {
   // Helper value
   int DataFieldsInMessage;
 } GPGSV;
+
+/**
+ * GPRMC - GPS Recommended Minimum Data
+ *
+ * The Recommended Minimum sentence defined by NMEA for GPS/Transit system data.
+ *
+ * Message Structure:
+ * $GPRMC, hhmmss, status, latitude, N, longitude, E, spd, cog, ddmmyy, mv, mvE,
+ * mode *cs <CR><LF>
+ *
+ * 01. Message ID, RMC protocol header
+ * 02. UTC Time, Time of fix. HHMMSS format
+ * 03. Status, V = Navigation receiver warning, A = Data valid.
+ * 04. Latitude, Degrees + minutes
+ * 05. North/South hemisphere indicator
+ * 06. Longitude, Degrees + minutes
+ * 07. East/West indicator
+ * 08. Speed over ground (knots)
+ * 09. Course over ground (degrees)
+ * 10. Date in DDMMYY format
+ * 11. Magnetic variation in degrees
+ * 12. Magnetic variation, east/west indicator
+ * 13. Mode indicator
+ * 14. CheckSum in Hex
+ * 15. <CR><LF>
+ */
+typedef struct GPRMC {
+  // UTC time stamp of data fix
+  time_t TimeStamp;
+  // Status A = active, V = void
+  int Status;
+  // Latitude of position:
+  // e.g. 4807.038,N = 48 deg 07.038' N
+  // N = positive, S = negative
+  float Latitude;
+  // Longitude of position:
+  // e.g. 01131.000,E = 11 deg 31.000' E
+  // E = positive, W = negative
+  float Longitude;
+  // Speed over the ground in knots
+  float Speed;
+  // Track angle in degrees True
+  float Angle;
+  // Magnetic Variation
+  // e.g. 003.1,W
+  // E = positive, W = negative
+  float MagneticVariation;
+} GPRMC;
 
 typedef struct NMEAMessage {
   NMEAHeader *Header;
