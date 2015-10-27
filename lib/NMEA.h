@@ -338,45 +338,6 @@ typedef struct GPGRS {
   int ResidualNum;
 } GPGRS;
 
-/* GPVTG - Course over groud and Ground speed
- *
- * Message Structure:
- * $GPVTG,cogt,T,cogm,M,sog,N,kph,K,mode*cs<CR><LF>
- *
- * 01. Message ID, VTG protocol header
- * 02. Course over ground (true)
- * 03. Fixed field: true
- * 04. Course over ground (magenetic)
- * 05. Fixed field: magnetic
- * 06. Speed over ground
- * 07. Fixed field: knots
- * 08. Speed over ground km/h
- * 09. Fixed Field: kilometers per hour
- * 10. Mode Indicator
- * 11. Checksum
- * 12. <CR><LF>
- */
-typedef struct GPVTG {
-  // Course over ground (true)
-  float cogt;
-  // Fixed field: true
-  char T;
-  // Course over ground (magnetic)
-  float cogm;
-  // Fixed field: magnetic
-  char M;
-  // Speed over ground (knots)
-  float sog;
-  // Fixed field: knots
-  char N;
-  // Speed over ground (km/h)
-  float kph;
-  // Fixed field: kilometers per hour
-  char K;
-  // Mode Indicator
-  char mode;
-} GPVTG;
-
 /* GPGSA - GNSS DOP and Active Satellites
  *
  * Message structure:
@@ -563,6 +524,44 @@ typedef strucut GPTHS {
   char mi;
 } GPTHS;
 
+/* GPVTG - Course over groud and Ground speed
+ *
+ * Message Structure:
+ * $GPVTG,cogt,T,cogm,M,sog,N,kph,K,mode*cs<CR><LF>
+ *
+ * 01. Message ID, VTG protocol header
+ * 02. Course over ground (true)
+ * 03. Fixed field: true
+ * 04. Course over ground (magenetic)
+ * 05. Fixed field: magnetic
+ * 06. Speed over ground
+ * 07. Fixed field: knots
+ * 08. Speed over ground km/h
+ * 09. Fixed Field: kilometers per hour
+ * 10. Mode Indicator
+ * 11. Checksum
+ * 12. <CR><LF>
+ */
+typedef struct GPVTG {
+  // Course over ground (true)
+  float cogt;
+  // Fixed field: true
+  char T;
+  // Course over ground (magnetic)
+  float cogm;
+  // Fixed field: magnetic
+  char M;
+  // Speed over ground (knots)
+  float sog;
+  // Fixed field: knots
+  char N;
+  // Speed over ground (km/h)
+  float kph;
+  // Fixed field: kilometers per hour
+  char K;
+  // Mode Indicator
+  char mode;
+} GPVTG;
 
 typedef struct NMEAMessage {
   NMEAHeader *Header;
