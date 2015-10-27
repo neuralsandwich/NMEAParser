@@ -39,8 +39,9 @@ static bool ValidateChecksum(const std::string &Message,
 
   Check = static_cast<unsigned int>(std::stoi(Checksum, nullptr, 16));
 
-  if (Check == CalculatedChecksum)
+  if (Check == CalculatedChecksum) {
     return true;
+  }
 
   return false;
 } // ValidChecksum
@@ -359,7 +360,22 @@ static int ParseMode(const std::string &String) {
   Result = NMEA::ParseInteger(String);
 
   return Result;
-} // ParseModeIndicator
+} // ParseMode
+
+static char ParseModeIndicator(const std::string &String) {
+  char Result = 'V';
+
+  if (String.empty()) {
+    return Result;
+  }
+
+  if ('A' == String[0] || 'E' == String[0] || 'M' == String[0] ||
+      'S' == String[0]) {
+    Result = String[0];
+  }
+
+  return Result;
+};
 
 static char ParseSmode(const std::string &String) {
   char Result = 'M';
@@ -688,6 +704,20 @@ void GPRMCParser::Parse(NMEAMessage *Message,
                            ParseMagneticVariation(Elements[10], Elements[11])};
 }
 
+struct GPTHSParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+void GPTHSParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPTHS"};
+  }
+
+  Message->THS =
+      new GPTHS{ParseFloat(Elements[1]), ParseModeIndicator(Elements[2])};
+}
+
 struct GPVTGParser : MessageParser {
   void Parse(NMEAMessage *Message,
              const std::vector<std::string> &Elements) const;
@@ -714,6 +744,7 @@ NMEAParser::NMEAParser() {
   Parsers[NMEA_MESSAGE_TYPE::GST] = new GPGSTParser{};
   Parsers[NMEA_MESSAGE_TYPE::GSV] = new GPGSVParser{};
   Parsers[NMEA_MESSAGE_TYPE::RMC] = new GPRMCParser{};
+  Parsers[NMEA_MESSAGE_TYPE::THS] = new GPTHSParser{};
   Parsers[NMEA_MESSAGE_TYPE::VTG] = new GPVTGParser{};
 };
 

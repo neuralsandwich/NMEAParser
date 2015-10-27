@@ -48,6 +48,7 @@ enum NMEA_MESSAGE_TYPE {
   RMC, // recommended minimum data for gps
   RTE, // route message
   TRF, // Transit Fix Data
+  THS, // True head and status
   STN, // Multiple Data ID
   VBW, // dual Ground / Water Spped
   VTG, // Vector track an Speed over the Ground
@@ -516,7 +517,7 @@ typedef struct GPRMC {
  * 04.
  * 05.
  */
-typedef strucut GPTHS {
+typedef struct GPTHS {
   // Heading of vehicle(true)
   float headt;
   // Mode Indicator: A = autonomous, E = Estimated (dead reckoning), M
@@ -586,6 +587,7 @@ typedef struct NMEAMessage {
     // GPRMB *RMB;
     GPRMC *RMC;
     // GPRTE *RTE;
+    GPTHS *THS;
     // GPTRF *TRF;
     // GPSTN *STN;
     // GPVBW *VBW;

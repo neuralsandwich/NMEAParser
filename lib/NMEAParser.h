@@ -60,6 +60,7 @@ const NMEAGPSMessageName NMEAGPSMessageNames[NMEA_GPS_MESSAGE_NUM] = {
     {NMEA_MESSAGE_TYPE::RMB, "RMB"}, // recommended navigation data for gps
     {NMEA_MESSAGE_TYPE::RMC, "RMC"}, // recommended minimum data for gps
     {NMEA_MESSAGE_TYPE::RTE, "RTE"}, // route message
+    {NMEA_MESSAGE_TYPE::THS, "THS"}, // true heading and status
     {NMEA_MESSAGE_TYPE::TRF, "TRF"}, // Transit Fix Data
     {NMEA_MESSAGE_TYPE::STN, "STN"}, // Multiple Data ID
     {NMEA_MESSAGE_TYPE::VBW, "VBW"}, // dual Ground / Water Spped
