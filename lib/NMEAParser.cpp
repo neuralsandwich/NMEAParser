@@ -552,25 +552,6 @@ void GPGSVParser::Parse(NMEAMessage *Message,
   Message->GSV = Result;
 } // ParseGPGSV
 
-struct GPRMCParser : MessageParser {
-  void Parse(NMEAMessage *Message,
-             const std::vector<std::string> &Elements) const;
-};
-void GPRMCParser::Parse(NMEAMessage *Message,
-                        const std::vector<std::string> &Elements) const {
-  if (Elements.empty()) {
-    throw std::length_error{"ParseGPRMC()"};
-  }
-
-  Message->RMC = new GPRMC{ParseTimeStamp(Elements[1], Elements[9]),
-                           ParseStatus(Elements[2]),
-                           ParseLatitude(Elements[3], Elements[4]),
-                           ParseLongitude(Elements[5], Elements[6]),
-                           ParseSpeed(Elements[7]),
-                           ParseAngle(Elements[8]),
-                           ParseMagneticVariation(Elements[10], Elements[11])};
-}
-
 struct GPGGAParser : MessageParser {
   void Parse(NMEAMessage *Message,
              const std::vector<std::string> &Elements) const;
@@ -610,22 +591,6 @@ void GPGLLParser::Parse(NMEAMessage *Message,
                            ParseLongitude(Elements[3], Elements[4]),
                            ParseTimeStamp(Elements[5]),
                            ParseStatus(Elements[6].c_str()), Elements[7][0]};
-}
-
-struct GPVTGParser : MessageParser {
-  void Parse(NMEAMessage *Message,
-             const std::vector<std::string> &Elements) const;
-};
-void GPVTGParser::Parse(NMEAMessage *Message,
-                        const std::vector<std::string> &Elements) const {
-  if (Elements.empty()) {
-    throw std::length_error{"ParseGPVTG"};
-  }
-
-  Message->VTG =
-      new GPVTG{ParseCOGT(Elements[1]), 'T', ParseCOGM(Elements[3]),  'M',
-                ParseSOG(Elements[5]),  'N', ParseSpeed(Elements[7]), 'K',
-                Elements[9][0]};
 }
 
 struct GPGSAParser : MessageParser {
@@ -702,6 +667,41 @@ void GPGSTParser::Parse(NMEAMessage *Message,
                 ParseFloat(Elements[3]),     ParseFloat(Elements[4]),
                 ParseFloat(Elements[5]),     ParseFloat(Elements[6]),
                 ParseFloat(Elements[7]),     ParseFloat(Elements[8])};
+}
+
+struct GPRMCParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+void GPRMCParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPRMC()"};
+  }
+
+  Message->RMC = new GPRMC{ParseTimeStamp(Elements[1], Elements[9]),
+                           ParseStatus(Elements[2]),
+                           ParseLatitude(Elements[3], Elements[4]),
+                           ParseLongitude(Elements[5], Elements[6]),
+                           ParseSpeed(Elements[7]),
+                           ParseAngle(Elements[8]),
+                           ParseMagneticVariation(Elements[10], Elements[11])};
+}
+
+struct GPVTGParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+void GPVTGParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPVTG"};
+  }
+
+  Message->VTG =
+      new GPVTG{ParseCOGT(Elements[1]), 'T', ParseCOGM(Elements[3]),  'M',
+                ParseSOG(Elements[5]),  'N', ParseSpeed(Elements[7]), 'K',
+                Elements[9][0]};
 }
 
 NMEAParser::NMEAParser() {
