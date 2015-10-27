@@ -37,7 +37,7 @@ make test
 * Features and Testing status
 ** TODO NMEAParser Functions
    - [ ] Redo ParseLSD (Requires addition infrastructure)
-** TODO Message Parse Tesst [9/9]
+** TODO Message Parse Tesst [10/10]
    - [X] DTM - Datum being used.
    - [X] GBS - Integrity Monitoring Algorithm
    - [X] GGA - Fix information
@@ -46,6 +46,7 @@ make test
    - [X] GST - GPS Pseudorange Noise Statistics
    - [X] GSV - Detailed Satellite data
    - [X] RMC - recommended minimum data for gps
+   - [X] THS - True heading and status
    - [X] VTG - Vector track an Speed over the Ground
 ** TODO Messages To Implement [0/21]
    - [ ] AAM - Waypoint Arrival Alarm
