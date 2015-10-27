@@ -537,6 +537,33 @@ typedef struct GPRMC {
   float MagneticVariation;
 } GPRMC;
 
+/**
+ * GPTHS - True Heading and Status
+ *
+ * Actual vehicle heading in degrees, true heading.
+ *
+ * Message Structure:
+ * $GPTHS,headt,status*cs<CR><LF>
+ *
+ * 01. Message ID, THS protocol header
+ * 02. Heading of vehicle (true)
+ * 03. Mode indicator:
+ *       A = autonomous,
+ *       E = Estimated (dead reckoning),
+ *       M = Manual input, S = Simulator,
+ *       V = Data not valid
+ * 04.
+ * 05.
+ */
+typedef strucut GPTHS {
+  // Heading of vehicle(true)
+  float headt;
+  // Mode Indicator: A = autonomous, E = Estimated (dead reckoning), M
+  // = Manual input, S = Simulator, V = Data not valid
+  char mi;
+} GPTHS;
+
+
 typedef struct NMEAMessage {
   NMEAHeader *Header;
   union {
