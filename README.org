@@ -17,7 +17,7 @@ Library for parsing NMEA data strings
 
 #+BEGIN_SRC sh
 mkdir build && cd build
-cmake ..
+cmake .. # Add -DSTATICLIB=1 for static library
 make
 #+END_SRC
 

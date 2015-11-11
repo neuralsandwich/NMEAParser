@@ -12,9 +12,12 @@ set(INCLUDES
   NMEA.h
   NMEAParser.cpp)
 
-add_library (NMEAParser SHARED ${SOURCES} ${INCLUDES})
-add_library (NMEAParserStatic STATIC ${SOURCES}  ${INCLUDES})
+if(STATICLIB)
+  add_library (NMEAParserStatic STATIC ${SOURCES}  ${INCLUDES})
+  install (TARGETS NMEAParserStatic DESTINATION lib)
+else(STATICLIB)
+  add_library (NMEAParser SHARED ${SOURCES} ${INCLUDES})
+  install (TARGETS NMEAParser DESTINATION lib)
+endif(STATICLIB)
 
-install (TARGETS NMEAParser DESTINATION lib)
-install (TARGETS NMEAParserStatic DESTINATION lib)
 install (FILES NMEA.h DESTINATION include)
