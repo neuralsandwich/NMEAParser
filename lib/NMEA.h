@@ -564,6 +564,30 @@ typedef struct GPVTG {
   char mode;
 } GPVTG;
 
+/* GPZDA - Time and Data
+ *
+ * Message Structure:
+ * $GPZDA,hhmmss.ss,day,month,year,ltzh,ltzn*cs<CR><LF>
+ *
+ * 01. Message ID, ZDA protocol header
+ * 02. UTC Time
+ * 03. UTC time: day, 01..31
+ * 04. UTC time: month, 01..12
+ * 05. UTC time: 4 digit year
+ * 06. Local zone hours - NOT SUPPORTED
+ * 07. Local zone minutes - NOT SUPPORTED
+ * 08. Checksum
+ * 09. <CR><LF>
+ */
+typedef struct GPZDA {
+  // UTC Time
+  time_t TimeStamp;
+  // UTC time: day, 01..31
+  int LocalHours;
+  // Local zone minutes
+  int LocalMinutes;
+} GPZDA;
+
 typedef struct NMEAMessage {
   NMEAHeader *Header;
   union {
@@ -589,6 +613,7 @@ typedef struct NMEAMessage {
     // GPRTE *RTE;
     GPTHS *THS;
     // GPTRF *TRF;
+    // GPTXT *TXT;
     // GPSTN *STN;
     // GPVBW *VBW;
     GPVTG *VTG;
@@ -597,7 +622,7 @@ typedef struct NMEAMessage {
     // GPXTC *XTC;
     // GPXTE *XTE;
     // GPZTG *ZTG;
-    // GPZDA *ZDA;
+    GPZDA *ZDA;
   };
 } NMEAMessage;
 

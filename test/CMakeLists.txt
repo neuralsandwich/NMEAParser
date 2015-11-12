@@ -51,6 +51,7 @@ set(TESTS
   THSMessageParse
   VTGMessageParse
   ValidateChecksum
+  ZDAMessageParse
   )
 
 foreach(Test ${TESTS})

@@ -152,10 +152,10 @@ static time_t ParseTimeStamp(const std::string &TimeStamp,
 } // ParseTimeStamp(TimeStamp DateStamp)
 
 /**
- * ParserTimeStamp
+ * ParseTimeStamp
  * @brief Parses time stamp string and returns a time_t
  *
- * ParserTimeStamp takes
+ * ParseTimeStamp takes
  */
 static time_t ParseTimeStamp(const std::string &TimeStamp) {
   time_t Result = 0;
@@ -734,6 +734,21 @@ void GPVTGParser::Parse(NMEAMessage *Message,
                 Elements[9][0]};
 }
 
+struct GPZDAParser : MessageParser {
+  void Parse(NMEAMessage *Message,
+             const std::vector<std::string> &Elements) const;
+};
+void GPZDAParser::Parse(NMEAMessage *Message,
+                        const std::vector<std::string> &Elements) const {
+  if (Elements.empty()) {
+    throw std::length_error{"ParseGPZDA"};
+  }
+
+  const std::string Date = Elements[2] + Elements[3] + Elements[4].substr(2,2);
+  
+  Message->ZDA = new GPZDA{ParseTimeStamp(Elements[1], Date), 0, 0};
+}
+
 NMEAParser::NMEAParser() {
   Parsers[NMEA_MESSAGE_TYPE::DTM] = new GPDTMParser{};
   Parsers[NMEA_MESSAGE_TYPE::GBS] = new GPGBSParser{};
@@ -746,6 +761,7 @@ NMEAParser::NMEAParser() {
   Parsers[NMEA_MESSAGE_TYPE::RMC] = new GPRMCParser{};
   Parsers[NMEA_MESSAGE_TYPE::THS] = new GPTHSParser{};
   Parsers[NMEA_MESSAGE_TYPE::VTG] = new GPVTGParser{};
+  Parsers[NMEA_MESSAGE_TYPE::ZDA] = new GPZDAParser{};
 };
 
 NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
