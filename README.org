@@ -37,7 +37,7 @@ make test
 * Features and Testing status
 ** TODO NMEAParser Functions
    - [ ] Redo ParseLSD (Requires addition infrastructure)
-** TODO Message Parse Tesst [10/11]
+** DONE Message Parse Tesst [11/11]
    - [X] DTM - Datum being used.
    - [X] GBS - Integrity Monitoring Algorithm
    - [X] GGA - Fix information
@@ -48,8 +48,8 @@ make test
    - [X] RMC - recommended minimum data for gps
    - [X] THS - True heading and status
    - [X] VTG - Vector track an Speed over the Ground
-   - [ ] ZDA - Date and Time
-** TODO Messages To Implement [0/20]
+   - [X] ZDA - Date and Time
+** TODO Messages To Implement (requires message examples) [0/20]
    - [ ] AAM - Waypoint Arrival Alarm
    - [ ] ALM - Almanac data
    - [ ] APA - Auto Pilot A sentence
