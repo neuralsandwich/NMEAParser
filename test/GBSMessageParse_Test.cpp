@@ -38,9 +38,9 @@ TEST(GBSMessageParse, Valid_Message) {
   TimeInfo->tm_sec = 58;
   ExpectedTimestamp = mktime(TimeInfo);
 
-  NMEAMessage Expected{NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::GBS, 1,
-                       .GBS = {new GPGBS{ExpectedTimestamp, 1.4f, 1.3f, 3.1f, 3,
-                                         NAN, -21.4f, 3.8f}}};
+  GPGBS Message{ExpectedTimestamp, 1.4f, 1.3f, 3.1f, 3, NAN, -21.4f, 3.8f};
+
+  NMEAMessage Expected{NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::GBS, 1, .GBS = &Message};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
