@@ -26,8 +26,6 @@ namespace NMEA {
 TEST(GSTMessageParse, Valid_Message) {
   const std::string RawMessage{"$GPGST,082356.00,1.8,,,,1.7,1.3,2.2*7E"};
 
-  NMEAHeader Header{NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::GST, 1};
-
   time_t ExpectedTimestamp = 0;
   struct tm *TimeInfo;
 
@@ -39,17 +37,16 @@ TEST(GSTMessageParse, Valid_Message) {
   ExpectedTimestamp = mktime(TimeInfo);
 
   GPGST Message{ExpectedTimestamp, 1.8f, NAN, NAN, NAN, 1.7f, 1.3f, 2.2f};
-  NMEAMessage Expected{.Header = &Header, .GST = &Message};
+  NMEAMessage Expected{NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::GST, 1,
+                       .GST = &Message};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Headers
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID)
-      << "Talker ID is incorrect";
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type)
-      << "Message type is incorrect";
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid)
+  EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
+  EXPECT_EQ(Expected.Type, Result->Type) << "Message type is incorrect";
+  EXPECT_EQ(Expected.Valid, Result->Valid)
       << "Message valid status is incorrect";
 
   // Compate Messages
@@ -65,21 +62,18 @@ TEST(GSTMessageParse, Valid_Message) {
 
 TEST(GSTMessageParse, Invalid_Message) {
   const std::string RawMessage = "$(_+R,er,3,4,?>P#@$,fsd,,4,t,g,g,,*8R";
-  NMEAHeader Header = {.ID = NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
-                       .Type = NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
-                       .Valid = 0};
-
-  NMEAMessage Expected{&Header, {}};
+  NMEAMessage Expected{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                       NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
+                       0,
+                       {}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Headers
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID)
-      << "Talker ID is incorrect";
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type)
-      << "Message type is incorrect";
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid)
+  EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
+  EXPECT_EQ(Expected.Type, Result->Type) << "Message type is incorrect";
+  EXPECT_EQ(Expected.Valid, Result->Valid)
       << "Message valid status is incorrect";
 
   // Compare Message
@@ -88,20 +82,18 @@ TEST(GSTMessageParse, Invalid_Message) {
 
 TEST(GSTMessageParse, Empty_Message) {
   const std::string RawMessage{""};
-  NMEAHeader Header{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
-                    NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0};
-
-  NMEAMessage Expected{&Header, {}};
+  NMEAMessage Expected{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                       NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
+                       0,
+                       {}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Headers
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID)
-      << "Talker ID is incorrect";
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type)
-      << "Message type is incorrect";
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid)
+  EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
+  EXPECT_EQ(Expected.Type, Result->Type) << "Message type is incorrect";
+  EXPECT_EQ(Expected.Valid, Result->Valid)
       << "Message valid status is incorrect";
 
   // Compare Message
