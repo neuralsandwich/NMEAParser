@@ -28,9 +28,6 @@ TEST(GGAMessageParse, Valid_Message) {
       "$GPGGA,092725.00,4717.11399,N,00833.91590,E,1,8,"
       "1.01,499.6,M,48.0,M,,0*5B";
 
-  NMEAHeader Header = {
-      .ID = NMEA_TALKER_ID::GPS, .Type = NMEA_MESSAGE_TYPE::GGA, .Valid = 1};
-
   time_t ExpectedTimestamp = 0;
   struct tm *TimeInfo;
 
@@ -41,29 +38,18 @@ TEST(GGAMessageParse, Valid_Message) {
   TimeInfo->tm_sec = 25;
   ExpectedTimestamp = mktime(TimeInfo);
 
-  GPGGA Message = {.TimeStamp = ExpectedTimestamp,
-                   .Latitude = 4717.11399f,
-                   .Longitude = 833.9159f,
-                   .Status = 1,
-                   .SatelliteFixes = 8,
-                   .HDOP = 1.01f,
-                   .MSL = 499.6f,
-                   .uMSL = 'M',
-                   .GeoidSeparation = 48.0f,
-                   .uSep = 'M',
-                   .DifferentialCorrectionAge = NAN,
-                   .DifferentialStationID = 0};
-  NMEAMessage Expected = {.Header = &Header, .GGA = &Message};
+  NMEAMessage Expected{
+      NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::GGA, 1,
+      .GGA = {new GPGGA{ExpectedTimestamp, 4717.11399f, 833.9159f, 1, 8, 1.01f,
+                        499.6f, 'M', 48.0f, 'M', NAN, 0}}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Headers
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID)
-      << "Talker ID is incorrect";
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type)
-      << "Message type is incorrect";
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid)
+  EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
+  EXPECT_EQ(Expected.Type, Result->Type) << "Message type is incorrect";
+  EXPECT_EQ(Expected.Valid, Result->Valid)
       << "Message valid status is incorrect";
 
   // Compare Message
@@ -96,21 +82,18 @@ TEST(GGAMessageParse, Valid_Message) {
 
 TEST(GGAMessageParse, Invalid_Message) {
   const std::string RawMessage = "lajsdlkfjasdf";
-  NMEAHeader Header = {.ID = NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
-                       .Type = NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
-                       .Valid = 0};
-
-  NMEAMessage Expected = {.Header = &Header, 0};
+  NMEAMessage Expected{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                        NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
+                        0,
+                        {}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Headers
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID)
-      << "Talker ID is incorrect";
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type)
-      << "Message type is incorrect";
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid)
+  EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
+  EXPECT_EQ(Expected.Type, Result->Type) << "Message type is incorrect";
+  EXPECT_EQ(Expected.Valid, Result->Valid)
       << "Message valid status is incorrect";
 
   // Compare Message
@@ -119,21 +102,18 @@ TEST(GGAMessageParse, Invalid_Message) {
 
 TEST(GGAMessageParse, Empty_Message) {
   const std::string RawMessage = "";
-  NMEAHeader Header = {.ID = NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
-                       .Type = NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
-                       .Valid = 0};
-
-  NMEAMessage Expected = {.Header = &Header, 0};
+  NMEAMessage Expected{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                       NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
+                       0,
+                       {}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Headers
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID)
-      << "Talker ID is incorrect";
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type)
-      << "Message type is incorrect";
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid)
+  EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
+  EXPECT_EQ(Expected.Type, Result->Type) << "Message type is incorrect";
+  EXPECT_EQ(Expected.Valid, Result->Valid)
       << "Message valid status is incorrect";
 
   // Compare Message
