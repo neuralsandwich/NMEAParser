@@ -437,7 +437,7 @@ static char *ParseLLL(const std::string &LLL) {
   }
 
   if ((LLL == "W84") || (LLL == "W72")) {
-    delete Result;
+    free(Result);
     Result = strdup(LLL.substr(0, 3).c_str());
     return Result;
   } else {
@@ -451,7 +451,7 @@ static char *ParseLSD(const std::string &LSD) {
   if (LSD.empty() || (LSD.length() >= 53)) {
     return Result;
   } else {
-    delete Result;
+    free(Result);
     Result = strdup(LSD.c_str());
     return Result;
   }
@@ -475,7 +475,7 @@ static char *ParseRRR(const std::string &RRR) {
   }
 
   if ((RRR == "W84") || (RRR == "W72")) {
-    delete Result;
+    free(Result);
     Result = strdup(RRR.substr(0, 3).c_str());
     return Result;
   } else {
