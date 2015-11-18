@@ -38,10 +38,21 @@ TEST(GGAMessageParse, Valid_Message) {
   TimeInfo->tm_sec = 25;
   ExpectedTimestamp = mktime(TimeInfo);
 
-  NMEAMessage Expected{
-      NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::GGA, 1,
-      .GGA = {new GPGGA{ExpectedTimestamp, 4717.11399f, 833.9159f, 1, 8, 1.01f,
-                        499.6f, 'M', 48.0f, 'M', NAN, 0}}};
+  GPGGA Message{ExpectedTimestamp,
+                4717.11399f,
+                833.9159f,
+                1,
+                8,
+                1.01f,
+                499.6f,
+                'M',
+                48.0f,
+                'M',
+                NAN,
+                0};
+
+  NMEAMessage Expected{NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::GGA, 1,
+                       .GGA = &Message};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
@@ -83,9 +94,9 @@ TEST(GGAMessageParse, Valid_Message) {
 TEST(GGAMessageParse, Invalid_Message) {
   const std::string RawMessage = "lajsdlkfjasdf";
   NMEAMessage Expected{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
-                        NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
-                        0,
-                        {}};
+                       NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
+                       0,
+                       {}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
