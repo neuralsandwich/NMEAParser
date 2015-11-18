@@ -28,8 +28,6 @@ TEST(GBSMessageParse, Valid_Message) {
   const std::string RawMessage =
       "$GPGBS,235458.00,1.4,1.3,3.1,03,,-21.4,3.8*5B";
 
-  NMEAHeader Header = {NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::GBS, 1};
-
   time_t ExpectedTimestamp = 0;
   struct tm *TimeInfo;
 
@@ -40,17 +38,17 @@ TEST(GBSMessageParse, Valid_Message) {
   TimeInfo->tm_sec = 58;
   ExpectedTimestamp = mktime(TimeInfo);
 
-  GPGBS Message = {ExpectedTimestamp, 1.4f, 1.3f, 3.1f, 3, NAN, -21.4f, 3.8f};
-
-  NMEAMessage Expected = {.Header = &Header, .GBS = &Message};
+  NMEAMessage Expected{NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::GBS, 1,
+                       .GBS = {new GPGBS{ExpectedTimestamp, 1.4f, 1.3f, 3.1f, 3,
+                                         NAN, -21.4f, 3.8f}}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Header
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID);
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type);
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid);
+  EXPECT_EQ(Expected.ID, Result->ID);
+  EXPECT_EQ(Expected.Type, Result->Type);
+  EXPECT_EQ(Expected.Valid, Result->Valid);
 
   // Compare Message
   EXPECT_EQ(Expected.GBS->TimeStamp, Result->GBS->TimeStamp);
