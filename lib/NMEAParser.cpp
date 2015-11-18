@@ -744,8 +744,8 @@ void GPZDAParser::Parse(NMEAMessage *Message,
     throw std::length_error{"ParseGPZDA"};
   }
 
-  const std::string Date = Elements[2] + Elements[3] + Elements[4].substr(2,2);
-  
+  const std::string Date = Elements[2] + Elements[3] + Elements[4].substr(2, 2);
+
   Message->ZDA = new GPZDA{ParseTimeStamp(Elements[1], Date), 0, 0};
 }
 
