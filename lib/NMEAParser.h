@@ -29,17 +29,17 @@ extern "C" {
 
 namespace NMEA {
 // Printable strings for Talker IDs
-const char *const NMEATalkerIDName[NMEA_TALKER_ID_NUM] = {
+constexpr char NMEATalkerIDName[NMEA_TALKER_ID_NUM][8] = {
     "Unknown", "GPS", "GLONASS"}; // NMEATalkerIDName
 
-typedef struct NMEAMessageTypeString {
+struct NMEAGPSMessageName {
   enum NMEA_MESSAGE_TYPE Type;
-  const char *String;
-} NMEAGPSMessageName;
+  const char String[4];
+};
 
 // Printable strings for Message types
-const NMEAGPSMessageName NMEAGPSMessageNames[NMEA_GPS_MESSAGE_NUM] = {
-    {NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, "Unknown"}, // Unknown Message Type
+constexpr NMEAGPSMessageName NMEAGPSMessageNames[NMEA_GPS_MESSAGE_NUM] = {
+    {NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, "???"}, // Unknown Message Type
     {NMEA_MESSAGE_TYPE::AAM, "AAM"},                 // Waypoint Arrival Alarm
     {NMEA_MESSAGE_TYPE::ALM, "ALM"},                 // Almanac data
     {NMEA_MESSAGE_TYPE::APA, "APA"},                 // Auto Pilot A sentence
