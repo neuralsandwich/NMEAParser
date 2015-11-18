@@ -765,17 +765,20 @@ NMEAParser::NMEAParser() {
 };
 
 NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
-  NMEAMessage *Result = new NMEAMessage{0, {0}};
-  Result->Header = new NMEAHeader{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
-                                  NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE, 0};
   std::vector<std::string> Elements(1);
 
   if (Message.empty()) {
-    return Result;
+    return new NMEAMessage{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                           NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
+                           0,
+                           {}};
   }
 
   if (*(Message.begin()) != '$') {
-    return Result;
+    return new NMEAMessage{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                           NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
+                           0,
+                           {}};
   }
 
   for (auto it = Message.begin() + 1; it != Message.end(); ++it) {
@@ -788,16 +791,25 @@ NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   }
 
   if (!ValidateChecksum(Message, Elements.back())) {
-    return Result;
+    return new NMEAMessage{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                           NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
+                           0,
+                           {}};
   }
 
-  try {
-    Result->Header->Valid = 1;
-    Result->Header->ID = ParseTalkerID(Elements[0]);
-    Result->Header->Type = ParseMessageType(Elements[0]);
+  NMEAMessage *Result = new NMEAMessage{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                                        NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
+                                        0,
+                                        {}};
 
-    if (Result->Header->Type != NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE) {
-      Parsers[Result->Header->Type]->Parse(Result, Elements);
+  try {
+
+    Result->Valid = 1;
+    Result->ID = ParseTalkerID(Elements[0]);
+    Result->Type = ParseMessageType(Elements[0]);
+
+    if (Result->Type != NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE) {
+      Parsers[Result->Type]->Parse(Result, Elements);
     } else {
       throw std::out_of_range{"Invalid Message Type"};
     }

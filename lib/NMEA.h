@@ -588,8 +588,38 @@ typedef struct GPZDA {
   int LocalMinutes;
 } GPZDA;
 
+/* NMEAMessage
+ *
+ * NMEA Protocol Frame
+ *
+ *  _____________________________________________________
+ * | $ | <Address> | {,<value>} | *<checksum> | <CR><LF> |
+ *  -----------------------------------------------------
+ *
+ * * Starting character - Always starts with $
+ * * Address field      - Only digits and uppercase letters, cannot be null.
+ *                        This field is subdivided into 2 fields:
+ *                         ______________
+ *                        | <XX> | <XXX> | * Talker ID, always GP for GPS.
+ *                         --------------    P for propiertary messages.
+ *                                         * Sentence Formatter. Defines the
+ *                                           message content.
+ * * Data field(s)      - Delimited by a ','. Length can vary, even for a
+ *                        certain field.
+ * * Checksum field     - Starts with a '*' and consists of two characters
+ *                        representing a hax number. The checksum is the
+ *                        exclusive OR (XOR) of all characters between '$' and
+ *                        '*'.
+ * * End sequence       - Always <CR><LF>
+ *
+ * For further information on the NMEA Standard please refer to NMEA 0183
+ * Standard For Interfacing Marine Electronic Devices, Version 2.30, March 1,
+ * 1998. See http://www.nmea.org/ for ordering instructions.
+ */
 typedef struct NMEAMessage {
-  NMEAHeader *Header;
+  enum NMEA_TALKER_ID ID;
+  enum NMEA_MESSAGE_TYPE Type;
+  int Valid;
   union {
     // GPAAM *AAM;
     // GPALM *ALM;
