@@ -27,10 +27,10 @@ namespace NMEA {
 TEST(DTMMessageParse, Valid_W84_Message) {
   const std::string RawMessage = "$GPDTM,W84,,0.0,N,0.0,E,0.0,W84*6F";
 
-  NMEAMessage Expected = {NMEA_TALKER_ID::GPS,
-                          NMEA_MESSAGE_TYPE::DTM,
-                          1,
-                          {new GPDTM{"W84", "", 0.0f, 0.0f, 0.0f, "W84"}}};
+  GPDTM Message{"W84", "", 0.0f, 0.0f, 0.0f, "W84"};
+
+  NMEAMessage Expected = {NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::DTM, 1,
+                          &Message};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
@@ -52,10 +52,10 @@ TEST(DTMMessageParse, Valid_W84_Message) {
 TEST(DTMMessageParse, Valid_W72_Message) {
   const std::string RawMessage = "$GPDTM,W72,,0.00,S,0.01,W,-2.8,W84*4F";
 
-  NMEAMessage Expected{NMEA_TALKER_ID::GPS,
-                       NMEA_MESSAGE_TYPE::DTM,
-                       1,
-                       {new GPDTM{"W72", "", 0.0f, -0.01f, -2.8f, "W84"}}};
+  GPDTM Message{"W72", "", 0.0f, -0.01f, -2.8f, "W84"};
+
+  NMEAMessage Expected{NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::DTM, 1,
+                       &Message};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
@@ -77,10 +77,10 @@ TEST(DTMMessageParse, Valid_W72_Message) {
 TEST(DTMMessageParse, Valid_999_Message) {
   const std::string RawMessage = "$GPDTM,999,CH95,0.08,N,0.07,E,-47.7,W84*1C";
 
-  NMEAMessage Expected{NMEA_TALKER_ID::GPS,
-                       NMEA_MESSAGE_TYPE::DTM,
-                       1,
-                       {new GPDTM{"999", "CH95", 0.08f, 0.07f, -47.7f, "W84"}}};
+  GPDTM Message{"999", "CH95", 0.08f, 0.07f, -47.7f, "W84"};
+
+  NMEAMessage Expected{NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::DTM, 1,
+                       &Message};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
