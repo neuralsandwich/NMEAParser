@@ -27,25 +27,18 @@ namespace NMEA {
 TEST(DTMMessageParse, Valid_W84_Message) {
   const std::string RawMessage = "$GPDTM,W84,,0.0,N,0.0,E,0.0,W84*6F";
 
-  NMEAHeader Header = {
-      .ID = NMEA_TALKER_ID::GPS, .Type = NMEA_MESSAGE_TYPE::DTM, .Valid = 1};
-
-  GPDTM Message = {.LLL = "W84",
-                   .LSD = "",
-                   .lat = 0.0f,
-                   .lon = 0.0f,
-                   .alt = 0.0f,
-                   .RRR = "W84"};
-
-  NMEAMessage Expected = {.Header = &Header, .DTM = &Message};
+  NMEAMessage Expected = {NMEA_TALKER_ID::GPS,
+                          NMEA_MESSAGE_TYPE::DTM,
+                          1,
+                          {new GPDTM{"W84", "", 0.0f, 0.0f, 0.0f, "W84"}}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Header
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID);
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type);
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid);
+  EXPECT_EQ(Expected.ID, Result->ID);
+  EXPECT_EQ(Expected.Type, Result->Type);
+  EXPECT_EQ(Expected.Valid, Result->Valid);
 
   // Compare Message
   EXPECT_TRUE(strncmp(Expected.DTM->LLL, Result->DTM->LLL, 3) == 0);
@@ -59,25 +52,18 @@ TEST(DTMMessageParse, Valid_W84_Message) {
 TEST(DTMMessageParse, Valid_W72_Message) {
   const std::string RawMessage = "$GPDTM,W72,,0.00,S,0.01,W,-2.8,W84*4F";
 
-  NMEAHeader Header = {
-      .ID = NMEA_TALKER_ID::GPS, .Type = NMEA_MESSAGE_TYPE::DTM, .Valid = 1};
-
-  GPDTM Message = {.LLL = "W72",
-                   .LSD = "",
-                   .lat = 0.0f,
-                   .lon = -0.01f,
-                   .alt = -2.8f,
-                   .RRR = "W84"};
-
-  NMEAMessage Expected = {.Header = &Header, .DTM = &Message};
+  NMEAMessage Expected{NMEA_TALKER_ID::GPS,
+                       NMEA_MESSAGE_TYPE::DTM,
+                       1,
+                       {new GPDTM{"W72", "", 0.0f, -0.01f, -2.8f, "W84"}}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Header
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID);
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type);
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid);
+  EXPECT_EQ(Expected.ID, Result->ID);
+  EXPECT_EQ(Expected.Type, Result->Type);
+  EXPECT_EQ(Expected.Valid, Result->Valid);
 
   // Compare Message
   EXPECT_TRUE(strncmp(Expected.DTM->LLL, Result->DTM->LLL, 3) == 0);
@@ -91,25 +77,18 @@ TEST(DTMMessageParse, Valid_W72_Message) {
 TEST(DTMMessageParse, Valid_999_Message) {
   const std::string RawMessage = "$GPDTM,999,CH95,0.08,N,0.07,E,-47.7,W84*1C";
 
-  NMEAHeader Header = {
-      .ID = NMEA_TALKER_ID::GPS, .Type = NMEA_MESSAGE_TYPE::DTM, .Valid = 1};
-
-  GPDTM Message = {.LLL = "999",
-                   .LSD = "CH95",
-                   .lat = 0.08f,
-                   .lon = 0.07f,
-                   .alt = -47.7f,
-                   .RRR = "W84"};
-
-  NMEAMessage Expected = {.Header = &Header, .DTM = &Message};
+  NMEAMessage Expected{NMEA_TALKER_ID::GPS,
+                       NMEA_MESSAGE_TYPE::DTM,
+                       1,
+                       {new GPDTM{"999", "CH95", 0.08f, 0.07f, -47.7f, "W84"}}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Header
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID);
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type);
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid);
+  EXPECT_EQ(Expected.ID, Result->ID);
+  EXPECT_EQ(Expected.Type, Result->Type);
+  EXPECT_EQ(Expected.Valid, Result->Valid);
 
   // Compare Message
   EXPECT_TRUE(strncmp(Expected.DTM->LLL, Result->DTM->LLL, 3) == 0);
@@ -123,21 +102,18 @@ TEST(DTMMessageParse, Valid_999_Message) {
 TEST(DTMMessageParse, Invalid_Message) {
   const std::string RawMessage = "asdfliouieniifioewufyshdfj";
 
-  NMEAHeader Header = {.ID = NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
-                       .Type = NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
-                       .Valid = 0};
-
-  NMEAMessage Expected = {.Header = &Header, 0};
+  NMEAMessage Expected{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                       NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
+                       0,
+                       {}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Headers
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID)
-      << "Talker ID is incorrect";
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type)
-      << "Message type is incorrect";
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid)
+  EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
+  EXPECT_EQ(Expected.Type, Result->Type) << "Message type is incorrect";
+  EXPECT_EQ(Expected.Valid, Result->Valid)
       << "Message valid status is incorrect";
 
   // Compare Message
@@ -147,21 +123,18 @@ TEST(DTMMessageParse, Invalid_Message) {
 TEST(DTMMessageParse, Empty_Message) {
   const std::string RawMessage = "";
 
-  NMEAHeader Header = {.ID = NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
-                       .Type = NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
-                       .Valid = 0};
-
-  NMEAMessage Expected = {.Header = &Header, 0};
+  NMEAMessage Expected{NMEA_TALKER_ID::UNKNOWN_TALKER_ID,
+                       NMEA_MESSAGE_TYPE::UNKNOWN_MESSAGE,
+                       0,
+                       {}};
 
   auto Parser = NMEAParser{};
   auto Result = Parser.Parse(RawMessage);
 
   // Compare Headers
-  EXPECT_EQ(Expected.Header->ID, Result->Header->ID)
-      << "Talker ID is incorrect";
-  EXPECT_EQ(Expected.Header->Type, Result->Header->Type)
-      << "Message type is incorrect";
-  EXPECT_EQ(Expected.Header->Valid, Result->Header->Valid)
+  EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
+  EXPECT_EQ(Expected.Type, Result->Type) << "Message type is incorrect";
+  EXPECT_EQ(Expected.Valid, Result->Valid)
       << "Message valid status is incorrect";
 
   // Compare Message
