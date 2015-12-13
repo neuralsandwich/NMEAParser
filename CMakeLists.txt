@@ -1,6 +1,15 @@
-cmake_minimum_required (VERSION 2.8.7)
+cmake_minimum_required (VERSION 3.0 FATAL_ERROR)
 
-project (NMEAParser)
+# Detect if clang is AppleClang or not
+if(POLICY CMP0025)
+  cmake_policy(SET CMP0025 NEW)
+endif()
+
+# Merge project and Version command
+cmake_policy(SET CMP0048 NEW)
+project (NMEAParser VERSION 1.0)
+
+INCLUDE(CPack)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)

@@ -16,8 +16,66 @@
 #include <iostream>
 #include <stdexcept>
 #include <cstring>
+#include <type_traits>
+#include <dlfcn.h>
+
 
 namespace NMEA {
+
+time_t faster_mktime(struct tm *tm) {
+  using mktime_ptr = std::add_pointer<time_t(struct tm *tm)>::type;
+  
+  static struct tm cache = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+  static time_t time_cache = 0;
+  static mktime_ptr mktime_real = NULL;
+  time_t result;
+  time_t hmsarg;
+
+  /* Load real mktime once into a static */
+  if (!mktime_real) {
+    void *handle;
+
+    /* To forgive this cast, please see man dlopen(3). */
+    dlerror();
+    handle = dlsym(RTLD_NEXT, "mktime");
+      mktime_real = reinterpret_cast<mktime_ptr>(handle);
+
+    if (!mktime_real) {
+      fprintf(stderr, "loading mktime: %s\n", dlerror());
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  /* the epoch time portion of the request */
+  hmsarg = 3600 * tm->tm_hour + 60 * tm->tm_min + tm->tm_sec;
+
+  if (cache.tm_mday == tm->tm_mday && cache.tm_mon == tm->tm_mon &&
+      cache.tm_year == tm->tm_year) {
+    /* cached - just add h,m,s from request to midnight */
+    result = time_cache + hmsarg;
+
+    /* Obscure, but documented, return value: only this value in arg struct.
+     *
+     * BUG: dst switchover was computed by mktime_real() for time 00:00:00
+     * of arg day. So this return value WILL be wrong for switchover days
+     * after the switchover occurs.  There is no clean way to detect this
+     * situation in stock glibc.  This bug will be reflected in unit test
+     * until fixed.  See also github issues #1 and #2.
+     */
+    tm->tm_isdst = cache.tm_isdst;
+  } else {
+    /* not cached - recompute midnight on requested day */
+    cache.tm_mday = tm->tm_mday;
+    cache.tm_mon = tm->tm_mon;
+    cache.tm_year = tm->tm_year;
+    time_cache = mktime_real(&cache);
+    tm->tm_isdst = cache.tm_isdst;
+
+    result = (-1 == time_cache) ? -1 : time_cache + hmsarg;
+  }
+
+  return result;
+}
 
 static bool ValidateChecksum(const std::string &Message,
                              const std::string &Checksum) {
@@ -133,7 +191,7 @@ static time_t ParseTimeStamp(const std::string &TimeStamp,
       TimeInfo->tm_hour = std::stoi(TimeStamp.substr(0, 2), nullptr, 10);
       TimeInfo->tm_min = std::stoi(TimeStamp.substr(2, 2), nullptr, 10);
       TimeInfo->tm_sec = std::stoi(TimeStamp.substr(4, 2), nullptr, 10);
-      Result = mktime(TimeInfo);
+      Result = faster_mktime(TimeInfo);
     } catch (std::invalid_argument &) {
       Result = -1;
     } catch (std::out_of_range &) {
