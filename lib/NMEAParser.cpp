@@ -177,11 +177,11 @@ static int ParseInteger(const std::string &String) {
 static time_t ParseTimeStamp(const std::string &TimeStamp,
                              const std::string &DateStamp) {
   time_t Result = 0;
-  struct tm *TimeInfo;
+  struct tm *TimeInfo = {0};
 
   // TimeStamp is in format HHMMSS in int
   time(&Result);
-  TimeInfo = gmtime(&Result);
+  TimeInfo = gmtime_r(&Result, TimeInfo);
   if ((TimeStamp.length() >= 6) && (TimeStamp.length() <= 9) &&
       (DateStamp.length() == 6)) {
     try {
@@ -217,10 +217,10 @@ static time_t ParseTimeStamp(const std::string &TimeStamp,
  */
 static time_t ParseTimeStamp(const std::string &TimeStamp) {
   time_t Result = 0;
-  struct tm *TimeInfo;
+  struct tm *TimeInfo = {0};
 
   time(&Result);
-  TimeInfo = gmtime(&Result);
+  TimeInfo = gmtime_r(&Result, TimeInfo);
   char buffer[80];
   std::strftime(buffer, 80, "%d%m%y", TimeInfo);
   const std::string DateStamp(buffer);
@@ -546,6 +546,7 @@ ParseResiduals(std::vector<std::string>::const_iterator ResidualIter,
                std::vector<std::string>::const_iterator End) {
   std::vector<float> *Result = new std::vector<float>(12, 0.0f);
 
+  // cppcheck-suppress postfixOperator
   for (size_t i = 0; ResidualIter != End; ResidualIter++, i++) {
     (*Result)[i] = ParseFloat(*ResidualIter);
   }
