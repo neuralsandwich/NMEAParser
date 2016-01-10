@@ -12,20 +12,19 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <ctime>
+#include <dlfcn.h>
 #include <iostream>
 #include <stdexcept>
-#include <cstring>
 #include <type_traits>
-#include <dlfcn.h>
-
 
 namespace NMEA {
 
-time_t faster_mktime(struct tm *tm) {
-  using mktime_ptr = std::add_pointer<time_t(struct tm *tm)>::type;
-  
-  static struct tm cache = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+static time_t faster_mktime(struct tm *tm) {
+  using mktime_ptr = std::add_pointer<time_t(struct tm * tm)>::type;
+
+  static struct tm cache = {};
   static time_t time_cache = 0;
   static mktime_ptr mktime_real = NULL;
   time_t result;
@@ -38,7 +37,7 @@ time_t faster_mktime(struct tm *tm) {
     /* To forgive this cast, please see man dlopen(3). */
     dlerror();
     handle = dlsym(RTLD_NEXT, "mktime");
-      mktime_real = reinterpret_cast<mktime_ptr>(handle);
+    mktime_real = reinterpret_cast<mktime_ptr>(handle);
 
     if (!mktime_real) {
       fprintf(stderr, "loading mktime: %s\n", dlerror());
