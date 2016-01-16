@@ -9,6 +9,8 @@
 |------------------------------------------------------------------------+-------------------------------------------------------------------------|
 | [[https://travis-ci.org/NeuralSandwich/NMEAParser][file:https://travis-ci.org/NeuralSandwich/NMEAParser.svg?branch=master]] | [[https://travis-ci.org/NeuralSandwich/NMEAParser][file:https://travis-ci.org/NeuralSandwich/NMEAParser.svg?branch=develop]] |
 
+[[https://scan.coverity.com/projects/neuralsandwich-nmeaparser][file:https://scan.coverity.com/projects/7606/badge.svg]]
+
 Library for parsing NMEA data strings
 
 * Building
