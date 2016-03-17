@@ -176,21 +176,21 @@ static int ParseInteger(const std::string &String) {
 static time_t ParseTimeStamp(const std::string &TimeStamp,
                              const std::string &DateStamp) {
   time_t Result = 0;
-  struct tm *TimeInfo = {0};
+  struct tm TimeInfo = {};
 
   // TimeStamp is in format HHMMSS in int
   time(&Result);
-  TimeInfo = gmtime_r(&Result, TimeInfo);
+  gmtime_r(&Result, &TimeInfo);
   if ((TimeStamp.length() >= 6) && (TimeStamp.length() <= 9) &&
       (DateStamp.length() == 6)) {
     try {
-      TimeInfo->tm_mday = std::stoi(DateStamp.substr(0, 2), nullptr, 10);
-      TimeInfo->tm_mon = std::stoi(DateStamp.substr(2, 2), nullptr, 10) - 1;
-      TimeInfo->tm_year = std::stoi(DateStamp.substr(4, 2), nullptr, 10) + 100;
-      TimeInfo->tm_hour = std::stoi(TimeStamp.substr(0, 2), nullptr, 10);
-      TimeInfo->tm_min = std::stoi(TimeStamp.substr(2, 2), nullptr, 10);
-      TimeInfo->tm_sec = std::stoi(TimeStamp.substr(4, 2), nullptr, 10);
-      Result = faster_mktime(TimeInfo);
+      TimeInfo.tm_mday = std::stoi(DateStamp.substr(0, 2), nullptr, 10);
+      TimeInfo.tm_mon = std::stoi(DateStamp.substr(2, 2), nullptr, 10) - 1;
+      TimeInfo.tm_year = std::stoi(DateStamp.substr(4, 2), nullptr, 10) + 100;
+      TimeInfo.tm_hour = std::stoi(TimeStamp.substr(0, 2), nullptr, 10);
+      TimeInfo.tm_min = std::stoi(TimeStamp.substr(2, 2), nullptr, 10);
+      TimeInfo.tm_sec = std::stoi(TimeStamp.substr(4, 2), nullptr, 10);
+      Result = faster_mktime(&TimeInfo);
     } catch (std::invalid_argument &) {
       Result = -1;
     } catch (std::out_of_range &) {
@@ -216,12 +216,14 @@ static time_t ParseTimeStamp(const std::string &TimeStamp,
  */
 static time_t ParseTimeStamp(const std::string &TimeStamp) {
   time_t Result = 0;
-  struct tm *TimeInfo = {0};
+  struct tm TimeInfo = {};
+
 
   time(&Result);
-  TimeInfo = gmtime_r(&Result, TimeInfo);
+  gmtime_r(&Result, &TimeInfo);
+
   char buffer[80];
-  std::strftime(buffer, 80, "%d%m%y", TimeInfo);
+  std::strftime(buffer, 80, "%d%m%y", &TimeInfo);
   const std::string DateStamp(buffer);
   Result = ParseTimeStamp(TimeStamp, DateStamp);
 
