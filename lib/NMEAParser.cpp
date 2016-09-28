@@ -824,6 +824,12 @@ NMEAParser::NMEAParser() {
   Parsers[NMEA_MESSAGE_TYPE::ZDA] = new GPZDAParser{};
 };
 
+NMEAParser::~NMEAParser() {
+  for (auto i: Parsers) {
+    delete i;
+  }
+};
+
 NMEAMessage *NMEAParser::Parse(const std::string &Message) const {
   std::vector<std::string> Elements(1);
 
@@ -902,7 +908,7 @@ void HNMEAParser_Destroy(HNMEAParser *Parser) {
   }
 } // HNMEAParser_Destory
 
-NMEAMessage *HNMEAParser_Parse(HNMEAParser *Parser, char *String) {
+NMEAMessage *HNMEAParser_Parse(HNMEAParser *Parser, const char *String) {
   try {
     NMEAMessage *Result =
         reinterpret_cast<NMEA::NMEAParser *>(Parser)->Parse(String);

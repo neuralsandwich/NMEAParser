@@ -92,6 +92,7 @@ class NMEAParser {
 
 public:
   NMEAParser();
+  ~NMEAParser();
   NMEAMessage *Parse(const std::string &String) const;
 }; // NMEAParser
 } // NMEA

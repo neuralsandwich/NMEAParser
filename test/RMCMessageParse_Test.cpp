@@ -51,8 +51,8 @@ TEST(RMCMessageParse, Valid_Message) {
   NMEAMessage Expected{NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::RMC, 1,
                        .RMC = &Message};
 
-  auto Parser = NMEAParser{};
-  auto Result = Parser.Parse(RawMessage);
+  auto Parser = HNMEAParser_Create();
+  auto Result = HNMEAParser_Parse(Parser, RawMessage.c_str());
 
   // Compare Headers
   EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
@@ -69,6 +69,8 @@ TEST(RMCMessageParse, Valid_Message) {
   EXPECT_FLOAT_EQ(Expected.RMC->Angle, Result->RMC->Angle);
   EXPECT_EQ(isnan(Expected.RMC->MagneticVariation),
             isnan(Result->RMC->MagneticVariation));
+  NMEAMessage_Destroy(Result);
+  HNMEAParser_Destroy(Parser);
 }
 
 TEST(RMCMessageParse, Invalid_Message) {
@@ -78,8 +80,8 @@ TEST(RMCMessageParse, Invalid_Message) {
                        0,
                        {}};
 
-  auto Parser = NMEAParser{};
-  auto Result = Parser.Parse(RawMessage);
+  auto Parser = HNMEAParser_Create();
+  auto Result = HNMEAParser_Parse(Parser, RawMessage.c_str());
 
   // Compare Headers
   EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
@@ -89,6 +91,8 @@ TEST(RMCMessageParse, Invalid_Message) {
 
   // Compare Message
   EXPECT_EQ(Expected.RMC, Result->RMC);
+  NMEAMessage_Destroy(Result);
+  HNMEAParser_Destroy(Parser);
 }
 
 TEST(RMCMessageParse, Empty_Message) {
@@ -98,8 +102,8 @@ TEST(RMCMessageParse, Empty_Message) {
                           0,
                           {}};
 
-  auto Parser = NMEAParser{};
-  auto Result = Parser.Parse(RawMessage);
+  auto Parser = HNMEAParser_Create();
+  auto Result = HNMEAParser_Parse(Parser, RawMessage.c_str());
 
   // Compare Headers
   EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
@@ -109,5 +113,7 @@ TEST(RMCMessageParse, Empty_Message) {
 
   // Compare Message
   EXPECT_EQ(Expected.RMC, Result->RMC);
+  NMEAMessage_Destroy(Result);
+  HNMEAParser_Destroy(Parser);
 }
 }

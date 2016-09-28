@@ -17,6 +17,7 @@ if(STATICLIB)
   install (TARGETS NMEAParserStatic DESTINATION lib)
 else(STATICLIB)
   add_library (NMEAParser SHARED ${SOURCES} ${INCLUDES})
+  target_link_libraries(NMEAParser ${CMAKE_DL_LIBS})
   install (TARGETS NMEAParser DESTINATION lib)
 endif(STATICLIB)
 

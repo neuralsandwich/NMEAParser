@@ -32,8 +32,8 @@ TEST(DTMMessageParse, Valid_W84_Message) {
   NMEAMessage Expected = {NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::DTM, 1,
                           &Message};
 
-  auto Parser = NMEAParser{};
-  auto Result = Parser.Parse(RawMessage);
+  auto Parser = HNMEAParser_Create();
+  auto Result = HNMEAParser_Parse(Parser, RawMessage.c_str());
 
   // Compare Header
   EXPECT_EQ(Expected.ID, Result->ID);
@@ -47,6 +47,8 @@ TEST(DTMMessageParse, Valid_W84_Message) {
   EXPECT_EQ(Expected.DTM->lon, Result->DTM->lon);
   EXPECT_EQ(Expected.DTM->alt, Result->DTM->alt);
   EXPECT_TRUE(strncmp(Expected.DTM->RRR, Result->DTM->RRR, 3) == 0);
+  NMEAMessage_Destroy(Result);
+  HNMEAParser_Destroy(Parser);
 };
 
 TEST(DTMMessageParse, Valid_W72_Message) {
@@ -57,8 +59,8 @@ TEST(DTMMessageParse, Valid_W72_Message) {
   NMEAMessage Expected{NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::DTM, 1,
                        &Message};
 
-  auto Parser = NMEAParser{};
-  auto Result = Parser.Parse(RawMessage);
+  auto Parser = HNMEAParser_Create();
+  auto Result = HNMEAParser_Parse(Parser, RawMessage.c_str());
 
   // Compare Header
   EXPECT_EQ(Expected.ID, Result->ID);
@@ -72,6 +74,8 @@ TEST(DTMMessageParse, Valid_W72_Message) {
   EXPECT_EQ(Expected.DTM->lon, Result->DTM->lon);
   EXPECT_EQ(Expected.DTM->alt, Result->DTM->alt);
   EXPECT_TRUE(strncmp(Expected.DTM->RRR, Result->DTM->RRR, 3) == 0);
+  NMEAMessage_Destroy(Result);
+  HNMEAParser_Destroy(Parser);
 };
 
 TEST(DTMMessageParse, Valid_999_Message) {
@@ -82,8 +86,8 @@ TEST(DTMMessageParse, Valid_999_Message) {
   NMEAMessage Expected{NMEA_TALKER_ID::GPS, NMEA_MESSAGE_TYPE::DTM, 1,
                        &Message};
 
-  auto Parser = NMEAParser{};
-  auto Result = Parser.Parse(RawMessage);
+  auto Parser = HNMEAParser_Create();
+  auto Result = HNMEAParser_Parse(Parser, RawMessage.c_str());
 
   // Compare Header
   EXPECT_EQ(Expected.ID, Result->ID);
@@ -97,6 +101,8 @@ TEST(DTMMessageParse, Valid_999_Message) {
   EXPECT_EQ(Expected.DTM->lon, Result->DTM->lon);
   EXPECT_EQ(Expected.DTM->alt, Result->DTM->alt);
   EXPECT_TRUE(strncmp(Expected.DTM->RRR, Result->DTM->RRR, 3) == 0);
+  NMEAMessage_Destroy(Result);
+  HNMEAParser_Destroy(Parser);
 };
 
 TEST(DTMMessageParse, Invalid_Message) {
@@ -107,8 +113,8 @@ TEST(DTMMessageParse, Invalid_Message) {
                        0,
                        {}};
 
-  auto Parser = NMEAParser{};
-  auto Result = Parser.Parse(RawMessage);
+  auto Parser = HNMEAParser_Create();
+  auto Result = HNMEAParser_Parse(Parser, RawMessage.c_str());
 
   // Compare Headers
   EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
@@ -118,6 +124,8 @@ TEST(DTMMessageParse, Invalid_Message) {
 
   // Compare Message
   EXPECT_EQ(Expected.DTM, Result->DTM);
+  NMEAMessage_Destroy(Result);
+  HNMEAParser_Destroy(Parser);
 }
 
 TEST(DTMMessageParse, Empty_Message) {
@@ -128,8 +136,8 @@ TEST(DTMMessageParse, Empty_Message) {
                        0,
                        {}};
 
-  auto Parser = NMEAParser{};
-  auto Result = Parser.Parse(RawMessage);
+  auto Parser = HNMEAParser_Create();
+  auto Result = HNMEAParser_Parse(Parser, RawMessage.c_str());
 
   // Compare Headers
   EXPECT_EQ(Expected.ID, Result->ID) << "Talker ID is incorrect";
@@ -139,5 +147,7 @@ TEST(DTMMessageParse, Empty_Message) {
 
   // Compare Message
   EXPECT_EQ(Expected.DTM, Result->DTM);
+  NMEAMessage_Destroy(Result);
+  HNMEAParser_Destroy(Parser);
 }
 }
