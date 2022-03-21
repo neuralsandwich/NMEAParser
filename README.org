@@ -29,7 +29,8 @@ make
 
 #+BEGIN_SRC sh
 cmake .. -DBUILD_TESTING=1
-make test
+cmake --build .
+ctest
 #+END_SRC
 
   All methods of NMEAParser are tested. All parser functions have their
